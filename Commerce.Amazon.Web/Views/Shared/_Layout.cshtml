@@ -1,0 +1,173 @@
+﻿@model Commerce.Amazon.Web.Models.BaseViewModel
+@using Commerce.Amazon.Web.Models
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commerce Amazon</title>
+    <title>@ViewBag.Title</title>
+    @*~/Content/css*@
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/lib/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/lib/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/lib/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/css/lib/custom.min.css" rel="stylesheet" />
+    <link href="~/css/Site.css" rel="stylesheet" />
+    <link href="~/css/lib/dashboard.css" rel="stylesheet" />
+    <link href="~/css/sii.css" rel="stylesheet" />
+    @*~/Content/datatables*@
+    <link href="~/css/lib/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/css/lib/dataTables.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/lib/responsive.dataTables.min.css" rel="stylesheet" />
+    <link href="~/css/lib/select.dataTables.min.css" rel="stylesheet" />
+    <link href="~/css/lib/responsive.bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/lib/select.bootstrap.min.css" rel="stylesheet" />
+
+    @*Scripts*@
+    <script src="~/js/jquery-1.10.2.min.js"></script>
+    <script src="~/js/Lib/jquery-ui.js"></script>
+    @RenderSection("styles", false)
+</head>
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col menu_fixed">
+                <div class="left_col scroll-view">
+                    <div class="navbar nav_title" style="border: 0">
+                        <a href="/Dashboard"><img class="logoleft" src="~/images/PuenteSilicie.png" /></a>
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- menu profile quick info -->
+                    @if (Model.ProfileModel != null)
+                    {
+                        <partial name="../Home/ProfileView" model="@Model.ProfileModel" />
+                    }
+                    else
+                    {
+                        Context.Response.Redirect("/Account/Login");
+                    }
+                    <!-- /menu profile quick info -->
+                    <br />
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <h3>Menú general</h3>
+                            <ul class="nav side-menu" id="IdmainMenu">
+                                <li>
+                                    <a><i class="fa fa-bar-chart-o"></i>Cuadro de mando<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-dashboard"></i> Panel de control</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-edit"></i>Nouveau post<span class="fa fa-chevron-down"></span></a>
+                                </li>
+                                <li>
+                                    <a href="@Url.Action("Index", "Operations")"><i class="fa fa-cogs"></i> Operations</a>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-file-text-o"></i>Consultations<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li> @Html.ActionLink("Consultation des posts", "Index", "Consultation")</li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+                <p class="copyrighted">© - Tous les droits reserves</p>
+            </div>
+            <!-- top navigation -->
+            <div class="top_nav">
+                <nav class="navbar-fixed-top">
+                    <div class="nav_menu">
+                        <nav>
+                            <div class="nav toggle">
+                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                            </div>
+                            <ul class="nav navbar-nav navbar-right usermenu">
+                                <li class="">
+                                    <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <img src="~/images/default pic.jpg" alt="">@ViewBag.ProfileModel?.FullName
+                                        <span class=" fa fa-angle-down"></span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                        <li>
+                                            <a href="" class="disabled">
+                                                <i class="fa fa-user pull-right"></i>Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                        <li><a href="" class="disabled">Ayuda</a></li>
+                                        @if (ViewBag.ProfileModel?.Role == Commerce.Amazon.Domain.Models.Response.Auth.Enum.Role.Admin)
+                                        {
+                                            <li><a href="/Profile/Index" class="disabled"><i class="fa fa-gear pull-right"></i> profile</a></li>
+                                        }
+                                        <li>
+                                            <a href="../Account/Logout" class="disabled">
+                                                <i class="fa fa-sign-out pull-right"></i>Cerrar
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </nav>
+            </div>
+            <!-- /top navigation -->
+            <!-- page content -->
+            <br /><br /><br />
+            <div class="right_col" role="main">
+                <div class="row">
+                    <div class="filtrer">
+                        <partial name="DisplayTemplates/_BootstrapSitemapHelper.cshtml" />
+                    </div>
+                </div>
+                <div class="row">
+                    @RenderBody()
+                    <div id="idLoader" class="loader hidden"></div>
+                </div>
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            <!-- /footer content -->
+        </div>
+    </div>
+    @*modernizr*@
+    <script src="~/js/modernizr-2.6.2.js"></script>
+    @*bootstrap*@
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/respond.min.js"></script>
+    @*gentella*@
+    <script src="~/js/Lib/fastclick.js"></script>
+    <script src="~/js/Lib/jquery.mCustomScrollbar.concat.min.js"></script>
+    @*datatables*@
+    <script src="~/js/Lib/jquery.dataTables.min.js"></script>
+    <script src="~/js/Lib/dataTables.bootstrap.min.js"></script>
+    <script src="~/js/Lib/dataTables.select.min.js"></script>
+    <script src="~/js/Lib/dataTables.responsive.min.js"></script>
+    <script src="~/js/Lib/responsive.bootstrap.min.js"></script>
+    <script src="~/js/Lib/select.bootstrap.min.js"></script>
+
+    @*datatablesButtons*@
+    <script src="~/js/Lib/dataTables.min.js"></script>
+    <script src="~/js/Lib/dataTables.buttons.min.js"></script>
+    <script src="~/js/Lib/buttons.bootstrap.min.js"></script>
+    <script src="~/js/Lib/buttons.html5.min.js"></script>
+
+    <script src="~/js/sweetalert2.min.js"></script>
+    <script src="~/js/Lib/custom.js"></script>
+    <script src="~/js/moment-with-locales.min.js"></script>
+    <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,60 @@
+{
+	"SiteMap": {
+		"SiteMapNodes": [
+			{
+				"title": "Inicio",
+				"controller": "",
+				"action": "",
+				"clickable": false,
+				"haschildren": true,
+				"SiteMapNodes": [
+					{
+						"title": "Nouveau post",
+						"controller": "",
+						"action": "",
+						"clickable": false,
+						"haschildren": true
+					},
+					{
+						"title": "Operations",
+						"controller": "Operations",
+						"action": "Index",
+						"clickable": true,
+						"haschildren": false
+					},
+					{
+						"title": "Consultations",
+						"controller": "",
+						"action": "",
+						"clickable": false,
+						"haschildren": true,
+						"SiteMapNodes": [
+							{
+								"title": "Consulta des posts",
+								"controller": "Consultations",
+								"action": "Index",
+								"clickable": true,
+								"haschildren": false
+							}
+						]
+					},
+					{
+						"title": "Cuadro de mando",
+						"controller": "Dashboard",
+						"action": "Index",
+						"clickable": true,
+						"haschildren": false,
+						"SiteMapNodes": []
+					},
+					{
+						"title": "Profile",
+						"controller": "",
+						"action": "",
+						"clickable": false,
+						"haschildren": false
+					}
+				]
+			}
+		]
+	}
+}

@@ -1,0 +1,71 @@
+﻿
+<div class="filtrer">
+	<div class="row">
+		<div class="col-xs-4 col-md-2">
+			<div class="form-group">
+				<label for="txtIdOperacion" class="control-label">Id operacion :</label>
+				<input type="number" name="Id" id="txtIdOperacion" value="0" min="0" class="form-control input-sm" />
+			</div>
+		</div>
+		<div class="col-xs-6 col-md-3">
+			<div class="form-group">
+				<label for="dtFechaDesde" class="control-label">Fecha Operación desde :</label>
+				<input type="text" name="FechaDesde" id="dtFechaDesde" placeholder="dd/MM/yyyy" value="" class="form-control input-sm dateFrom" autocomplete="off" />
+			</div>
+		</div>
+		<div class="col-xs-6 col-md-3">
+			<div class="form-group">
+				<label for="dtFechaHasta" class="control-label">Fecha Operación hasta :</label>
+				<input type="text" name="FechaHasta" id="dtFechaHasta" placeholder="dd/MM/yyyy" value="" class="form-control input-sm dateTo dateToday" autocomplete="off" />
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-6 col-md-2">
+			<div class="form-group">
+				<label for="sltEjercicio" class="control-label" style="">Annee :</label>
+				<select id="sltEjercicio" class="form-control input-sm">
+					<option value="">Todo</option>
+					@for (int i = 0; i < 5; i++)
+					{
+						if (@Model.Filter.Ejercicio == DateTime.Now.Year - i)
+						{
+							<option selected value="@(DateTime.Now.Year - i)">@(DateTime.Now.Year - i)</option>
+						}
+						else
+						{
+							<option value="@(DateTime.Now.Year - i)">@(DateTime.Now.Year - i)</option>
+						}
+					}
+				</select>
+			</div>
+		</div>
+		<div class="col-xs-6 col-md-2">
+			<div class="form-group">
+				<label for="sltPeriodo" class="control-label" style="">Mois :</label>
+				<select id="sltPeriodo" class="form-control input-sm">
+					<option value="">Todo</option>
+					@{ string[] mois = { "Janvier", "Fevrier", "Marso", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" };
+                        for (int i = 0; i < mois.Length; i++)
+                        {
+                            if (Model.Filter.Periodo == (i + 1))
+                            {
+								<option selected value="@(i + 1)">@mois[i]</option>
+							}
+							else
+							{
+								<option value="@(i + 1)">@mois[i]</option>
+							}
+						}
+					}
+				</select>
+			</div>
+		</div>
+		<div class="col-xs-6 col-md-2">
+			<div class="form-group">
+				<br />
+				<button type="button" id="btnFilter" class="btn btn-purple pull-right form-control">Filtrer</button>
+			</div>
+		</div>
+	</div>
+</div>

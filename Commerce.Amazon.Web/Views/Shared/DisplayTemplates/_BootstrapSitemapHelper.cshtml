@@ -1,0 +1,48 @@
+﻿@inject Commerce.Amazon.Web.Modules.CustomSiteMapModule CustomSiteMapModel
+@using Commerce.Amazon.Web.Models
+
+
+@{ 
+	int i = 0;
+	string controller = ViewContext.RouteData.Values["Controller"].ToString();
+	string action = ViewContext.RouteData.Values["Action"].ToString();
+	string[] querykeys = null;
+	if (controller == "Asientos"
+		&& action == "Index")
+	{
+		querykeys = Context.Request.Query.Keys.ToArray();
+	}
+	List<Sitemapnode> sitemapnodes = CustomSiteMapModel.GetNodesBy(ViewContext.RouteData.Values["Controller"].ToString(), ViewContext.RouteData.Values["Action"].ToString(), querykeys);
+}
+
+@if (sitemapnodes.Count >= 1) 
+{
+	@:
+	<ul class="breadcrumb bg-white no-margin-bottom">
+		@foreach (var node in sitemapnodes)
+		{
+
+			if (i != sitemapnodes.Count - 1)
+			{
+				if (node.clickable)
+				{
+					@:
+					<li><a href="/@node.controller/@node.action">@node.title</a></li>
+
+				}
+				else
+				{
+					@:
+					<li>@node.title</li>
+
+				}
+			}
+			else
+			{
+				@:
+				<li class="active">@node.title</li>
+			}
+			i++;
+		}
+	</ul>
+}

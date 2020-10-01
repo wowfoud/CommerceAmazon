@@ -1,0 +1,105 @@
+﻿
+<style>
+	#consent {
+		background-color: #412764;
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		min-height: 60px;
+		height: auto;
+		padding:10px 0;
+		z-index:9998;
+		box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+		-moz-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+		-webkit-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+		-o-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+		-ms-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+	}
+
+	.consent-content {
+		color: white;
+		width: 970px;
+		margin: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		min-height: 60px
+	}
+
+		.consent-content > * {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.consent-content a {
+			color: white;
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		.consent-content button {
+			background: linear-gradient(whitesmoke,white,whitesmoke);
+			border: 1px solid transparent;
+			border-radius: 0.4em;
+			color: #492c8f;
+			font-size: 15px;
+			font-weight: bold;
+			text-align: center;
+			padding: 6px 12px;
+			cursor: pointer;
+		}
+		.consent-content button:hover {
+			background: linear-gradient(white,whitesmoke,white);
+			color: #7E0FB4;
+		}
+		.hidden{
+			display:none;
+		}
+
+	@@media all and (max-width:970px) {
+
+		.consent-content {
+			width: 320px;
+			display: block;
+			text-align: center;
+		}
+		.consent-content p {
+			text-align: left;
+			padding: 0 10px;
+		}
+		.consent-content>* {
+			margin-bottom:15px;
+		}
+	}
+	@@media all and (min-width:1890px) {
+
+		.consent-content {
+			width: 80%!important;
+		}
+	}
+</style>
+<div id="consent" class="hidden">
+	<div class="consent-content">
+		<p>
+			Utilizamos cookies propias y de terceros para mejorar la navegación de los usuarios y ofrecerle una mejor experiencia. Si continúa navegando, consideramos que acepta su uso. Para obtener más información, consulte <a href="/politica-cookies">aquí</a>.
+		</p>
+		<button id="consent-button">Acepto</button>
+	</div>
+</div>
+
+<script src="~/js/js-cookie/js.cookie-2.2.1.min.js"></script>
+<script>
+	const cookieConsentName = ".Cookie.Consent";
+	let isConsentOpen = false;
+	const consent = $('#consent');
+	if (!Cookies.get(cookieConsentName)) {
+		isConsentOpen = true;
+		consent.removeClass('hidden');
+	}
+	$('#consent-button').on('click', function () {
+		Cookies.set(cookieConsentName, "true", { expires: 30, path: '/', SameSite: 'lex'});
+
+		consent.addClass('hidden');
+		isConsentOpen = false;
+	});
+</script>

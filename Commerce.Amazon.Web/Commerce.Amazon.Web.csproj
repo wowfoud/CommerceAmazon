@@ -1,0 +1,87 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\jquery-1.10.2.intellisense.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\js\jquery-1.10.2.intellisense.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Commerce.Amazon.Domain\Commerce.Amazon.Domain.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="System.Web">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Web.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\_ConfirmarAlta.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\ModalAnnular.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\UsuarioModal.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\_ConfirmarAlta.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\_EstableciemntoModal.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\_ModalBaja.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\_OperationModal.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Shared\Modals\_OperationProductModals.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\_EstableciemntoModal.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\_ModalBaja.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\_OperationModal.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\_OperationProductModals.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\ModalAnnular.cshtml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Modals\UsuarioModal.cshtml" />
+  </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties wwwroot_4css_4bootstrap_1css_1map__JsonSchema="" wwwroot_4css_4bootstrap_1min_1css_1map__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
+</Project>

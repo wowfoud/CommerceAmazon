@@ -1,0 +1,59 @@
+﻿
+Footer {
+    padding-bottom: 20px;
+    padding-top: 5px;
+}
+
+.usermenu {
+    width: auto;
+}
+
+.silicieColorGris {
+    background-color: rgb(192, 192, 192);
+}
+
+.silicieColorBerenjena {
+    background-color: rgb(150, 0, 205);
+}
+
+.logoleft {
+    height: 57px;
+    width: 230px;
+}
+
+.nav_title {
+    margin-bottom: 18px!important;
+}
+
+.login_form, .registration_form {
+    position: absolute;
+    top: 0;
+    width: 380px
+}
+
+.max_with_like_input {
+    max-width: 280px;
+}
+
+
+.no_max_with {
+    max-width: none;
+}
+
+.nav_menu{
+    margin-left:0px
+}
+
+.right_col {
+	min-height: 100% !important;
+}
+
+.display-flex {
+    display: flex !important;
+}
+.from-margin-right {
+    margin-right: 110px;
+}
+.m-top-10{
+    margin-top: 10px;
+}
