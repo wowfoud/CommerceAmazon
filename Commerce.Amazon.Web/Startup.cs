@@ -78,26 +78,26 @@ namespace Commerce.Amazon.Web
 
             var container = builder.Build();
 
-            var operationManager = container.Resolve<IOperationManager>();
-            try
-            {
+            //var operationManager = container.Resolve<IOperationManager>();
+            //try
+            //{
 
-                operationManager.SaveUser(new User
-                {
-                    Id = 1,
-                    Nom = "DDAD",
-                    Prenom = "Abdou",
-                    Email = "abdouhdd@outlook.com",
-                    UserId = "ABDOU",
-                    UserGuid = "ABDOU1234",
-                    State = 1
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.Error.WriteLine(ex);
-                throw;
-            }
+            //    operationManager.SaveUser(new User
+            //    {
+            //        Id = 1,
+            //        Nom = "DDAD",
+            //        Prenom = "Abdou",
+            //        Email = "abdouhdd@outlook.com",
+            //        UserId = "ABDOU",
+            //        UserGuid = "ABDOU1234",
+            //        State = 1
+            //    });
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.Error.WriteLine(ex);
+            //    throw;
+            //}
 
             return container.Resolve<IServiceProvider>();
 
@@ -117,13 +117,13 @@ namespace Commerce.Amazon.Web
                 app.UseHsts();
             }
 
-            app.UseStatusCodePages(ctx =>
-            {
-                if (ctx.HttpContext.Response.StatusCode == 405)
-                    ctx.HttpContext.Response.StatusCode = 404;
+            //app.UseStatusCodePages(ctx =>
+            //{
+            //    if (ctx.HttpContext.Response.StatusCode == 405)
+            //        ctx.HttpContext.Response.StatusCode = 404;
 
-                return Task.CompletedTask;
-            });
+            //    return Task.CompletedTask;
+            //});
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
