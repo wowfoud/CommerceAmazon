@@ -1,5 +1,5 @@
-﻿@model Commerce.Amazon.Web.Models.BaseViewModel
-@using Commerce.Amazon.Web.Models
+﻿@model Commerce.Amazon.Domain.Models.BaseViewModel
+@using Commerce.Amazon.WebCore.Models
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,9 +58,9 @@
                             <h3>Menú general</h3>
                             <ul class="nav side-menu" id="IdmainMenu">
                                 <li>
-                                    <a><i class="fa fa-bar-chart-o"></i>Cuadro de mando<span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-dashboard"></i> Panel de control</a></li>
+                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
                                     </ul>
                                 </li>
                                 <li>

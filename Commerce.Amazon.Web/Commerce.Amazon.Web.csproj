@@ -43,7 +43,6 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\Modals\ModalAnnular.cshtml" />
-    <_ContentIncludedByDefault Remove="Views\Shared\Modals\UsuarioModal.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\Modals\_ConfirmarAlta.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\Modals\_EstableciemntoModal.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\Modals\_ModalBaja.cshtml" />
@@ -74,11 +73,6 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\Shared\Modals\ModalAnnular.cshtml" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Views\Shared\Modals\UsuarioModal.cshtml" />
   </ItemGroup>
 
 

@@ -1,0 +1,75 @@
+﻿@model Commerce.Amazon.Domain.Models.Request.Auth.RegisterRequest
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { onsubmit = "return Register(this)" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div style="max-width:280px !important; margin:auto" class="form-horizontal">
+        <h2>Nueva cuenta</h2>
+        <hr />
+        <div class="text-danger center">
+            @ViewBag.Message
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label>Nombre <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", placeholder = "Nombre", required = "" } })
+            @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Apellidos <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Apellidos, new { htmlAttributes = new { @class = "form-control", placeholder = "Apellidos", required = "" } })
+            @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Email <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email", required = "" } })
+            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label>Tel Usuario <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.TelUsuario, new { htmlAttributes = new { @class = "form-control", placeholder = "Tel Usuario", required = "" } })
+            @Html.ValidationMessageFor(model => model.TelUsuario, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Contraseña", required = "" } })
+            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar contraseña <span class="text-danger">*</span></label>
+            <input type="password" name="ConfirmPassword" id="idConfirmPassword" class="form-control" placeholder="Confirm Password" required />
+            @Html.ValidationMessage("ConfirmPassword", "", new { @class = "text-danger" })
+        </div>
+
+
+        @*<div class="form-group">
+                <label for="listasociedad">Select sociedad</label>
+                <select class="form-control" id="listasociedad" name="IdSociete"></select>
+            </div>*@
+
+        <div class="form-group">
+            <input type="submit" value="Register" class="btn btn-purple form-control" />
+        </div>
+        <div class="form-group">
+            @Html.ActionLink("Iniciar sesión", "Login", null, new { @class = "btn btn-default form-control" })
+        </div>
+    </div>
+}
+
+@section scripts{
+
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/jquery.validate-vsdoc.js"></script>
+    <script src="~/js/Internal/script_register.js"></script>
+}

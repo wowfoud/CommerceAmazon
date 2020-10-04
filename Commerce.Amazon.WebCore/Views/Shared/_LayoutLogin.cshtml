@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @*~/Content/css*@
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/lib/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/lib/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/css/lib/custom.min.css" rel="stylesheet" />
+    <link href="~/css/Site.css" rel="stylesheet" />
+    <link href="~/css/lib/dashboard.css" rel="stylesheet" />
+    <link href="~/css/sii.css" rel="stylesheet" />
+    @RenderSection("styles", false)
+</head>
+<body class="login">
+
+    <div>
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="~/js/jquery-1.10.2.min.js"></script>
+    <script src="~/js/Lib/jquery-ui.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

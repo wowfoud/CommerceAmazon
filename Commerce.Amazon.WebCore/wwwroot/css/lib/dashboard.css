@@ -1,0 +1,15 @@
+﻿.thdashboard th {
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.theaddashboard {
+    text-align: center;
+    background-color: rgb(152,152,152);
+    width: 100%;
+    color: black;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
