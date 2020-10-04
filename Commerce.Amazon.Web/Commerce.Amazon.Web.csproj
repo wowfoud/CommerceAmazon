@@ -14,7 +14,9 @@
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.2" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
   </ItemGroup>
 
@@ -26,6 +28,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commerce.Amazon.Domain\Commerce.Amazon.Domain.csproj" />
+    <ProjectReference Include="..\Commerce.Amazon.Engine\Commerce.Amazon.Engine.csproj" />
+    <ProjectReference Include="..\Commerce.Amazon.Infrastructure\Commerce.Amazon.Infrastructure.csproj" />
   </ItemGroup>
 
 
