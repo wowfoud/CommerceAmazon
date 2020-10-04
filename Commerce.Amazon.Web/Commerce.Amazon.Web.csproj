@@ -28,6 +28,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commerce.Amazon.Domain\Commerce.Amazon.Domain.csproj" />
+    <ProjectReference Include="..\Commerce.Amazon.Engine\Commerce.Amazon.Engine.csproj" />
+    <ProjectReference Include="..\Commerce.Amazon.Infrastructure\Commerce.Amazon.Infrastructure.csproj" />
   </ItemGroup>
 
 

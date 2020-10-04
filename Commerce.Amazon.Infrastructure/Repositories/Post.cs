@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commerce.Amazon.Domain.Entities.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace Commerce.Amazon.Infrastructure.Repositories
@@ -11,7 +12,7 @@ namespace Commerce.Amazon.Infrastructure.Repositories
         public string Description { get; set; }
         public decimal? Prix { get; set; }
         public DateTime? DateCreate { get; set; }
-        public int State { get; set; }
+        public EnumStatePost State { get; set; }
 
         public List<PostPlaning> Planings { get; set; }
     }

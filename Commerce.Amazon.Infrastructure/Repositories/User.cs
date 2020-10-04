@@ -1,4 +1,6 @@
-﻿namespace Commerce.Amazon.Infrastructure.Repositories
+﻿using Commerce.Amazon.Domain.Entities.Enum;
+
+namespace Commerce.Amazon.Infrastructure.Repositories
 {
     public class User
     {
@@ -8,7 +10,7 @@
         public string Prenom { get; set; }
         public string UserId { get; set; }
         public string UserGuid { get; set; }
-        public int State { get; set; }
+        public EnumStateUser State { get; set; }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commerce.Amazon.Domain.Entities.Enum;
+using System;
 
 namespace Commerce.Amazon.Infrastructure.Repositories
 {
@@ -10,7 +11,7 @@ namespace Commerce.Amazon.Infrastructure.Repositories
         public DateTime? DateNotified { get; set; }
         public DateTime? DateLimite { get; set; }
         public DateTime? DateComment { get; set; }
-        public int State { get; set; }
+        public EnumStatePlaning? State { get; set; }
     }
 
 }
