@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commerce.Amazon.Domain", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commerce.Amazon.Web", "Commerce.Amazon.Web\Commerce.Amazon.Web.csproj", "{8D237869-A964-4A52-B750-76FAC7BF3CF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Commerce.Amazon.Engine", "Commerce.Amazon.Engine\Commerce.Amazon.Engine.csproj", "{E96E527A-8BBD-414C-82E9-B522ADF318D9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commerce.Amazon.Infrastructure", "Commerce.Amazon.Infrastructure\Commerce.Amazon.Infrastructure.csproj", "{966C2B70-BC5B-4C3E-A7BF-9D392D97AFD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commerce.Amazon.Engine", "Commerce.Amazon.Engine\Commerce.Amazon.Engine.csproj", "{E96E527A-8BBD-414C-82E9-B522ADF318D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +27,6 @@ Global
 		{E96E527A-8BBD-414C-82E9-B522ADF318D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E96E527A-8BBD-414C-82E9-B522ADF318D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E96E527A-8BBD-414C-82E9-B522ADF318D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{966C2B70-BC5B-4C3E-A7BF-9D392D97AFD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{966C2B70-BC5B-4C3E-A7BF-9D392D97AFD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{966C2B70-BC5B-4C3E-A7BF-9D392D97AFD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{966C2B70-BC5B-4C3E-A7BF-9D392D97AFD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
