@@ -12,10 +12,10 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using Commerce.Amazon.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Commerce.Amazon.Engine.Managers.Interfaces;
 using Commerce.Amazon.Engine.Managers;
+using Commerce.Amazon.Web.Repositories;
+using Commerce.Amazon.Web.Managers.Interfaces;
 
 namespace Commerce.Amazon.Web
 {
@@ -90,7 +90,7 @@ namespace Commerce.Amazon.Web
                     Email = "abdouhdd@outlook.com",
                     UserId = "ABDOU",
                     UserGuid = "ABDOU1234",
-                    State = Domain.Entities.Enum.EnumStateUser.Active
+                    State = 1
                 });
             }
             catch (Exception ex)

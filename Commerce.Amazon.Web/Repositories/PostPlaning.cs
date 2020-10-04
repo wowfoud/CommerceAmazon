@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Commerce.Amazon.Infrastructure.Repositories
+namespace Commerce.Amazon.Web.Repositories
 {
     public class PostPlaning
     {
