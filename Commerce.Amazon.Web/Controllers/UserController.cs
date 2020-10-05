@@ -22,14 +22,19 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult Index()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            model = _accountProcess.GetModel();
-            return View(model);
+            BaseViewModel model = _accountProcess.GetModel();
+            if (model.ProfileModel != null)
+            {
+                return View(model);
+            }
+            else
+            {
+                return RedirectToLogin();
+            }
         }
 
         public IActionResult FindUsers()
         {
-            
             var users = _accountProcess.FindUsers();
             return Json(users);
         }

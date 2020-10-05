@@ -49,7 +49,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public BaseViewModel GetModel()
         {
-			return new BaseViewModel { ProfileModel = GetProfile() };
+			ProfileModel profile = GetProfile();
+			BaseViewModel model = new BaseViewModel { ProfileModel = profile, NoToken = profile == null };
+			return model;
         }
 
         public List<User> FindUsers()

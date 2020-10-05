@@ -20,7 +20,7 @@ namespace Commerce.Amazon.Domain.Models.Request.Auth
 		public int IdSociete { get; set; }
 		public string Foto { get; set; }
 		[Required]
-		public Role? Role { get; set; }
+		public EnumRole? Role { get; set; }
 		public string Token { get; set; }
 		[Required]
 		[MaxLength(6)]

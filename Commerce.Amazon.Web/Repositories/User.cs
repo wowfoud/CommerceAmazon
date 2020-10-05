@@ -13,7 +13,7 @@ namespace Commerce.Amazon.Web.Repositories
 		public string Telephon { get; set; }
 		public string Photo { get; set; }
 		public UserState State { get; set; }
-		public Role? Role { get; set; }
+		public EnumRole? Role { get; set; }
 		public int IdSociete { get; set; }
 		public virtual Societe Societe { get; set; }
 		public string RoleName { get { return Role.ToString(); } }
