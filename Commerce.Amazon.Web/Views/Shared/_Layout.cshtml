@@ -55,34 +55,31 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            <h3>Menú general</h3>
+                            <h3>Menu generale</h3>
+
                             <ul class="nav side-menu" id="IdmainMenu">
+                                @if (Model.ProfileModel.IsAdmin)
+                                {
+                                    <li>
+                                        <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="@Url.Action("Index", "User")"> Utilisateurs</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                @if (Model.ProfileModel.IsUser)
+                                {
+                                    <li>
+                                        <a><i class="fa fa-cogs"></i> Posts<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="@Url.Action("NewPost", "Post")"> Nouveau post</a></li>
+                                            <li><a href="@Url.Action("Historique", "Post")"> Historique des posts</a></li>
+                                            <li><a href="@Url.Action("PostsAchats", "Post")"> Posts A Acheter</a></li>
+                                        </ul>
+                                    </li>
+                                }
                                 <li>
-                                    <a><i class="fa fa-bar-chart-o"></i>Cuadro de mando<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-dashboard"></i> Panel de control</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-edit"></i>Nouveau post<span class="fa fa-chevron-down"></span></a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "Operations")"><i class="fa fa-cogs"></i> Operations</a>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-file-text-o"></i>Consultations<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li> @Html.ActionLink("Consultation des posts", "Index", "Consultation")</li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Logout</a>
+                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Fermer</a>
                                 </li>
                             </ul>
                         </div>

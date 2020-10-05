@@ -1,4 +1,5 @@
-﻿using Commerce.Amazon.Web.Managers.Interfaces;
+﻿using Commerce.Amazon.Domain.Entities.CoreBase;
+using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 
 namespace Commerce.Amazon.Engine.Managers
@@ -12,11 +13,12 @@ namespace Commerce.Amazon.Engine.Managers
             _context = context;
         }
 
-        public int SaveUser(User user)
+        public TResult<int> SavePost(Post post)
         {
-            _context.Users.Add(user);
-            int n = _context.SaveChanges();
-            return n;
+            TResult<int> result = new TResult<int>();
+            //_context.Posts.Add(post);
+            //int n = _context.SaveChanges();
+            return result;
         }
 
     }

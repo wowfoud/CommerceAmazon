@@ -146,6 +146,9 @@ commerce.amazon.web.users =
                     },
                     {
                         data: 'UserId',
+                    },
+                    {
+                        data: 'RoleName',
                     }
                 ]
                 $('#tableUsers').DataTable({

@@ -29,12 +29,8 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult FindUsers()
         {
-            var users = new List<User>
-            {
-                new User { Id = 1, Nom = "HADDAD", Prenom = "ABDOU", Email = "abdouhdd@outlook.com", UserId = "Abdou" },
-                new User { Id = 2, Nom = "DRIREZ", Prenom = "OMAR", Email = "omar@outlook.com", UserId = "Omar" }
-            };
-            users = _accountProcess.FindUsers();
+            
+            var users = _accountProcess.FindUsers();
             return Json(users);
         }
 
