@@ -1,10 +1,13 @@
-﻿using Commerce.Amazon.Domain.Entities.CoreBase;
+﻿using AppMailManager.Managers;
+using Commerce.Amazon.Domain.Config;
+using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request.Auth;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Commerce.Amazon.Engine.Managers
 {
@@ -25,27 +28,41 @@ namespace Commerce.Amazon.Engine.Managers
             User user = _context.Users.SingleOrDefault(u => u.Email == authenticationRequest.Email);
             if (user != null)
             {
-                profile = new ProfileModel
+                bool verifyPassword;
+                HashMD5 hashMD5 = new HashMD5();
+                using (MD5 md5Hash = MD5.Create())
                 {
-                    IdUser = user.UserId,
-                    FullName = $"{user.Nom} {user.Prenom}",
-                    Role = user.Role,
-                    ImagePath = user.Photo,
-                    Token = "",
-                    CompanyLogo = user.Societe?.Logo,
-                    IdSociete = user.IdSociete,
-                    CompanyName = user.Societe?.Name,
-                };
-                resultProfile.Status = StatusResponse.OK;
-                resultProfile.Result = profile;
+                    verifyPassword = hashMD5.VerifyMd5Hash(md5Hash, authenticationRequest.Password, user.Password);
+                }
+                if (verifyPassword)
+                {
+                    profile = new ProfileModel
+                    {
+                        IdUser = user.UserId,
+                        FullName = $"{user.Nom} {user.Prenom}",
+                        Role = user.Role,
+                        ImagePath = user.Photo,
+                        Token = "",
+                        CompanyLogo = user.Societe?.Logo,
+                        IdSociete = user.IdSociete,
+                        CompanyName = user.Societe?.Name,
+                    }; 
+                    resultProfile.Status = StatusResponse.OK;
+                    resultProfile.Result = profile;
+                }
+                else
+                {
+                    resultProfile.Status = StatusResponse.KO;
+                    resultProfile.Message = Messages.PasswordInvalid;
+                }
             }
             else
             {
                 resultProfile.Status = StatusResponse.KO;
+                resultProfile.Message = Messages.EmailInvalid;
             }
             return resultProfile;
         }
-
 
         public TResult<int> SaveUser(User user)
         {
@@ -53,12 +70,17 @@ namespace Commerce.Amazon.Engine.Managers
             if (user.Id == 0)
             {
                 int max = 0;
-
                 if (_context.Users.Count() > 0)
                 {
                     max = _context.Users.Max(u => u.Id);
                 }
-                user.Id = max + 1; 
+                user.Id = max + 1;
+                HashMD5 hashMD5 = new HashMD5();
+                using (MD5 md5Hash = MD5.Create())
+                {
+                    string hash = hashMD5.GetMd5Hash(md5Hash, user.Password);
+                    user.Password = hash;
+                }
                 _context.Users.Add(user);
             }
             else
