@@ -15,7 +15,5 @@ namespace Commerce.Amazon.Domain.Config
 
         public static string OrdenNoValid { get { return "No se puede registar orden producción no valid"; } }
         public static string ErrorAuth { get; }= "Une erreur s'est produite lors de l'authentification";
-        public static string EmailInvalid { get; set; } = "Email invalid";
-        public static string PasswordInvalid { get; set; } = "Email ou mot de passe incorrecte";
     }
 }

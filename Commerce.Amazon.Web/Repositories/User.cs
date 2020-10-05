@@ -1,5 +1,4 @@
 ﻿using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
-using System.Collections;
 
 namespace Commerce.Amazon.Web.Repositories
 {
@@ -17,8 +16,5 @@ namespace Commerce.Amazon.Web.Repositories
 		public int IdSociete { get; set; }
 		public virtual Societe Societe { get; set; }
 		public string RoleName { get { return Role.ToString(); } }
-        public string Password { get; set; }
-        public int IdGroup { get; set; }
-		public virtual Group Group { get; set; }
-    }
+	}
 }

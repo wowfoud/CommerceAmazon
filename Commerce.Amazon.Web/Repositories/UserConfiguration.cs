@@ -9,8 +9,8 @@ namespace Commerce.Amazon.Web.Repositories
         {
             builder.HasKey(prop => prop.Id);
             builder.Property(prop => prop.Email).IsRequired();
-            builder.Property(prop => prop.Nom).IsRequired(false);
-            builder.Property(prop => prop.Prenom).IsRequired(false);
+            builder.Property(prop => prop.Nom).IsRequired();
+            builder.Property(prop => prop.Prenom).IsRequired();
             builder.Property(prop => prop.UserId).IsRequired();
             builder.Property(prop => prop.State).IsRequired();
         }
