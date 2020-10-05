@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Commerce.Amazon.Web.ActionsProcess
 {
-    public abstract class BaseActionProcess<TRequest, TModel> where TModel : ModelBase
+    public abstract class BaseActionProcess
     {
         #region Attributes
 
@@ -53,29 +53,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return !_operations.Any() || Task.WaitAll(_operations.ToArray(), milisecondsTimeout);
         }
 
-        public TModel GetModel(TRequest request)
+        protected ProfileModel BuildProfile(ProfileModel profile)
         {
-            TModel model = BuildModel(request);
-            return model;
-        }
-
-        protected abstract TModel BuildModel(TRequest request);
-
-        protected ProfileModel BuildProfile(AuthenticationResponse authenticationResponse)
-        {
-            ProfileModel profile = new ProfileModel
-            {
-                IdUser = authenticationResponse.Account.UserId,
-                FullName = $"{authenticationResponse.Account.Nom} {authenticationResponse.Account.Prenom}",
-                Role = authenticationResponse.Account.Role,
-                ImagePath = authenticationResponse.Account.Photo,
-                Token = authenticationResponse.Token,
-                CompanyLogo = authenticationResponse.Account.Societe?.Logo,
-                IdSociete = authenticationResponse.Account.Societe.Id,
-                CompanyName = authenticationResponse.Account.Societe.Name,
-                //profile.IdAgence = authenticationResponse.Account.Company?.Agence.Id;
-            };
-
+           
             httpContextAccessor.HttpContext.Session.SetString("profile", Newtonsoft.Json.JsonConvert.SerializeObject(profile));
 
             return profile;
@@ -90,7 +70,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
             }
             return profile;
-
         }
 
         #endregion

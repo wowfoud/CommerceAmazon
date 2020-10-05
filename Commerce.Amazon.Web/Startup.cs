@@ -81,7 +81,6 @@ namespace Commerce.Amazon.Web
             //var operationManager = container.Resolve<IOperationManager>();
             //try
             //{
-
             //    operationManager.SaveUser(new User
             //    {
             //        Id = 1,
@@ -130,6 +129,12 @@ namespace Commerce.Amazon.Web
             app.UseSession();
             app.UseCookiePolicy();
 
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Account}/{action=Login}/{id?}");
+            });
         }
     }
 }

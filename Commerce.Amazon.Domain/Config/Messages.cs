@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Commerce.Amazon.Domain.Config
 {
-    public static class Mensajes
+    public static class Messages
     {
         public static string ErrorConnexion { get { return "No se ha podido establecer la conexión con el servidor, Vuelve a intentarlo en unos minutos"; } }
 
@@ -14,5 +14,6 @@ namespace Commerce.Amazon.Domain.Config
         public static string OrdenRegistrarConExito { get { return "orden producción registrado con exito en registros pendientes"; } }
 
         public static string OrdenNoValid { get { return "No se puede registar orden producción no valid"; } }
+        public static string ErrorAuth { get; }= "Une erreur s'est produite lors de l'authentification";
     }
 }

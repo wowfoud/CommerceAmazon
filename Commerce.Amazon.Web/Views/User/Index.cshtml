@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewData["Title"] = "Liste des utilisateurs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Liste des utilisateurs</h2>
+
+<div class="row">
+    <button class="btn btn-purple col-md-2 pull-right" id="idOpenModalUser" data-toggle='modal' data-target='#myModalUsuario'>Ajouter Utilisateur</button>
+</div>
+<div class="nowrap filtrer" id="UsuariossDiv">
+    <table class="table table-bordered table-responsive table-hover" id="tableUsers">
+        <thead id="theaddashboard">
+            <tr class="thdashboard">
+                <th class="alignCenter" data-priority="1">Id</th>
+                <th class="alignCenter" data-priority="3">Nom</th>
+                <th class="alignCenter" data-priority="2">Prenom</th>
+                <th class="alignCenter" data-priority="6">Email</th>
+                <th class="alignCenter" data-priority="7">UserId</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+<partial name="Modals/UserModal" />
+
+<script src="~/js/Internal/users.js"></script>

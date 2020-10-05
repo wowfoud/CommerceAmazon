@@ -4,7 +4,7 @@ namespace Commerce.Amazon.Domain.Models.Response.Auth
 {
 	public class AuthenticationResponse : ModelBase
 	{
-		public User Account { get; set; }
+		public ProfileModel Profile { get; set; }
 
 	}
 }
