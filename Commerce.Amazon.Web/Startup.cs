@@ -68,6 +68,7 @@ namespace Commerce.Amazon.Web
 
 
             builder.RegisterType<OperationManager>().As<IOperationManager>();
+            builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
             builder.RegisterType<CustomSiteMapModule>();
 

@@ -1,0 +1,55 @@
+﻿
+<div id="myModalUsuario" class="modal fade">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="formUsuario" onsubmit="return false;">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group text-center">
+                                <img id="idAvatar" src="/images/default pic.jpg" class="avatar img-circle img-thumbnail">
+                                <h6 for="idAvatar" class="hidden"></h6>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="Nom">Nom :</label>
+                                <div class="control-label ">
+                                    <input id="Nom" name="Nom" type="text" class="form-control input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Prenom">Prenom :</label>
+                                <div class="control-label ">
+                                    <input id="Prenom" name="Prenom" type="text" class="form-control input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="Email">Email :</label>
+                                <div class="control-label ">
+                                    <input id="Email" name="Email" type="text" class="form-control input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="UserId">UserId :</label>
+                                <div class="control-label ">
+                                    <input id="UserId" name="UserId" type="text" class="form-control input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Role :</label>&nbsp;
+                                <input id="user" type="radio" name="roleUser" value="2" checked> <label for="user"> Utilisateur</label>&nbsp;
+                                <input id="Admin" type="radio" name="roleUser" value="1"> <label for="Admin"> Admin</label>&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-danger" id="errorMsgDiv"></div>
+                </form>
+                <div class="modal-footer">
+                    <button class="btn btn-default col-md-2 pull-right myclose" data-dismiss="modal">Fermer</button>
+                    <button class="btn btn-success col-md-4 pull-right" id="idBtnSaveUser">Ajouter Utilisateur</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

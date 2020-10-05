@@ -43,7 +43,7 @@ namespace Commerce.Amazon.Web.Controllers.Base
 		protected RedirectToActionResult RedirectToDashboard()
 		{
 
-			RedirectToActionResult result = RedirectToAction("Index", "Dashboard");
+			RedirectToActionResult result = RedirectToAction("Index", "User");
 			return result;
 		}
 

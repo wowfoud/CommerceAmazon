@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Liste des utilisateurs";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -23,6 +22,10 @@
         <tbody></tbody>
     </table>
 </div>
-<partial name="Modals/UserModal" />
-
-<script src="~/js/Internal/users.js"></script>
+@Html.Partial("Modals/_UserModal")
+@section Scripts {
+    <script src="~/js/Internal/users.js"></script>
+    <script src="~/js/jquery.validate-vsdoc.js"></script>
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+}

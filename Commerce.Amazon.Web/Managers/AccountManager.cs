@@ -21,6 +21,7 @@ namespace Commerce.Amazon.Engine.Managers
         {
             TResult<ProfileModel> resultProfile = new TResult<ProfileModel>();
             ProfileModel profile = null;
+            //var users = FindUsers();
             User user = _context.Users.SingleOrDefault(u => u.Email == authenticationRequest.Email);
             if (user != null)
             {
@@ -32,8 +33,8 @@ namespace Commerce.Amazon.Engine.Managers
                     ImagePath = user.Photo,
                     Token = "",
                     CompanyLogo = user.Societe?.Logo,
-                    IdSociete = user.Societe.Id,
-                    CompanyName = user.Societe.Name,
+                    IdSociete = user.IdSociete,
+                    CompanyName = user.Societe?.Name,
                 };
                 resultProfile.Status = StatusResponse.OK;
                 resultProfile.Result = profile;
@@ -49,7 +50,26 @@ namespace Commerce.Amazon.Engine.Managers
         public TResult<int> SaveUser(User user)
         {
             TResult<int> result = new TResult<int>();
-            _context.Users.Add(user);
+            if (user.Id == 0)
+            {
+                int max = 0;
+
+                if (_context.Users.Count() > 0)
+                {
+                    max = _context.Users.Max(u => u.Id);
+                }
+                user.Id = max + 1; 
+                _context.Users.Add(user);
+            }
+            else
+            {
+                var userStored = _context.Users.SingleOrDefault(u => u.Id == user.Id);
+                userStored.UserId = user.UserId;
+                userStored.Email = user.Email;
+                userStored.Nom = user.Nom;
+                userStored.Prenom = user.Prenom;
+                userStored.Role = user.Role;
+            }
             int n = _context.SaveChanges();
             result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
             return result;

@@ -11,58 +11,62 @@ commerce.amazon.web.users =
 
 
             this.Init = function () {
-                that.FinUsers();
+                that.FindUsers();
             };
 
             //----------------------events------------------------//
 
-            $('#idbtnRegisterUsuario').click(function () {
+            $('#idBtnSaveUser').click(function () {
 
-                that.RegistrarUsuario();
+                that.SaveUser();
 
             });
 
-            $('#idOpenModalUser').click(function () {
-                that.LoadUser({}, false)
-            });
+            //$('#idOpenModalUser').click(function () {
+            //    that.LoadUser({}, false)
+            //});
 
             //----------------------End event------------------------//
 
             //----------------------AJAX------------------------//
 
-            this.RegistrarUsuario = function () {
+            this.SaveUser = function () {
                 $("#errorMsgDiv").html('');
                 var form = document.getElementById("formUsuario");
                 $.validator.unobtrusive.parse(form)
-
                 if ($(form).valid()) {
                     var radios = document.getElementsByName('roleUser');
-                    var checkedBtn;
+                    var idRole;
                     for (var i = 0; i < radios.length; i++) {
                         if (radios[i].checked) {
-                            checkedBtn = parseInt(radios[i].value);
+                            idRole = parseInt(radios[i].value);
                             break;
                         }
                     }
-
-                    var User = {};
-                    User.Role = checkedBtn;
-                    if (!User.Role) {
+                    var idUser = !!that.User ? that.User.Id : 0;
+                    var user = {
+                        Id: idUser,
+                        Nom: $('#Nom').val(),
+                        Prenom: $('#Prenom').val(),
+                        Email: $('#Email').val(),
+                        UserId: $('#UserId').val(),
+                        Role: idRole
+                    };
+                    if (!user.Role) {
                         $("#errorMsgDiv").html('SVP, Selectioner le role');
                         return;
                     }
-                    that.LastAjaxCall = $.ajax({
+                    $.ajax({
                         type: "POST",
-                        url: "/Account/Register",
-                        data: User,
+                        url: "/User/SaveUser",
+                        data: user,
                         success: function (data) {
                             //console.log(data);
                             if (HandleResponse(data)) {
 
                                 if (data && data.Status === 0) {
-                                    //var idUsuario = data.Account.Result.UserId
                                     $('.modal button.myclose').click();
-                                    that.FindUsuarios();
+                                    that.FindUsers();
                                 } else {
                                     $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
                                 }
@@ -73,14 +77,14 @@ commerce.amazon.web.users =
                         error: function (err) {
                             console.log("Error al obtener los valores");
                         }
-                    })
+                    });
                 }
             }
 
-            this.FinUsers = function () {
-                that.LastAjaxCall = $.ajax({
+            this.FindUsers = function () {
+                $.ajax({
                     type: "POST",
-                    url: "/User/FinUsers",
+                    url: "/User/FindUsers",
                     data: {},
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -104,7 +108,7 @@ commerce.amazon.web.users =
                 } else {
                     $('#idbtnRegisterUsuario').removeAttr('disabled');
                 }
-
+                that.User = user;
                 $('#Nom').val(user.Nom);
                 $('#Prenom').val(user.Prenom);
                 $('#Email').val(user.Email);
@@ -118,6 +122,7 @@ commerce.amazon.web.users =
                         radios[i].checked = false;
                     }
                 }
+                //$('#myModalUsuario').modal('show');
             }
 
             this.LoadUsers = function (users) {
@@ -128,11 +133,12 @@ commerce.amazon.web.users =
                         render: function (data, type, row) {
                             return "<a style='cursor: pointer; text-decoration: underline' class='cursorPointer loadUser' data-toggle='modal' data-target='#myModalUsuario' data-id='" + data + "'>" + data + "</a>";
                         }
-
-                    }, {
+                    },
+                    {
                         data: 'Nom',
 
-                    }, {
+                    },
+                    {
                         data: 'Prenom'
                     },
                     {

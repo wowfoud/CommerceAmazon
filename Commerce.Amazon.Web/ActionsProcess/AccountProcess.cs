@@ -47,6 +47,11 @@ namespace Commerce.Amazon.Web.ActionsProcess
 			return authenticationResponse;
 		}
 
+        public BaseViewModel GetModel()
+        {
+			return new BaseViewModel { ProfileModel = GetProfile() };
+        }
+
         public List<User> FindUsers()
         {
 			List<User> users = _accountManager.FindUsers();
