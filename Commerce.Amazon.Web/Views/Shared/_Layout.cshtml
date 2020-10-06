@@ -58,27 +58,18 @@
                             <h3>Menú general</h3>
                             <ul class="nav side-menu" id="IdmainMenu">
                                 <li>
-                                    <a><i class="fa fa-bar-chart-o"></i>Cuadro de mando<span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-pencil"></i>Posts<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index", "Dashboard")"><i class="fa fa-dashboard"></i> Panel de control</a></li>
+                                        <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
+                                        <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
+                                        <li><a href="@Url.Action("PostsAAcheter", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                        <li><a href="/Post/AcheterProduit"><i class="fa fa-trademark"></i> Acheter</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-bar-chart-o"></i> Utilisateurs<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-edit"></i>Nouveau post<span class="fa fa-chevron-down"></span></a>
-                                </li>
-                                <li>
-                                    <a href="@Url.Action("Index", "Operations")"><i class="fa fa-cogs"></i> Operations</a>
-                                </li>
-                                <li>
-                                    <a><i class="fa fa-file-text-o"></i>Consultations<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li> @Html.ActionLink("Consultation des posts", "Index", "Consultation")</li>
                                     </ul>
                                 </li>
                                 <li>

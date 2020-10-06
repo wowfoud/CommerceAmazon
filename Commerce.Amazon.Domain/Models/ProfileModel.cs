@@ -21,5 +21,8 @@ namespace Commerce.Amazon.Domain.Models
 
         public Role? Role { get; set; }
 
+        public bool IsUser { get { return Role == Response.Auth.Enum.Role.User; } }
+        public bool IsAdmin { get { return Role == Response.Auth.Enum.Role.Admin; } }
+
     }
 }

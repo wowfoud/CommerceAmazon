@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewData["Title"] = "AcheterProduit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Acheter Produit</h2>
+
+<div class="filtrer">
+    <form id="formAchat" onsubmit="return false;">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Prenom">Upload Screen Commentaire :</label>
+                    <div class="control-label ">
+                        <input id="screen-comment" name="comment" type="file" class="form-control input-sm" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-success form-control" id="idBtnComment">Envoyer</button>
+            </div>
+        </div>
+    </form>
+</div>
