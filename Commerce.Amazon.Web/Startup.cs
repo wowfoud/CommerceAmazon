@@ -137,7 +137,7 @@ namespace Commerce.Amazon.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Account}/{action=Login}/{id?}");
+                    template: "{controller=Post}/{action=NewPost}/{id?}");
             });
         }
     }

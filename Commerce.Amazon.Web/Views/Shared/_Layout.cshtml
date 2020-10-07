@@ -58,28 +58,23 @@
                             <h3>Menu generale</h3>
 
                             <ul class="nav side-menu" id="IdmainMenu">
-                                @if (Model.ProfileModel?.IsAdmin == true)
-                                {
-                                    <li>
-                                        <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li><a href="@Url.Action("Index", "User")"> Utilisateurs</a></li>
-                                        </ul>
-                                    </li>
-                                }
-                                @if (Model.ProfileModel?.IsUser == true)
-                                {
-                                    <li>
-                                        <a><i class="fa fa-cogs"></i> Posts<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li><a href="@Url.Action("NewPost", "Post")"> Nouveau post</a></li>
-                                            <li><a href="@Url.Action("Historique", "Post")"> Historique des posts</a></li>
-                                            <li><a href="@Url.Action("PostsAchats", "Post")"> Posts A Acheter</a></li>
-                                        </ul>
-                                    </li>
-                                }
                                 <li>
-                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Fermer</a>
+                                    <a><i class="fa fa-pencil"></i>Posts<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
+                                        <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
+                                        <li><a href="@Url.Action("PostsAAcheter", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                        <li><a href="/Post/AcheterProduit"><i class="fa fa-trademark"></i> Acheter</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-bar-chart-o"></i> Utilisateurs<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Logout</a>
                                 </li>
                             </ul>
                         </div>
