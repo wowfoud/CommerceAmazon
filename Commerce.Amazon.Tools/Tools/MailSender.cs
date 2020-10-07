@@ -1,68 +1,128 @@
-﻿using Gesisa.SiiCore.Tools.Contracts;
+﻿using Commerce.Amazon.Tools.Contracts;
+using System;
+using System.IO;
+using System.IO.Compression;
 using System.Net.Mail;
+using System.Net.Mime;
+using System.Text;
 
-namespace Gesisa.SiiCore.Tools.Tools
+namespace Commerce.Amazon.Tools.Tools
 {
 
     public class MailSender : IMailSender
     {
-        private SmtpClient _smtpServer;
-        //SmtpClient SmtpServer = new SmtpClient(Resource.SmtpServer);
-        private readonly MailMessage _vMail = new MailMessage();
-        private readonly MailConfig _mailConfig;
+        private SmtpClient _smtpClient;
+        private MailMessage mailMessage;
+        private MailConfig _mailConfig;
+        //string json = $@"""CredentialsEmail"": ""SMTPSender"",
+        //    ""CredentialsPass"": ""@dm1nsmtp"",
+        //    ""EnableSsl"": ""False"",
+        //    ""IsBodyHtml"": ""True"",
+        //    ""MailAddressFrom"": ""no-reply@gesisa.net"",
+        //    ""Port"": ""25"",
+        //    ""SmtpServer"": ""10.0.10.5"",
+        //    ""UseDefaultCredentials"": ""True""";
+
+        public MailSender()
+        {
+            _mailConfig = new MailConfig
+            {
+                CredentialsEmail = "abdrhmnhdd@gmail.com",
+                CredentialsPass = "But4Paradis",
+                EnableSsl = "True",
+                IsBodyHtml = "True",
+                MailAddressFrom = "abdrhmnhdd@gmail.com",
+                Port = "587",
+                SmtpServer = "smtp.gmail.com",
+                UseDefaultCredentials = "True"
+            };
+            SetConfig(_mailConfig);
+        }
 
         public MailSender(MailConfig mailConfig)
         {
             _mailConfig = mailConfig;
-            SetConfig();
+            SetConfig(mailConfig);
         }
 
-        private void SetConfig()
+        public void SetConfig(MailConfig mailConfig)
         {
-            _smtpServer = new SmtpClient(_mailConfig.SmtpServer);
-            _vMail.IsBodyHtml = _mailConfig.IsBodyHtml;
-            _smtpServer.Port = _mailConfig.Port;
-            _smtpServer.UseDefaultCredentials = _mailConfig.UseDefaultCredentials;
-            _smtpServer.Credentials = new System.Net.NetworkCredential(_mailConfig.UserName, _mailConfig.Password);
-            _smtpServer.EnableSsl = _mailConfig.EnableSsl;
+            _smtpClient = new SmtpClient(mailConfig.SmtpServer)
+            {
+                Port = int.Parse(mailConfig.Port),
+                UseDefaultCredentials = bool.Parse(mailConfig.UseDefaultCredentials),
+                Credentials = new System.Net.NetworkCredential(mailConfig.CredentialsEmail, mailConfig.CredentialsPass),
+                EnableSsl = bool.Parse(mailConfig.EnableSsl)
+            };
         }
 
         public void SendMail(IdentityMessage message)
         {
-            
-            if (!string.IsNullOrEmpty(_mailConfig.Destination))
+            using (mailMessage = new MailMessage())
             {
-                message.Destination = _mailConfig.Destination;
+                mailMessage.From = new MailAddress(_mailConfig.MailAddressFrom);
+                mailMessage.To.Clear();
+                foreach (string email in message.Destination)
+                {
+                    mailMessage.To.Add(email);
+                }
+                mailMessage.Subject = message.Subject;
+                mailMessage.Body = message.Body;
+                mailMessage.IsBodyHtml = bool.Parse(_mailConfig.IsBodyHtml);
+                mailMessage.BodyEncoding = Encoding.UTF8;
+                mailMessage.Attachments.Clear();
+                if (message.Attachments != null)
+                {
+                    SetAttachments(message);
+                }
+                _smtpClient.Send(mailMessage);
+                mailMessage.Attachments.Dispose();
             }
-            _vMail.From = new MailAddress(_mailConfig.SenderMailAddress);
-            _vMail.To.Clear();
-            _vMail.To.Add(string.IsNullOrEmpty(message.Destination) ? _mailConfig.SenderMailAddress : message.Destination);
-            _vMail.Subject = message.Subject;
-            _vMail.Body = message.Body;
-            _smtpServer.Send(_vMail);
         }
 
-        public void SendMail(IdentityMessage message, string mailAddressFrom)
+        private void SetAttachments(IdentityMessage message)
         {
-            if (!string.IsNullOrEmpty(_mailConfig.Destination))
+            long fullsize = 0;
+            long max = 2097152;
+            foreach (string fileNamePath in message.Attachments)
             {
-                message.Destination = _mailConfig.Destination;
+                fullsize += new FileInfo(fileNamePath).Length;
             }
-            _vMail.From = new MailAddress(mailAddressFrom);
 
-            _vMail.To.Add(string.IsNullOrEmpty(message.Destination) ? _mailConfig.SenderMailAddress : message.Destination);
-            _vMail.Subject = message.Subject;
-            _vMail.Body = message.Body;
+            if (fullsize >= max)
+            {
+                string zipname = $"CompressedFiles_{DateTime.Now:ddMMyyyy_hhmmss}.zip";
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (ZipArchive zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Update))
+                    {
+                        foreach (string fileNamePath in message.Attachments)
+                        {
+                            string fileName = Path.GetFileName(fileNamePath);
+                            byte[] report = File.ReadAllBytes(fileNamePath);
 
-            //SmtpServer = new SmtpClient("smtp.live.com");
-            //vMail.From = new MailAddress("omar.hassani@hotmail.com");
-            //SmtpServer.Port = 587;
-            //SmtpServer.UseDefaultCredentials = false;
-            //SmtpServer.Credentials = new System.Net.NetworkCredential("omar.hassani@hotmail.com", "Verano14..");
-            //SmtpServer.EnableSsl = false;
+                            ZipArchiveEntry zipArchiveEntry = zipArchive.CreateEntry(fileName, CompressionLevel.Optimal);
+                            using (StreamWriter streamWriter = new StreamWriter(zipArchiveEntry.Open()))
+                            {
+                                streamWriter.Write(Encoding.Default.GetString(report));
+                            }
 
-            _smtpServer.Send(_vMail);
+                        }
+                    }
+                    MemoryStream attachmentStream = new MemoryStream(memoryStream.ToArray());
+
+                    Attachment attachment = new Attachment(attachmentStream, zipname, MediaTypeNames.Application.Zip);
+                    mailMessage.Attachments.Add(attachment);
+                }
+            }
+            else
+            {
+                foreach (var fileNamePath in message.Attachments)
+                {
+                    Attachment attachment = new Attachment(fileNamePath);
+                    mailMessage.Attachments.Add(attachment);
+                }
+            }
         }
-
     }
 }

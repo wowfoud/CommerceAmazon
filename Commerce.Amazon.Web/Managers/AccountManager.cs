@@ -2,7 +2,10 @@
 using Commerce.Amazon.Domain.Config;
 using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Models;
+using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
+using Commerce.Amazon.Tools.Contracts;
+using Commerce.Amazon.Tools.Tools;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using System.Collections.Generic;
@@ -13,11 +16,14 @@ namespace Commerce.Amazon.Engine.Managers
 {
     public class AccountManager : IAccountManager
     {
+        private readonly IMailSender _mailSender;
+
         private MyContext _context { get; }
 
-        public AccountManager(MyContext context)
+        public AccountManager(MyContext context, IMailSender mailSender)
         {
             _context = context;
+            _mailSender = mailSender;
         }
 
         public TResult<ProfileModel> Authenticate(AuthenticationRequest authenticationRequest)
@@ -67,14 +73,17 @@ namespace Commerce.Amazon.Engine.Managers
         public TResult<int> SaveUser(User user)
         {
             TResult<int> result = new TResult<int>();
+            bool isFirst = false;
             if (user.Id == 0)
             {
+                isFirst = true;
                 int max = 0;
                 if (_context.Users.Count() > 0)
                 {
                     max = _context.Users.Max(u => u.Id);
                 }
                 user.Id = max + 1;
+                user.Password = "123456";
                 HashMD5 hashMD5 = new HashMD5();
                 using (MD5 md5Hash = MD5.Create())
                 {
@@ -82,6 +91,16 @@ namespace Commerce.Amazon.Engine.Managers
                     user.Password = hash;
                 }
                 _context.Users.Add(user);
+                int n = _context.SaveChanges();
+                if (n > 0 && isFirst)
+                {
+                    _mailSender.SendMail(new IdentityMessage
+                    {
+                        Subject = "New User",
+                        Body = $"Hi, {user.Nom} {user.Prenom} <br> Bienvenue a votre application",
+                        Destination = new string[] { user.Email }
+                    });
+                }
             }
             else
             {
@@ -91,16 +110,22 @@ namespace Commerce.Amazon.Engine.Managers
                 userStored.Nom = user.Nom;
                 userStored.Prenom = user.Prenom;
                 userStored.Role = user.Role;
+                int n = _context.SaveChanges();
+                result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
             }
-            int n = _context.SaveChanges();
-            result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+            
             return result;
         }
 
-        public List<User> FindUsers()
+        public List<User> FindUsers(FilterUser filterUser)
         {
             List<User> users = _context.Users.ToList();
             return users;
+        }
+
+        public List<Group> FindGroups(FilterGroup filterGroup)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

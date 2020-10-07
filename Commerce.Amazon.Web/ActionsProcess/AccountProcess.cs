@@ -1,6 +1,7 @@
 ﻿using Commerce.Amazon.Domain.Config;
 using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Models;
+using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Web.Managers.Interfaces;
@@ -47,6 +48,12 @@ namespace Commerce.Amazon.Web.ActionsProcess
 			return authenticationResponse;
 		}
 
+        public List<Group> FindGroups(FilterGroup filterGroup)
+        {
+			List<Group> groups = _accountManager.FindGroups(filterGroup);
+			return groups;
+		}
+
         public BaseViewModel GetModel()
         {
 			ProfileModel profile = GetProfile();
@@ -54,9 +61,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
 			return model;
         }
 
-        public List<User> FindUsers()
+        public List<User> FindUsers(FilterUser filterUser)
         {
-			List<User> users = _accountManager.FindUsers();
+			List<User> users = _accountManager.FindUsers(filterUser);
 			return users;
 		}
 

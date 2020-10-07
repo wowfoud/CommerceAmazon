@@ -1,12 +1,12 @@
-﻿using Gesisa.SiiCore.Tools.Contracts;
+﻿using Commerce.Amazon.Tools.Contracts;
 using NLog;
 using System;
 
-namespace Gesisa.SiiCore.Tools.NLog
+namespace Commerce.Amazon.Tools.NLog
 {
     public class LoggerManager : ILoggerManager
     {
-        private static ILogger logger = LogManager.GetLogger("SiiCoreLogger");
+        private static ILogger logger = LogManager.GetLogger("CommerceLogger");
 
         public void LogTrace(string message, Exception exception = null, string UserId = null)
         {
@@ -18,7 +18,7 @@ namespace Gesisa.SiiCore.Tools.NLog
 
         public void LogDebug(string message, Exception exception = null, string UserId = null)
         {
-            
+
             using (MappedDiagnosticsLogicalContext.SetScoped(nameof(UserId), UserId))
             {
                 logger.Debug(exception, message);
@@ -27,7 +27,7 @@ namespace Gesisa.SiiCore.Tools.NLog
 
         public void LogInfo(string message, Exception exception = null, string UserId = null)
         {
-            
+
             using (MappedDiagnosticsLogicalContext.SetScoped(nameof(UserId), UserId))
             {
                 logger.Info(exception, message);
@@ -36,7 +36,7 @@ namespace Gesisa.SiiCore.Tools.NLog
 
         public void LogWarn(string message, Exception exception = null, string UserId = null)
         {
-            
+
             using (MappedDiagnosticsLogicalContext.SetScoped(nameof(UserId), UserId))
             {
                 logger.Warn(exception, message);
@@ -46,7 +46,7 @@ namespace Gesisa.SiiCore.Tools.NLog
 
         public void LogError(string message, Exception exception = null, string UserId = null)
         {
-            
+
             using (MappedDiagnosticsLogicalContext.SetScoped(nameof(UserId), UserId))
             {
                 logger.Error(exception, message);
@@ -55,7 +55,7 @@ namespace Gesisa.SiiCore.Tools.NLog
 
         public void LogFatal(string message, Exception exception = null, string UserId = null)
         {
-            
+
             using (MappedDiagnosticsLogicalContext.SetScoped(nameof(UserId), UserId))
             {
                 logger.Fatal(exception, message);

@@ -1,6 +1,6 @@
 ﻿namespace Commerce.Amazon.Domain.Entities.Enum
 {
-    public enum EnumStatePost
+    public enum EnumStateGroup
     {
         Active = 1, Desactive = 2
     }

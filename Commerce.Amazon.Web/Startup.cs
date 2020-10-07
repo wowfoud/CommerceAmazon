@@ -16,6 +16,8 @@ using Microsoft.EntityFrameworkCore;
 using Commerce.Amazon.Engine.Managers;
 using Commerce.Amazon.Web.Repositories;
 using Commerce.Amazon.Web.Managers.Interfaces;
+using Commerce.Amazon.Tools.Tools;
+using Commerce.Amazon.Tools.Contracts;
 
 namespace Commerce.Amazon.Web
 {
@@ -69,6 +71,7 @@ namespace Commerce.Amazon.Web
 
             builder.RegisterType<OperationManager>().As<IOperationManager>();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
+            builder.RegisterType<MailSender>().As<IMailSender>();
             builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
             builder.RegisterType<CustomSiteMapModule>();
 

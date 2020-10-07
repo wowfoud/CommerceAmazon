@@ -1,20 +1,18 @@
-﻿namespace Gesisa.SiiCore.Tools.Tools
+﻿namespace Commerce.Amazon.Tools.Tools
 {
     public class MailConfig
-	{
-		public MailConfig()
-		{
-		}
-		public string SmtpServer { get; set; }
-		public bool IsBodyHtml { get; set; }
-		public int Port { get; set; }
-		public bool UseDefaultCredentials { get; set; }
-		public string Password { get; set; }
-		public string UserName { get; set; }
-		public bool EnableSsl { get; set; }
-		public string SenderMailAddress { get; set; }
-		public string MailAddressTo { get; set; }
-		public string Destination { get; set; }
+    {
+        public MailConfig()
+        {
+        }
+        public string SmtpServer { get; set; }
+        public string IsBodyHtml { get; set; }
+        public string Port { get; set; }
+        public string UseDefaultCredentials { get; set; }
+        public string CredentialsPass { get; set; }
+        public string CredentialsEmail { get; set; }
+        public string EnableSsl { get; set; }
+        public string MailAddressFrom { get; set; }
 
-	}
+    }
 }

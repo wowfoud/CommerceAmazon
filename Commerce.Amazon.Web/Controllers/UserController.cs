@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Commerce.Amazon.Domain.Models;
+using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Web.Controllers.Base;
@@ -33,9 +34,15 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult FindUsers()
+        public IActionResult FindGroups(FilterGroup filterGroup)
         {
-            var users = _accountProcess.FindUsers();
+            var groups = _accountProcess.FindGroups(filterGroup);
+            return Json(groups);
+        }
+        
+        public IActionResult FindUsers(FilterUser filterUser)
+        {
+            var users = _accountProcess.FindUsers(filterUser);
             return Json(users);
         }
 

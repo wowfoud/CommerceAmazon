@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Gesisa.SiiCore.Tools.Tools
+namespace Commerce.Amazon.Tools.Tools
 {
     public static class FilesHelper
     {

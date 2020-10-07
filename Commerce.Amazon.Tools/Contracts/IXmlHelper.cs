@@ -1,8 +1,8 @@
-﻿namespace Gesisa.SiiCore.Tools.Contracts
+﻿namespace Commerce.Amazon.Tools.Contracts
 {
-	public interface IXmlHelper
-	{
-		T Deserialize<T>(string pXmlFilename);
+    public interface IXmlHelper
+    {
+        T Deserialize<T>(string pXmlFilename);
 
-	}
+    }
 }

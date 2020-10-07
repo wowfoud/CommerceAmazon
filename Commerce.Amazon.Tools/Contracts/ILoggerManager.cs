@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gesisa.SiiCore.Tools.Contracts
+namespace Commerce.Amazon.Tools.Contracts
 {
-	public interface ILoggerManager
+    public interface ILoggerManager
     {
 
         void LogTrace(string message, Exception exception = null, string UserId = null);

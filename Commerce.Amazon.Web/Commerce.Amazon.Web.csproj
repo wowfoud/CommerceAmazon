@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commerce.Amazon.Domain\Commerce.Amazon.Domain.csproj" />
+    <ProjectReference Include="..\Commerce.Amazon.Tools\Commerce.Amazon.Tools.csproj" />
   </ItemGroup>
 
 

@@ -1,13 +1,12 @@
-﻿using Gesisa.SiiCore.Tools.Tools;
+﻿using Commerce.Amazon.Tools.Tools;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Gesisa.SiiCore.Tools.Contracts
+namespace Commerce.Amazon.Tools.Contracts
 {
     public interface IMailSender
     {
         void SendMail(IdentityMessage message);
-        void SendMail(IdentityMessage message, string mailAddressFrom);
     }
 }

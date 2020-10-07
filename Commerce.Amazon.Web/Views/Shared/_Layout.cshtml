@@ -58,7 +58,7 @@
                             <h3>Menu generale</h3>
 
                             <ul class="nav side-menu" id="IdmainMenu">
-                                @if (Model.ProfileModel.IsAdmin)
+                                @if (Model.ProfileModel?.IsAdmin == true)
                                 {
                                     <li>
                                         <a><i class="fa fa-bar-chart-o"></i>Panel de control<span class="fa fa-chevron-down"></span></a>
@@ -67,7 +67,7 @@
                                         </ul>
                                     </li>
                                 }
-                                @if (Model.ProfileModel.IsUser)
+                                @if (Model.ProfileModel?.IsUser == true)
                                 {
                                     <li>
                                         <a><i class="fa fa-cogs"></i> Posts<span class="fa fa-chevron-down"></span></a>
@@ -110,7 +110,7 @@
                                         </li>
                                         <li>
                                         <li><a href="" class="disabled">Ayuda</a></li>
-                                        @if (ViewBag.ProfileModel?.Role == Commerce.Amazon.Domain.Models.Response.Auth.Enum.Role.Admin)
+                                        @if (Model.ProfileModel?.IsAdmin == true)
                                         {
                                             <li><a href="/Profile/Index" class="disabled"><i class="fa fa-gear pull-right"></i> profile</a></li>
                                         }
