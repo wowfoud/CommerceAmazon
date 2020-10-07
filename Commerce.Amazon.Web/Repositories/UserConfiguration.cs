@@ -13,6 +13,11 @@ namespace Commerce.Amazon.Web.Repositories
             builder.Property(prop => prop.Prenom).IsRequired(false);
             builder.Property(prop => prop.UserId).IsRequired();
             builder.Property(prop => prop.State).IsRequired();
+            builder.Property(prop => prop.IdGroup).IsRequired(false);
+
+            builder.HasOne(u => u.Group)
+                .WithMany(g => g.Users)
+                .HasForeignKey(u => u.IdGroup);
         }
     }
 

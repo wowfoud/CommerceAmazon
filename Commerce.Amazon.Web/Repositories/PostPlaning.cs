@@ -13,6 +13,7 @@ namespace Commerce.Amazon.Web.Repositories
         public DateTime? DateComment { get; set; }
         public EnumStatePlaning State { get; set; }
         public virtual Post Post { get; set; }
+        public virtual User User { get; set; }
     }
 
 }

@@ -17,6 +17,8 @@ namespace Commerce.Amazon.Web.Repositories
         public DateTime? DateCreate { get; set; }
         public EnumStatePost State { get; set; }
         public virtual User User { get; set; }
+        public virtual IEnumerable<PostPlaning> Planings { get; set; }
+
     }
 
 }
