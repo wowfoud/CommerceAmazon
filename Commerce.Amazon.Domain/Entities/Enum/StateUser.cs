@@ -6,6 +6,6 @@ namespace Commerce.Amazon.Domain.Entities.Enum
 {
     public enum EnumStateUser
     {
-        Active, Desactive
+        Active = 1, Desactive = 2
     }
 }

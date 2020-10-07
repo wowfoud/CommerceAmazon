@@ -51,6 +51,13 @@ namespace Commerce.Amazon.Web.Controllers
             var result = _accountProcess.SaveUser(user);
             return Json(result);
         }
+
+        public IActionResult SaveGroup(Group group)
+        {
+            var result = _accountProcess.SaveGroup(group);
+            return Json(result);
+        }
+        
     }
 
 }

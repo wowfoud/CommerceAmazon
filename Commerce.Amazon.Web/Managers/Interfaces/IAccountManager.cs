@@ -13,5 +13,6 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         TResult<int> SaveUser(User user);
         List<User> FindUsers(FilterUser filterUser);
         List<Group> FindGroups(FilterGroup filterGroup);
+        TResult<int> SaveGroup(Group group);
     }
 }

@@ -10,6 +10,7 @@ namespace Commerce.Amazon.Web.Repositories
         public MyContext(DbContextOptions<MyContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
         public DbSet<Societe> Societes { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostPlaning> PostPlanings { get; set; }

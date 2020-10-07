@@ -10,5 +10,12 @@ namespace Commerce.Amazon.Web.Repositories
             builder.HasKey(prop => new { prop.IdPost, prop.IdUser });
         }
     }
+    public class GroupPlaningConfiguration : IEntityTypeConfiguration<Group>
+    {
+        public void Configure(EntityTypeBuilder<Group> builder)
+        {
+            builder.HasKey(prop => prop.Id);
+        }
+    }
 
 }

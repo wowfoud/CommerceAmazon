@@ -61,6 +61,13 @@ namespace Commerce.Amazon.Web.ActionsProcess
 			return model;
         }
 
+        public TResult<int> SaveGroup(Group group)
+        {
+			var result = _accountManager.SaveGroup(group);
+			return result;
+
+		}
+
         public List<User> FindUsers(FilterUser filterUser)
         {
 			List<User> users = _accountManager.FindUsers(filterUser);

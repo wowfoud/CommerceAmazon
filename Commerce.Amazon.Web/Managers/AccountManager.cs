@@ -125,7 +125,24 @@ namespace Commerce.Amazon.Engine.Managers
 
         public List<Group> FindGroups(FilterGroup filterGroup)
         {
-            throw new System.NotImplementedException();
+            List<Group> users = null;
+            if (filterGroup.StateGroup.HasValue)
+            {
+                users = _context.Groups.Where(g => g.State == filterGroup.StateGroup).ToList();
+            }
+            else
+            {
+                users = _context.Groups.ToList();
+            }
+            return users;
+        }
+
+        public TResult<int> SaveGroup(Group group)
+        {
+            TResult<int> result = new TResult<int>();
+            _context.Groups.Add(group);
+            int n = _context.SaveChanges();
+            return result;
         }
     }
 }
