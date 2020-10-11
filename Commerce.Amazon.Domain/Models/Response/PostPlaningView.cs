@@ -1,9 +1,9 @@
 ﻿using Commerce.Amazon.Domain.Entities.Enum;
 using System;
 
-namespace Commerce.Amazon.Web.Repositories
+namespace Commerce.Amazon.Domain.Models.Response
 {
-    public class PostPlaning
+    public class PostPlaningView
     {
         public int IdPost { get; set; }
         public int IdUser { get; set; }
@@ -11,10 +11,8 @@ namespace Commerce.Amazon.Web.Repositories
         public DateTime? DateNotified { get; set; }
         public DateTime? DateLimite { get; set; }
         public DateTime? DateComment { get; set; }
-        public string PathScreenComment { get; set; }
         public EnumStatePlaning State { get; set; }
-        public virtual Post Post { get; set; }
-        public virtual User User { get; set; }
+        public string Nom { get; set; }
+        public string Prenom { get; set; }
     }
-
 }

@@ -16,9 +16,9 @@ namespace Commerce.Amazon.Web.Controllers
     {
         private readonly AccountProcess _accountProcess;
 
-        public UserController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager)
+        public UserController(AccountProcess accountProcess)
         {
-            _accountProcess = new AccountProcess(httpContextAccessor, accountManager);
+            _accountProcess = accountProcess;
         }
 
         public IActionResult Index()

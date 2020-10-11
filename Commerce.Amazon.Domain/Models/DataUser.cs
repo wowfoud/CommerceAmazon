@@ -7,5 +7,6 @@ namespace Commerce.Amazon.Domain.Models
     public class DataUser
     {
         public string UserId { get; set; }
+        public int IdUser { get; set; }
     }
 }

@@ -14,9 +14,9 @@ namespace Commerce.Amazon.Web.Controllers
     {
         private readonly AccountProcess authenticationProcess;
 
-        public AccountController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager)
+        public AccountController(AccountProcess accountProcess)
         {
-            authenticationProcess = new AccountProcess(httpContextAccessor, accountManager);
+            authenticationProcess = accountProcess;
         }
 
         // GET: Account

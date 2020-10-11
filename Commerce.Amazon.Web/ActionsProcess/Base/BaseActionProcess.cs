@@ -1,4 +1,5 @@
-﻿using Commerce.Amazon.Domain.Models;
+﻿using Commerce.Amazon.Domain.Helpers;
+using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Domain.Models.Response.Base;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         #region Attributes
 
         private readonly ConcurrentBag<Task> _operations;
+        private readonly TokenManager _tokenManager;
         private readonly IHttpContextAccessor httpContextAccessor;
         #endregion
 
@@ -26,16 +28,19 @@ namespace Commerce.Amazon.Web.ActionsProcess
             _operations = new ConcurrentBag<Task>();
         }
 
-        public BaseActionProcess(IHttpContextAccessor httpContextAccessor)
+        public BaseActionProcess(IHttpContextAccessor httpContextAccessor, TokenManager tokenManager)
         {
             _operations = new ConcurrentBag<Task>();
+            _tokenManager = tokenManager;
             this.httpContextAccessor = httpContextAccessor;
+            GetProfile();
         }
 
         #endregion
         protected ISession Session => httpContextAccessor.HttpContext.Session;
-       
+
         #region Properties
+        protected DataUser dataUser;
 
         #endregion
 
@@ -68,6 +73,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
             if (!string.IsNullOrEmpty(profileSerialise))
             {
                 profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
+                dataUser = _tokenManager.DecodeToken(profile.Token);
             }
             return profile;
         }

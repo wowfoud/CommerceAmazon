@@ -1,5 +1,6 @@
 ﻿using Commerce.Amazon.Domain.Config;
 using Commerce.Amazon.Domain.Entities.CoreBase;
+using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
@@ -17,7 +18,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
 	{
         private readonly IAccountManager _accountManager;
 
-        public AccountProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager) : base(httpContextAccessor)
+        public AccountProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
 		{
             _accountManager = accountManager;
         }
@@ -31,7 +32,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
 				authenticationResponse = new BaseViewModel
 				{
 					Status = StatusResponse.KO,
-					Message = string.IsNullOrEmpty(result?.Message) ? Messages.ErrorAuth : result.Message
+					Message = string.IsNullOrEmpty(result?.Message) ? GlobalConfiguration.Messages.ErrorAuth : result.Message
 				};
 			}
 			else

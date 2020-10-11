@@ -7,5 +7,7 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
 {
     public interface ITestProcess
     {
+        void AddGroups();
+        void AddUsers();
     }
 }
