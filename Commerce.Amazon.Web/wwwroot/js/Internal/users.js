@@ -99,7 +99,7 @@ commerce.amazon.web.users =
                 })
             }
             
-            this.FindUsers = function (stateGroup, handleLoadGroups) {
+            this.FindGroups = function (stateGroup, handleLoadGroups) {
                 var filter = {
                     StateGroup: stateGroup
                 };

@@ -11,103 +11,116 @@ using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Commerce.Amazon.Web.ActionsProcess
 {
     public class AccountProcess : BaseActionProcess
-	{
+    {
         private readonly IAccountManager _accountManager;
 
         public AccountProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
-		{
+        {
             _accountManager = accountManager;
         }
 
-		public BaseViewModel Authenticate(AuthenticationRequest authenticationRequest)
-		{
-			TResult<ProfileModel> result = _accountManager.Authenticate(authenticationRequest);
-			BaseViewModel authenticationResponse;
-			if (result == null || result.Result == null || result.Status == StatusResponse.KO)
-			{
-				authenticationResponse = new BaseViewModel
-				{
-					Status = StatusResponse.KO,
-					Message = string.IsNullOrEmpty(result?.Message) ? GlobalConfiguration.Messages.ErrorAuth : result.Message
-				};
-			}
-			else
-			{
-				ProfileModel profile = BuildProfile(result.Result);
+        public BaseViewModel Authenticate(AuthenticationRequest authenticationRequest)
+        {
+            TResult<ProfileModel> result = _accountManager.Authenticate(authenticationRequest);
+            BaseViewModel authenticationResponse;
+            if (result == null || result.Result == null || result.Status == StatusResponse.KO)
+            {
+                authenticationResponse = new BaseViewModel
+                {
+                    Status = StatusResponse.KO,
+                    Message = string.IsNullOrEmpty(result?.Message) ? GlobalConfiguration.Messages.ErrorAuth : result.Message
+                };
+            }
+            else
+            {
+                ProfileModel profile = SetProfile(result.Result);
 
-				authenticationResponse = new BaseViewModel
-				{
-					Status = StatusResponse.OK,
-					Message = result?.Message,
-					ProfileModel = profile
-				};
-			}
-			return authenticationResponse;
-		}
+                authenticationResponse = new BaseViewModel
+                {
+                    Status = StatusResponse.OK,
+                    Message = result?.Message,
+                    ProfileModel = profile
+                };
+            }
+            return authenticationResponse;
+        }
 
         public List<Group> FindGroups(FilterGroup filterGroup)
         {
-			List<Group> groups = _accountManager.FindGroups(filterGroup);
-			return groups;
-		}
+            List<Group> groups = _accountManager.FindGroups(filterGroup);
+            return groups;
+        }
 
         public BaseViewModel GetModel()
         {
-			ProfileModel profile = GetProfile();
-			BaseViewModel model = new BaseViewModel { ProfileModel = profile, NoToken = profile == null };
-			return model;
+            ProfileModel profile = GetProfile();
+            BaseViewModel model = new BaseViewModel { ProfileModel = profile, NoToken = profile == null };
+            return model;
         }
 
         public TResult<int> SaveGroup(Group group)
         {
-			var result = _accountManager.SaveGroup(group);
-			return result;
+            var result = _accountManager.SaveGroup(group);
+            return result;
 
-		}
+        }
 
-        public List<User> FindUsers(FilterUser filterUser)
+        public List<UserSociete> FindUsers(FilterUser filterUser)
         {
-			List<User> users = _accountManager.FindUsers(filterUser);
-			return users;
-		}
+            List<UserSociete> users = _accountManager.FindUsers(filterUser).Select(u => new UserSociete
+            {
+                Id = u.Id,
+                Email = u.Email,
+                UserId = u.UserId,
+                Nom = u.Nom,
+                Prenom = u.Prenom,
+                Role = u.Role,
+                Photo = u.Photo,
+                IdSociete = u.IdSociete,
+                State = u.State,
+                Telephon = u.Telephon
+            }).ToList();
+            return users;
+        }
 
-		public TResult<int> SaveUser(User user)
+        public TResult<int> SaveUser(User user)
         {
-			var result = _accountManager.SaveUser(user);
-			return result;
+            var result = _accountManager.SaveUser(user);
+            return result;
         }
 
         public bool IsUserConnected()
         {
-			bool v = GetProfile() != null;
-			return v;
-		}
+            bool v = GetProfile() != null;
+            return v;
+        }
 
         internal void LogOut()
         {
-			Session.Clear();
+            Session.Clear();
         }
 
         public CheckLinkResetCodeResponse CheckLinkResetCode(CheckLinkResetCodeRequest checkLinkResetCodeRequest)
-		{
-			throw new NotImplementedException();
-		}
+        {
+            throw new NotImplementedException();
+        }
 
-		public SendLinkEmailResponse SendLinkEmail(SendLinkEmailRequest sendLinkEmailRequest)
-		{
-			throw new NotImplementedException();
-		}
+        public SendLinkEmailResponse SendLinkEmail(SendLinkEmailRequest sendLinkEmailRequest)
+        {
+            throw new NotImplementedException();
+        }
 
-		public ResetPasswordResponse ResetPassword(ResetPasswordRequest request)
-		{
-			ResetPasswordResponse response = null;// silicieClient.ResetPassword(request).GetAwaiter().GetResult();
-			return response;
-		}
+        public ResetPasswordResponse ResetPassword(ResetPasswordRequest request)
+        {
+            ResetPasswordResponse response = null;// silicieClient.ResetPassword(request).GetAwaiter().GetResult();
+            return response;
+        }
 
-	}
+    }
 
 }

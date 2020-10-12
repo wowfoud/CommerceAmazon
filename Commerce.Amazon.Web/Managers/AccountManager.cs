@@ -176,8 +176,8 @@ namespace Commerce.Amazon.Engine.Managers
         public TResult<int> SaveGroup(Group group)
         {
             
-            _context.Groups.RemoveRange(_context.Groups.Where(g=>g.Id != 1).ToList());
-            _context.SaveChanges();
+            //_context.Groups.RemoveRange(_context.Groups.Where(g=>g.Id != 1).ToList());
+            //_context.SaveChanges();
             TResult<int> result = new TResult<int>();
             try
             {

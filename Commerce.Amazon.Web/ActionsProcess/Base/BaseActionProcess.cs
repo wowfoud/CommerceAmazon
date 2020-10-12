@@ -58,11 +58,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return !_operations.Any() || Task.WaitAll(_operations.ToArray(), milisecondsTimeout);
         }
 
-        protected ProfileModel BuildProfile(ProfileModel profile)
+        protected ProfileModel SetProfile(ProfileModel profile)
         {
-           
             httpContextAccessor.HttpContext.Session.SetString("profile", Newtonsoft.Json.JsonConvert.SerializeObject(profile));
-
             return profile;
         }
 

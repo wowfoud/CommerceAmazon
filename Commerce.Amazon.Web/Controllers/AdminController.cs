@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Commerce.Amazon.Domain.Entities.CoreBase;
+﻿using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Web.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Net.Http.Headers;
 
 namespace Commerce.Amazon.Web.Controllers
 {
@@ -23,7 +22,7 @@ namespace Commerce.Amazon.Web.Controllers
         {
             return View();
         }
-        
+
         public IActionResult PostProduit(Post post)
         {
             TResult<int> result = _operacionProcess.PostProduit(post);
@@ -77,5 +76,23 @@ namespace Commerce.Amazon.Web.Controllers
             TResult<int> result = _operacionProcess.CommentPost(commentRequest);
             return Json(result);
         }
+
+        [HttpPost]
+        public IActionResult UploadScreen(List<IFormFile> listFiles)
+        {
+            IFormFile formFile = listFiles[0];
+            string filename = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
+            string uploadTo = _operacionProcess.GetPathUploadScreen(filename);
+            if (!string.IsNullOrEmpty(uploadTo))
+            {
+                using (System.IO.FileStream output = System.IO.File.Create(uploadTo))
+                {
+                    formFile.CopyTo(output);
+                    uploadTo = System.IO.Path.GetFileName(uploadTo);
+                }
+            }
+            return Json(uploadTo);
+        }
+
     }
 }

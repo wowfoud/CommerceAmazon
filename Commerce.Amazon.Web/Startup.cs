@@ -91,25 +91,22 @@ namespace Commerce.Amazon.Web
 
             var container = builder.Build();
 
-
-
-            var testProcess = container.Resolve<ITestProcess>();
-            var accountManager = container.Resolve<IAccountManager>();
-            try
-            {
-                accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
-                {
-                     Email = "abderrahmanhdd@gmail.com",
-                     Password = "123456"
-                });
-                testProcess.AddGroups();
-                testProcess.AddUsers();
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            //var testProcess = container.Resolve<ITestProcess>();
+            //var accountManager = container.Resolve<IAccountManager>();
+            //try
+            //{
+            //    accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
+            //    {
+            //         Email = "abderrahmanhdd@gmail.com",
+            //         Password = "123456"
+            //    });
+            //    testProcess.AddGroups();
+            //    testProcess.AddUsers();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex);
+            //}
             return container.Resolve<IServiceProvider>();
 
         }

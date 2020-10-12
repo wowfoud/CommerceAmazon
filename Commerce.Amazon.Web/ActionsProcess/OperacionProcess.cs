@@ -1,6 +1,5 @@
 ﻿using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Helpers;
-using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response;
 using Commerce.Amazon.Web.Managers.Interfaces;
@@ -74,6 +73,12 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             TResult<int> result = _operationManager.CommentPost(commentRequest, dataUser);
             return result;
+        }
+
+        public string GetPathUploadScreen(string filename)
+        {
+            string uploadTo = HelperFile.GenerateFullPathScreen(filename, dataUser.UserId);
+            return uploadTo;
         }
     }
 
