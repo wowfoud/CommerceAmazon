@@ -37,8 +37,8 @@
         <div class="main_container">
             <div class="col-md-3 left_col menu_fixed">
                 <div class="left_col scroll-view">
-                    <div class="navbar nav_title" style="border: 0">
-                        <a href="/Dashboard"><img class="logoleft" src="~/images/PuenteSilicie.png" /></a>
+                    <div class="navbar nav_title" style="border:0">
+                        <a href="/Dashboard"><img style="width:100%"  class="center" src="~/images/Amazon-1.png" /></a>
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
@@ -62,18 +62,38 @@
                                     <ul class="nav child_menu">
                                         <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
                                         <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
-                                        <li><a href="@Url.Action("PostsAAcheter", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
-                                        <li><a href="/Post/AcheterProduit"><i class="fa fa-trademark"></i> Acheter</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a><i class="fa fa-bar-chart-o"></i> Utilisateurs<span class="fa fa-chevron-down"></span></a>
+                                    <a><i class="fa fa-desktop"></i>Acheter<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
-                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
+                                        <li><a href="@Url.Action("PostsAAcheter", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                        <li><a href="/Post/AcheterProduit"><i class="fa fa-file-image-o"></i> Acheter Image</a></li>
+                                    </ul>
+                                </li>
+                                <!-- /menu Admin quick info -->
+                                <li>
+                                    <a href="@Url.Action("accueil", "User")"><i class="fa fa-home"></i> Accueil </a>
+                                    
+                                </li>
+                                <li>
+                                    <a><i class="fa fa-user-secret"></i> Utilisateurs<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-plus"></i> User </a></li>
+                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-user"></i> User Liste </a></li>
+                                        <li><a href="@Url.Action("Index", "User")"><i class="fa fa-group"></i> Les Groupe </a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Logout</a>
+                                    <a><i class="fa fa-shopping-cart"></i> Les Poste <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="@Url.Action("PosteProduit", "User")"><i class="fa fa-dropbox"></i> Poste De Produit </a></li>
+                                        <li><a href="@Url.Action("Envoie", "User")"><i class="fa fa-send"></i> Envoie </a></li>
+                                        <li><a href="@Url.Action("Valide", "User")"><i class="fa fa-folder-open"></i> Valide </a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="/Account/Logout"><i class="fa fa-power-off"></i> Se Déconnecter</a>
                                 </li>
                             </ul>
                         </div>
@@ -103,14 +123,14 @@
                                             </a>
                                         </li>
                                         <li>
-                                        <li><a href="" class="disabled">Ayuda</a></li>
-                                        @if (ViewBag.ProfileModel?.Role == Commerce.Amazon.Domain.Models.Response.Auth.Enum.Role.Admin)
+                                        <li><a href="" class="disabled">Aidez-moi</a></li>
+                                        @if (Model.ProfileModel?.IsAdmin == true)
                                         {
-                                            <li><a href="/Profile/Index" class="disabled"><i class="fa fa-gear pull-right"></i> profile</a></li>
+                                            <li><a href="/Profile/Index" class="disabled"><i class="fa fa-gear pull-right"></i> Profil</a></li>
                                         }
                                         <li>
                                             <a href="../Account/Logout" class="disabled">
-                                                <i class="fa fa-sign-out pull-right"></i>Cerrar
+                                                <i class="fa fa-sign-out pull-right"></i>Sortie
                                             </a>
                                         </li>
                                     </ul>

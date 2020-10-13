@@ -42,6 +42,31 @@ namespace Commerce.Amazon.Web.Controllers
         {
             var result = _accountProcess.SaveUser(user);
             return Json(result);
+        } public IActionResult Envoie()
+        {
+            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            //model = _accountProcess.GetModel();
+            return View(model);
+
+        }
+     public IActionResult accueil()
+        {
+            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            //model = _accountProcess.GetModel();
+            return View(model);
+
+        }public IActionResult PosteProduit()
+        {
+            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            //model = _accountProcess.GetModel();
+            return View(model);
+
+        }public IActionResult Valide()
+        {
+            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            //model = _accountProcess.GetModel();
+            return View(model);
+
         }
     }
 

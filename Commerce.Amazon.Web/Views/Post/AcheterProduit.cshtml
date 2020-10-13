@@ -8,18 +8,28 @@
 
 <div class="filtrer">
     <form id="formAchat" onsubmit="return false;">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="Prenom">Upload Screen Commentaire :</label>
-                    <div class="control-label ">
-                        <input id="screen-comment" name="comment" type="file" class="form-control input-sm" />
+       
+        <div class="form-group">
+            <label for="Url">Url :</label>
+            <div class="control-label ">
+                <input id="Url" name="Url" type="text" class="form-control input-sm" />
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Prenom">Telécharge Capture de Commentaire :</label>
+                        <div class="control-label">
+                            <input id="screen-comment" name="comment" type="file" class="form-control input-sm" />
+                        </div>
+                        <div>
+                            <label class="control-label">Message</label>
+                            <textarea class="form-control" rows="3"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <button class="btn btn-success form-control" id="idBtnComment">Envoyer</button>
             </div>
-        </div>
     </form>
 </div>

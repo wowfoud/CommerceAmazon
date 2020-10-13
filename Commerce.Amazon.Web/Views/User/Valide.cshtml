@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewData["Title"] = "Valide";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Valide</h2>
+
+
+<div class="nowrap filtrer" id="UsuariossDiv">
+
+    <table class="table table-bordered table-responsive table-hover" id="tablePosts">
+        <thead id="theaddashboard">
+            <div class="col-xs-8">
+                <label for="exampleInputName2">ID</label>
+                <input type="text" class="form-control" placeholder="ID:XXX-XXX">
+            </div>
+            <label>
+                <div class="">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                            Valide
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                            No Valide
+                        </label>
+                    </div>
+            </label>
+</div>
+<div class="btn-group-vertical">
+    <button class="btn btn-success form-control" id="idBtnComment">Valide</button>
+</div>
+        </thead>
+<tbody></tbody>
+    </table>
+</div>
+
+
+
+
+<div class="nowrap filtrer" id="UsuariossDiv">
+    <table class="table table-bordered table-responsive table-hover" id="tablePosts">
+        <thead id="theaddashboard">
+            <div>
+                <label class="control-label">Message</label>
+                <textarea class="form-control" rows="20"></textarea>
+            </div>
+
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
