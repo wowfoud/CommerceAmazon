@@ -52,7 +52,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult AcheterProduit()
+        public IActionResult BuyProduct()
         {
             var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
             //model = _accountProcess.GetModel();

@@ -73,6 +73,188 @@ commerce.amazon.web.operation =
             $('#btnFilter').click(function () {
 
             })
+            
+            $('#idBtnComment').click(function () {
+                var idPost = $('#idPost').val();
+                var comment = $('#idPost').val();
+                that.CommentPost(comment, idPost, function (result) {
+                    alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                });
+            })
+            
+            $('#idBtnSavePost').click(function () {
+                $('#errorMsgDiv').text('');
+                var url = $('#Url').val();
+                var description = $('#Description').val();
+                var prix = $('#Prix').val();
+                that.PostProduit(url, description, prix, function (result) {
+                    $('#errorMsgDiv').text(result.Message);
+                    alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                });
+            })
+            
+            $('#btnFilterPostsUser').click(function () {
+                var dateMin = $('#dateMin').val();
+                var dateMax = $('#dateMax').val();
+                var idGroup = $('#sltGroup').val();
+                var state = 1;
+                that.ViewPostsUser(dateMin, idGroup, state, function (data) {
+                    that.LoadPostsUser(data);
+                });
+            })
+            
+            $('#btnFilterPostsToBuy').click(function () {
+                var dateMin = $('#dateMin').val();
+                var dateMax = $('#dateMax').val();
+                var idGroup = $('#sltGroup').val();
+                var state = 1;
+                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                    that.LoadPostsToBuy(data);
+                });
+            })
+
+            this.LoadPostsUser = function (posts) {
+                var columns = [
+                    {
+                        data: 'Id'
+                    },
+                    {
+                        data: 'Url'
+                    },
+                    {
+                        data: 'Description'
+                    },
+                    {
+                        data: 'Prix'
+                    },
+                    {
+                        data: 'DateCreate',
+                    },
+                    {
+                        data: 'CountCreated',
+                    },
+                    {
+                        data: 'CountNotified',
+                    },
+                    {
+                        data: 'CountCommented',
+                    },
+                    {
+                        data: 'CountExpired',
+                    }
+                ]
+                $('#tablePostsUser').DataTable({
+                    responsive: true,
+                    data: posts,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+                        
+                    }
+                });
+
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+            
+            this.LoadPostsToBuy = function (posts) {
+                var columns = [
+                    {
+                        data: 'Id'
+                    },
+                    {
+                        data: 'Url'
+                    },
+                    {
+                        data: 'Description'
+                    },
+                    {
+                        data: 'Prix'
+                    },
+                    {
+                        data: '',
+                        render: function (data, type, row) {
+                            return `<a href='/Post/BuyProduct?idPost=${row.Id}' style='cursor: pointer; text-decoration: underline' class='cursorPointer' data-id='${row.Id}'>Acheter</a>`;
+                        }
+                    }
+                ]
+                $('#tablePostsAAcheter').DataTable({
+                    responsive: true,
+                    data: posts,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+                        
+                    }
+                });
+
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+
+            this.DetailPost = function () {
+                var params = new URLSearchParams(document.location.search);
+                var idPost = params.get('idPost');
+                that.ViewPost(idPost, function (post) {
+                    that.LoadPost(post);
+                });
+            }
+
+            this.LoadPost = function (post) {
+                $('#idPost').val(post.Id);
+                $('#Url').val(post.Url);
+                $('#Description').val(post.Description);
+                $('#Prix').val(post.Prix);
+                $('#Date').val(post.Date);
+            }
 
             //----------------------End event------------------------//
             //----------------------AJAX------------------------//
