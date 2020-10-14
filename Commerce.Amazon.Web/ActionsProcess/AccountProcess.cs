@@ -52,7 +52,8 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public List<Group> FindGroups(FilterGroup filterGroup)
         {
-            List<Group> groups = _accountManager.FindGroups(filterGroup);
+            AssertIsAdmin();
+            List<Group> groups = _accountManager.FindGroups(filterGroup, dataUser);
             return groups;
         }
 
@@ -65,14 +66,15 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public TResult<int> SaveGroup(Group group)
         {
-            var result = _accountManager.SaveGroup(group);
+            AssertIsAdmin();
+            var result = _accountManager.SaveGroup(group, dataUser);
             return result;
-
         }
 
         public List<UserSociete> FindUsers(FilterUser filterUser)
         {
-            List<UserSociete> users = _accountManager.FindUsers(filterUser).Select(u => new UserSociete
+            AssertIsAdmin();
+            List<UserSociete> users = _accountManager.FindUsers(filterUser, dataUser).Select(u => new UserSociete
             {
                 Id = u.Id,
                 Email = u.Email,
@@ -90,7 +92,8 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public TResult<int> SaveUser(User user)
         {
-            var result = _accountManager.SaveUser(user);
+            AssertIsAdmin();
+            var result = _accountManager.SaveUser(user, dataUser);
             return result;
         }
 

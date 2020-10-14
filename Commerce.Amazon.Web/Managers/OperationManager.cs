@@ -124,38 +124,43 @@ namespace Commerce.Amazon.Engine.Managers
 
         public PostView ViewPost(int idPost, DataUser dataUser)
         {
-            var postView = _context.Posts.GroupJoin(_context.PostPlanings, (p) => p.Id, (pp) => pp.IdPost, (post, plans) => new PostView
+            PostView postView = null;
+            Post poste = _context.Posts.Find(idPost);
+            if (poste != null && (dataUser.IsAdmin || dataUser.IdUser == poste.IdUser))
             {
-                Id = post.Id,
-                IdUser = post.IdUser,
-                Url = post.Url,
-                Nom = post.User.Nom,
-                Prenom = post.User.Prenom,
-                DateCreate = post.DateCreate,
-                Description = post.Description,
-                Prix = post.Prix,
-                CountCommented = plans.Count(pp => pp.State == EnumStatePlaning.Commented),
-                CountCreated = plans.Count(pp => pp.State == EnumStatePlaning.Created),
-                CountNotified = plans.Count(pp => pp.State == EnumStatePlaning.Notified),
-                CountExpired = plans.Count(pp => pp.State == EnumStatePlaning.Expired),
-            }).SingleOrDefault(a => a.Id == idPost);
+                postView = _context.Posts.GroupJoin(_context.PostPlanings, (p) => p.Id, (pp) => pp.IdPost, (post, plans) => new PostView
+                {
+                    Id = post.Id,
+                    IdUser = post.IdUser,
+                    Url = post.Url,
+                    Nom = post.User.Nom,
+                    Prenom = post.User.Prenom,
+                    DateCreate = post.DateCreate,
+                    Description = post.Description,
+                    Prix = post.Prix,
+                    CountCommented = plans.Count(pp => pp.State == EnumStatePlaning.Commented),
+                    CountCreated = plans.Count(pp => pp.State == EnumStatePlaning.Created),
+                    CountNotified = plans.Count(pp => pp.State == EnumStatePlaning.Notified),
+                    CountExpired = plans.Count(pp => pp.State == EnumStatePlaning.Expired),
+                }).SingleOrDefault(a => a.Id == idPost);
 
-            //var post = _context.Posts.SingleOrDefault(p => p.Id == idPost);
-            //var postView = new PostView
-            //{
-            //    Id = post.Id,
-            //    IdUser = post.IdUser,
-            //    Url = post.Url,
-            //    CountCommented = post.Planings.Count(pp => pp.State == EnumStatePlaning.Commented),
-            //    CountCreated = post.Planings.Count(pp => pp.State == EnumStatePlaning.Created),
-            //    CountNotified = post.Planings.Count(pp => pp.State == EnumStatePlaning.Notified),
-            //    CountExpired = post.Planings.Count(pp => pp.State == EnumStatePlaning.Expired),
-            //    Nom = post.User.Nom,
-            //    Prenom = post.User.Prenom,
-            //    DateCreate = post.DateCreate,
-            //    Description = post.Description,
-            //    Prix = post.Prix
-            //};
+                //var post = _context.Posts.SingleOrDefault(p => p.Id == idPost);
+                //var postView = new PostView
+                //{
+                //    Id = post.Id,
+                //    IdUser = post.IdUser,
+                //    Url = post.Url,
+                //    CountCommented = post.Planings.Count(pp => pp.State == EnumStatePlaning.Commented),
+                //    CountCreated = post.Planings.Count(pp => pp.State == EnumStatePlaning.Created),
+                //    CountNotified = post.Planings.Count(pp => pp.State == EnumStatePlaning.Notified),
+                //    CountExpired = post.Planings.Count(pp => pp.State == EnumStatePlaning.Expired),
+                //    Nom = post.User.Nom,
+                //    Prenom = post.User.Prenom,
+                //    DateCreate = post.DateCreate,
+                //    Description = post.Description,
+                //    Prix = post.Prix
+                //};
+            }
             return postView;
         }
 

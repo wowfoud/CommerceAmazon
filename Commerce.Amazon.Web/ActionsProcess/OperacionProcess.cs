@@ -5,6 +5,7 @@ using Commerce.Amazon.Domain.Models.Response;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 
 namespace Commerce.Amazon.Web.ActionsProcess
@@ -22,25 +23,28 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public TResult<int> PostProduit(Post post)
         {
-            GetProfile();
+            AssertIsUser();
             TResult<int> result = _operationManager.PostProduit(post, dataUser);
             return result;
         }
 
         public bool CanEditPost(int idPost)
         {
+            AssertIsUser();
             bool isCan = _operationManager.CanEditPost(idPost, dataUser);
             return isCan;
         }
 
         public int PlanifierNotificationPost(int idPost)
         {
-            int n = _operationManager.PlanifierNotificationPost(idPost, dataUser);
-            return n;
+            //int n = _operationManager.PlanifierNotificationPost(idPost, dataUser);
+            //return n;
+            throw new NotImplementedException();
         }
 
         public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost)
         {
+            AssertIsAdmin();
             var posts = _operationManager.ViewPlaningPost(idPost, dataUser);
             return posts;
         }
@@ -53,30 +57,35 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public TResult<int> NotifyUsers(NotifyRequest notifyRequest)
         {
+            AssertIsAdmin();
             TResult<int> result = _operationManager.NotifyUsers(notifyRequest, dataUser);
             return result;
         }
 
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost)
         {
+            AssertIsUser();
             var posts = _operationManager.ViewPostsUser(filterPost, dataUser);
             return posts;
         }
 
         public IEnumerable<PostView> ViewPostsToBuy(FilterPost filterPost)
         {
+            AssertIsUser();
             var posts = _operationManager.ViewPostsToBuy(filterPost, dataUser);
             return posts;
         }
 
         public TResult<int> CommentPost(CommentRequest commentRequest)
         {
+            AssertIsUser();
             TResult<int> result = _operationManager.CommentPost(commentRequest, dataUser);
             return result;
         }
 
         public string GetPathUploadScreen(string filename)
         {
+            AssertIsUser();
             string uploadTo = HelperFile.GenerateFullPathScreen(filename, dataUser.UserId);
             return uploadTo;
         }

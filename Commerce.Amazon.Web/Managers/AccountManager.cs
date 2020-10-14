@@ -61,6 +61,8 @@ namespace Commerce.Amazon.Engine.Managers
                         IdSociete = user.IdSociete,
                         CompanyName = user.Societe?.Name,
                     };
+                    dataUser.IsAdmin = profile.IsAdmin;
+                    dataUser.IsUser = profile.IsUser;
                     resultProfile.Status = StatusResponse.OK;
                     resultProfile.Result = profile;
                 }
@@ -78,7 +80,7 @@ namespace Commerce.Amazon.Engine.Managers
             return resultProfile;
         }
 
-        public TResult<int> SaveUser(User user)
+        public TResult<int> SaveUser(User user, DataUser dataUser)
         {
             TResult<int> result = new TResult<int>();
             var users = _context.Users.Where(u => (u.Email == user.Email || u.UserId == user.UserId) && u.Id != user.Id);
@@ -153,13 +155,13 @@ namespace Commerce.Amazon.Engine.Managers
             return result;
         }
 
-        public List<User> FindUsers(FilterUser filterUser)
+        public List<User> FindUsers(FilterUser filterUser, DataUser dataUser)
         {
             List<User> users = _context.Users.ToList();
             return users;
         }
 
-        public List<Group> FindGroups(FilterGroup filterGroup)
+        public List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser)
         {
             List<Group> users = null;
             if (filterGroup.StateGroup.HasValue)
@@ -173,7 +175,7 @@ namespace Commerce.Amazon.Engine.Managers
             return users;
         }
 
-        public TResult<int> SaveGroup(Group group)
+        public TResult<int> SaveGroup(Group group, DataUser dataUser)
         {
             
             //_context.Groups.RemoveRange(_context.Groups.Where(g=>g.Id != 1).ToList());

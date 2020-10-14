@@ -19,9 +19,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         private readonly IHttpContextAccessor httpContextAccessor;
         #endregion
 
-
         #region Constructors
-
 
         public BaseActionProcess()
         {
@@ -41,6 +39,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         #region Properties
         protected DataUser dataUser;
+        protected ProfileModel profile;
 
         #endregion
 
@@ -64,13 +63,35 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return profile;
         }
 
+        protected void AssertIsAdmin()
+        {
+            if (!profile.IsAdmin)
+            {
+                throw new Exception("User must be admin");
+            }
+        }
+        
+        protected void AssertIsUser()
+        {
+            if (!profile.IsUser)
+            {
+                throw new Exception("User must be user");
+            }
+        }
+
         protected ProfileModel GetProfile()
         {
-            ProfileModel profile = null;
-            string profileSerialise = httpContextAccessor.HttpContext.Session.GetString("profile");
-            if (!string.IsNullOrEmpty(profileSerialise))
+            if (profile == null)
             {
-                profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
+                string profileSerialise = httpContextAccessor.HttpContext.Session.GetString("profile");
+                if (!string.IsNullOrEmpty(profileSerialise))
+                {
+                    profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
+                    dataUser = _tokenManager.DecodeToken(profile.Token);
+                }
+            }
+            if (dataUser == null && profile != null)
+            {
                 dataUser = _tokenManager.DecodeToken(profile.Token);
             }
             return profile;

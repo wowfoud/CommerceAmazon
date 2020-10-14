@@ -10,9 +10,9 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
     public interface IAccountManager
     {
         TResult<ProfileModel> Authenticate(AuthenticationRequest authenticationRequest);
-        TResult<int> SaveUser(User user);
-        List<User> FindUsers(FilterUser filterUser);
-        List<Group> FindGroups(FilterGroup filterGroup);
-        TResult<int> SaveGroup(Group group);
+        TResult<int> SaveUser(User user, DataUser dataUser);
+        List<User> FindUsers(FilterUser filterUser, DataUser dataUser);
+        List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser);
+        TResult<int> SaveGroup(Group group, DataUser dataUser);
     }
 }
