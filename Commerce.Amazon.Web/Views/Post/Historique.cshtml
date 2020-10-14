@@ -4,18 +4,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <h2>Historique des posts</h2>
-
+@Html.Partial("_Modals/FilterPostsUser")
 <div class="nowrap filtrer" id="UsuariossDiv">
-    <table class="table table-bordered table-responsive table-hover" id="tablePosts">
+    <table class="table table-bordered table-responsive table-hover" id="tablePostsUser">
         <thead id="theaddashboard">
             <tr class="thdashboard">
                 <th class="alignCenter" data-priority="1">Id</th>
                 <th class="alignCenter" data-priority="1">Url</th>
                 <th class="alignCenter" data-priority="1">Description</th>
                 <th class="alignCenter" data-priority="1">Prix</th>
+                <th class="alignCenter" data-priority="1">Date</th>
                 <th class="alignCenter" data-priority="1">Total Planifié</th>
+                <th class="alignCenter" data-priority="1">Total envoyes</th>
                 <th class="alignCenter" data-priority="1">Total Achats</th>
                 <th class="alignCenter" data-priority="1">Total Expire</th>
             </tr>
@@ -23,3 +24,4 @@
         <tbody></tbody>
     </table>
 </div>
+<script src="~/js/Internal/operations.js"></script>
