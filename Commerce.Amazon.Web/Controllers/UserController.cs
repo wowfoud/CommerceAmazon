@@ -1,13 +1,7 @@
-﻿using System.Collections.Generic;
-using Commerce.Amazon.Domain.Models;
-using Commerce.Amazon.Domain.Models.Request;
-using Commerce.Amazon.Domain.Models.Response.Auth;
+﻿using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Web.Controllers.Base;
-using Commerce.Amazon.Web.Managers.Interfaces;
-using Commerce.Amazon.Web.Models;
 using Commerce.Amazon.Web.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Commerce.Amazon.Web.Controllers
@@ -23,10 +17,14 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult Index()
         {
-            BaseViewModel model = _accountProcess.GetModel();
-            if (model.ProfileModel != null)
+            if (_accountProcess.IsAdmin)
             {
+                var model = _accountProcess.GetModel();
                 return View(model);
+            }
+            else if (_accountProcess.IsUser)
+            {
+                return RedirectToDashboardUser();
             }
             else
             {

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Commerce.Amazon.Web.ActionsProcess
 {
-    public class TestProcess : ITestProcess
+    public class TestProcess : BaseActionProcess
     {
         private readonly IAccountManager _accountManager;
         private readonly IOperationManager _operationManager;
@@ -87,7 +87,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             foreach (var group in Groups)
             {
-                _accountManager.SaveGroup(group);
+                _accountManager.SaveGroup(group, dataUser);
             }
         }
 
@@ -95,7 +95,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             foreach (var user in Users)
             {
-                _accountManager.SaveUser(user);
+                _accountManager.SaveUser(user, dataUser);
             }
         }
 

@@ -2,6 +2,7 @@
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Domain.Models.Response.Base;
+using Commerce.Amazon.Web.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Concurrent;
@@ -41,6 +42,23 @@ namespace Commerce.Amazon.Web.ActionsProcess
         protected DataUser dataUser;
         protected ProfileModel profile;
 
+        public bool IsAdmin
+        {
+            get
+            {
+                bool b = profile?.IsAdmin == true;
+                return b;
+            }
+        }
+
+        public bool IsUser
+        {
+            get
+            {
+                bool b = profile?.IsUser == true;
+                return b;
+            }
+        }
         #endregion
 
         #region Methods
@@ -95,6 +113,12 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 dataUser = _tokenManager.DecodeToken(profile.Token);
             }
             return profile;
+        }
+
+        public BaseViewModel GetModel()
+        {
+            BaseViewModel model = new BaseViewModel { ProfileModel = profile, NoToken = profile == null };
+            return model;
         }
 
         #endregion

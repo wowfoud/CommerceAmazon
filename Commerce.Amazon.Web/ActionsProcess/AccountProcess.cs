@@ -57,13 +57,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return groups;
         }
 
-        public BaseViewModel GetModel()
-        {
-            ProfileModel profile = GetProfile();
-            BaseViewModel model = new BaseViewModel { ProfileModel = profile, NoToken = profile == null };
-            return model;
-        }
-
         public TResult<int> SaveGroup(Group group)
         {
             AssertIsAdmin();
@@ -106,6 +99,8 @@ namespace Commerce.Amazon.Web.ActionsProcess
         internal void LogOut()
         {
             Session.Clear();
+            profile = null;
+            dataUser = null;
         }
 
         public CheckLinkResetCodeResponse CheckLinkResetCode(CheckLinkResetCodeRequest checkLinkResetCodeRequest)

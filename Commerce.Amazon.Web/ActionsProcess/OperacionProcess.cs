@@ -25,6 +25,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             AssertIsUser();
             TResult<int> result = _operationManager.PostProduit(post, dataUser);
+            _operationManager.PlanifierNotificationPost(post.Id, dataUser);
             return result;
         }
 
@@ -37,21 +38,20 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         public int PlanifierNotificationPost(int idPost)
         {
-            //int n = _operationManager.PlanifierNotificationPost(idPost, dataUser);
-            //return n;
-            throw new NotImplementedException();
+            int n = _operationManager.PlanifierNotificationPost(idPost, dataUser);
+            return n;
         }
 
         public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost)
         {
             AssertIsAdmin();
-            var posts = _operationManager.ViewPlaningPost(idPost, dataUser);
+            IEnumerable<PostPlaningView> posts = _operationManager.ViewPlaningPost(idPost, dataUser);
             return posts;
         }
 
         public PostView ViewPost(int idPost)
         {
-            var postView = _operationManager.ViewPost(idPost, dataUser);
+            PostView postView = _operationManager.ViewPost(idPost, dataUser);
             return postView;
         }
 
@@ -65,14 +65,14 @@ namespace Commerce.Amazon.Web.ActionsProcess
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost)
         {
             AssertIsUser();
-            var posts = _operationManager.ViewPostsUser(filterPost, dataUser);
+            IEnumerable<PostView> posts = _operationManager.ViewPostsUser(filterPost, dataUser);
             return posts;
         }
 
         public IEnumerable<PostView> ViewPostsToBuy(FilterPost filterPost)
         {
             AssertIsUser();
-            var posts = _operationManager.ViewPostsToBuy(filterPost, dataUser);
+            IEnumerable<PostView> posts = _operationManager.ViewPostsToBuy(filterPost, dataUser);
             return posts;
         }
 

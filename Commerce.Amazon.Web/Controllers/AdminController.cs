@@ -4,6 +4,7 @@ using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 
@@ -61,14 +62,28 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult ViewPostsUser(FilterPost filterPost)
         {
-            var posts = _operacionProcess.ViewPostsUser(filterPost);
-            return Json(posts);
+            try
+            {
+                var posts = _operacionProcess.ViewPostsUser(filterPost);
+                return Json(posts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult ViewPostsToBuy(FilterPost filterPost)
         {
-            var posts = _operacionProcess.ViewPostsToBuy(filterPost);
-            return Json(posts);
+            try
+            {
+                var posts = _operacionProcess.ViewPostsToBuy(filterPost);
+                return Json(posts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult CommentPost(CommentRequest commentRequest)

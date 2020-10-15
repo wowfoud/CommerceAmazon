@@ -75,13 +75,13 @@ namespace Commerce.Amazon.Web
             builder.RegisterType<OperationManager>().As<IOperationManager>();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
             builder.RegisterType<MailSender>().As<IMailSender>();
-            builder.RegisterType<TestProcess>().As<ITestProcess>();
             builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
             builder.RegisterType<CustomSiteMapModule>();
 
             services.AddSingleton<OperacionProcess>();
             services.AddSingleton<AccountProcess>();
             services.AddSingleton<TokenManager>();
+            services.AddSingleton<TestProcess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             builder.Populate(services);

@@ -11,9 +11,7 @@ commerce.amazon.web.operation =
 
             this.Init = function () {
                 that.InitDatePicker();
-
             };
-
 
             //----------------------Function------------------------//
 
@@ -25,7 +23,6 @@ commerce.amazon.web.operation =
                     showClose: true,
                     locale: "es",
                     viewMode: 'days',
-
                     widgetParent: 'body'
                 });
                 //$('.dateToday').data("DateTimePicker").maxDate(moment(Date.now()));
@@ -38,7 +35,6 @@ commerce.amazon.web.operation =
                 $(".dateFrom").on("dp.change", function (e) {
                     if ($('.dateTo').val()) {
                         $('.dateTo').data("DateTimePicker").minDate(e.date);
-
                     } else {
                         $(".dateFrom").data("DateTimePicker").maxDate(moment(Date.now()));
                     }
@@ -76,10 +72,14 @@ commerce.amazon.web.operation =
             
             $('#idBtnComment').click(function () {
                 var idPost = $('#idPost').val();
-                var comment = $('#idPost').val();
-                that.CommentPost(comment, idPost, function (result) {
-                    alert(`Status: ${result.Status}, Message: ${result.Message}`);
-                });
+                var comment = $('#idComment').val();
+                if (!!that.SelectedScreen && !!idPost) {
+                    that.UploadScreen(that.SelectedScreen, function (filename) {
+                        that.CommentPost(filename, comment, idPost, function (result) {
+                            alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                        });
+                    });
+                }
             })
             
             $('#idBtnSavePost').click(function () {
@@ -112,7 +112,18 @@ commerce.amazon.web.operation =
                     that.LoadPostsToBuy(data);
                 });
             })
+            $('#screen-comment').change(function () {
 
+                that.SelectedScreen = this.files[0];
+
+                var fr = new FileReader();
+                fr.onload = function () {
+                    console.log(fr.result);
+                    $('#idImgScreen').attr('src', fr.result);
+                }
+                fr.readAsDataURL(that.SelectedScreen);
+
+            });
             this.LoadPostsUser = function (posts) {
                 var columns = [
                     {
@@ -433,9 +444,10 @@ commerce.amazon.web.operation =
                     }
                 });
             }
-            this.CommentPost = function (comment, idPost, handler) {
+            this.CommentPost = function (filename, comment, idPost, handler) {
                 var data = {
-                    ScreenComment: comment,
+                    Comment: comment,
+                    ScreenComment: filename,
                     IdPost: idPost
                 };
                 $.ajax({
@@ -455,7 +467,6 @@ commerce.amazon.web.operation =
                     }
                 });
             }
-
             this.UploadScreen = function (selectedFile, handler) {
                 if (!!selectedFile) {
                     if (window.FormData !== undefined) {
@@ -468,9 +479,9 @@ commerce.amazon.web.operation =
                             contentType: false,
                             processData: false,
                             data: fileData,
-                            success: function (data) {
-                                if (HandleResponse(data)) {
-                                    handler(data);
+                            success: function (filename) {
+                                if (HandleResponse(filename)) {
+                                    handler(filename);
                                 } else {
                                     that.OnError();
                                 }
@@ -484,7 +495,6 @@ commerce.amazon.web.operation =
                     }
                 }
             }
-
             this.OnError = function () {
                 console.log("Error find data");
             }

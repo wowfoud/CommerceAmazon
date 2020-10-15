@@ -42,7 +42,7 @@
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
-                    @if (Model.ProfileModel != null)
+                    @if (Model?.ProfileModel != null)
                     {
                         <partial name="../Home/ProfileView" model="@Model.ProfileModel" />
                     }
@@ -105,7 +105,7 @@
                                         </li>
                                         <li>
                                         <li><a href="" class="disabled">Ayuda</a></li>
-                                        @if (Model.ProfileModel?.IsAdmin == true)
+                                        @if (Model?.ProfileModel?.IsAdmin == true)
                                         {
                                             <li><a href="/Profile/Index" class="disabled"><i class="fa fa-gear pull-right"></i> profile</a></li>
                                         }
