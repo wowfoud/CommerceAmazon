@@ -132,16 +132,16 @@ namespace Commerce.Amazon.Domain.Extensions
             return output;
         }
 
-        public static int? ToInteger(this string input, bool nullable = false)
+        public static int ToInteger(this object input, bool nullable = false)
         {
-            int? output;
-            if (int.TryParse(input, out int integer))
+            int output;
+            if (int.TryParse(input?.ToString(), out int integer))
             {
                 output = integer;
             }
             else
             {
-                output = nullable ? (int?)null : 0;
+                output = 0;
             }
             return output;
         }

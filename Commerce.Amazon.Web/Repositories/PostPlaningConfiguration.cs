@@ -16,6 +16,7 @@ namespace Commerce.Amazon.Web.Repositories
             builder.Property(prop => prop.DateLimite).IsRequired(false);
             builder.Property(prop => prop.DateNotified).IsRequired(false);
             builder.Property(prop => prop.DateComment).IsRequired(false);
+            builder.Property(prop => prop.Comment).IsRequired(false);
 
             builder.HasOne(pp => pp.User)
                 .WithMany(pp => pp.PostsAchat)

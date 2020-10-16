@@ -142,9 +142,6 @@ commerce.amazon.web.operation =
                         data: 'DateCreate',
                     },
                     {
-                        data: 'CountCreated',
-                    },
-                    {
                         data: 'CountNotified',
                     },
                     {
@@ -152,6 +149,9 @@ commerce.amazon.web.operation =
                     },
                     {
                         data: 'CountExpired',
+                    },
+                    {
+                        data: 'Total',
                     }
                 ]
                 $('#tablePostsUser').DataTable({
@@ -213,7 +213,7 @@ commerce.amazon.web.operation =
                         }
                     }
                 ]
-                $('#tablePostsAAcheter').DataTable({
+                $('#tablePostsToBuy').DataTable({
                     responsive: true,
                     data: posts,
                     pageLength: 15,
@@ -361,7 +361,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/ViewPost",
+                    url: "/Post/ViewPost",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -500,6 +500,16 @@ commerce.amazon.web.operation =
             }
 
             //----------------------End AJAX------------------------//
+
+            this.InitBuyProduct = function () {
+
+            }
+            this.InitPostsToBuy = function () {
+
+            }
+            this.InitPostsUser = function () {
+
+            }
         };
         return new MyAuxClass();
     })();

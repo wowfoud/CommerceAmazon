@@ -97,7 +97,7 @@ namespace Commerce.Amazon.Engine.Managers
                     {
                         IdPost = post.Id,
                         IdUser = user.Id,
-                        State = EnumStatePlaning.Created,
+                        State = EnumStatePlaning.Planifie,
                         DatePlanifie = DateTime.Now.AddDays(addDays),
                         DateLimite = DateTime.Now.AddDays(addDays + maxDays),
                     };
@@ -142,7 +142,7 @@ namespace Commerce.Amazon.Engine.Managers
                     Description = post.Description,
                     Prix = post.Prix,
                     CountCommented = plans.Count(pp => pp.State == EnumStatePlaning.Commented),
-                    CountCreated = plans.Count(pp => pp.State == EnumStatePlaning.Created),
+                    CountPlanifie = plans.Count(pp => pp.State == EnumStatePlaning.Planifie),
                     CountNotified = plans.Count(pp => pp.State == EnumStatePlaning.Notified),
                     CountExpired = plans.Count(pp => pp.State == EnumStatePlaning.Expired),
                 }).SingleOrDefault(a => a.Id == idPost);
@@ -190,7 +190,7 @@ namespace Commerce.Amazon.Engine.Managers
                 foreach (int idUser in notifyRequest.Users)
                 {
                     var plan = planing.Single(pp => pp.IdUser == idUser);
-                    if (plan != null && plan.State == EnumStatePlaning.Created)
+                    if (plan != null && plan.State == EnumStatePlaning.Planifie)
                     {
                         string email = plan.User.Email;
                         string user = $"{plan.User.Nom} {plan.User.Prenom}";
@@ -218,38 +218,32 @@ namespace Commerce.Amazon.Engine.Managers
 
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost, DataUser dataUser)
         {
-            //var posts = _context.Posts.Where(p => p.IdUser == dataUser.IdUser).GroupJoin(_context.PostPlanings, (p) => p.Id, (pp) => pp.IdPost, (post, plans) => new PostView
-            //{
-            //    Id = post.Id,
-            //    IdUser = post.IdUser,
-            //    Url = post.Url,
-            //    Nom = post.User != null ? post.User.Nom : "",
-            //    Prenom = post.User != null ? post.User.Prenom : "",
-            //    DateCreate = post.DateCreate,
-            //    Description = post.Description,
-            //    Prix = post.Prix,
-            //    CountCommented = plans.Count(pp => pp.State == EnumStatePlaning.Commented),
-            //    CountCreated = plans.Count(pp => pp.State == EnumStatePlaning.Created),
-            //    CountNotified = plans.Count(pp => pp.State == EnumStatePlaning.Notified),
-            //    CountExpired = plans.Count(pp => pp.State == EnumStatePlaning.Expired),
-            //}).ToArray();
-            var posts = _context.Posts.Where(p => p.IdUser == dataUser.IdUser)
-                .GroupJoin(_context.PostPlanings, (p) => p.Id, (pp) => pp.IdPost, (post, plans) => new { post, plans })
-                .GroupBy(o => o.post).Select(o=> new PostView
-                {
-                    Id = o.Key.Id,
-                    IdUser = o.Key.IdUser,
-                    Url = o.Key.Url,
-                    Nom = o.Key.User != null ? o.Key.User.Nom : "",
-                    Prenom = o.Key.User != null ? o.Key.User.Prenom : "",
-                    DateCreate = o.Key.DateCreate,
-                    Description = o.Key.Description,
-                    Prix = o.Key.Prix,
-                    CountCommented = o.Key.Planings.Count(pp => pp.State == EnumStatePlaning.Commented),
-                    CountCreated = o.Key.Planings.Count(pp => pp.State == EnumStatePlaning.Created),
-                    CountNotified = o.Key.Planings.Count(pp => pp.State == EnumStatePlaning.Notified),
-                    CountExpired = o.Key.Planings.Count(pp => pp.State == EnumStatePlaning.Expired),
-                }).ToArray();
+            
+            var query = from p in _context.Posts
+                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        join u in _context.Users on p.IdUser equals u.Id
+                        where p.IdUser == dataUser.IdUser
+                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State } 
+                        by new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
+                        into temp
+                        select new PostView
+                        {
+                            Id = temp.Key.Id,
+                            IdUser = temp.Key.IdUser,
+                            Url = temp.Key.Url,
+                            Nom = temp.Key.Nom,
+                            Prenom = temp.Key.Prenom,
+                            DateCreate = temp.Key.DateCreate,
+                            Description = temp.Key.Description,
+                            Prix = temp.Key.Prix,
+                            //State = temp.Key.State,
+                            Total = temp.Count(),
+                            CountPlanifie = temp.Count(pl => pl.State == EnumStatePlaning.Planifie),
+                            CountNotified = temp.Count(pl => pl.State == EnumStatePlaning.Notified),
+                            CountCommented = temp.Count(pl => pl.State == EnumStatePlaning.Commented),
+                            CountExpired = temp.Count(pl => pl.State == EnumStatePlaning.Expired),
+                        };
+            var posts = query.ToArray();
             return posts;
         }
 
@@ -288,7 +282,7 @@ namespace Commerce.Amazon.Engine.Managers
             postPlan.State = EnumStatePlaning.Commented;
             postPlan.DateComment = DateTime.Now;
             postPlan.PathScreenComment = commentRequest.ScreenComment;
-            //postPlan.Comment = commentRequest.Comment;
+            postPlan.Comment = commentRequest.Comment;
             int n = _context.SaveChanges();
             result.Result = n;
             return result;

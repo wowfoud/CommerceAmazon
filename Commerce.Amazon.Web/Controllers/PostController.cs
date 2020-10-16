@@ -48,7 +48,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult PostsAAcheter()
+        public IActionResult PostsToBuy()
         {
             //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
             if (_operacionProcess.IsUser)
@@ -83,5 +83,12 @@ namespace Commerce.Amazon.Web.Controllers
                 return RedirectToLogin();
             }
         }
+
+        public IActionResult ViewPost(int idPost)
+        {
+            var postView = _operacionProcess.ViewPost(idPost);
+            return Json(postView);
+        }
+
     }
 }

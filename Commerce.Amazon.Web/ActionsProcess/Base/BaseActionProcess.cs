@@ -46,6 +46,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             get
             {
+                GetProfile();
                 bool b = profile?.IsAdmin == true;
                 return b;
             }
@@ -55,6 +56,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             get
             {
+                GetProfile(); 
                 bool b = profile?.IsUser == true;
                 return b;
             }
@@ -78,6 +80,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         protected ProfileModel SetProfile(ProfileModel profile)
         {
             httpContextAccessor.HttpContext.Session.SetString("profile", Newtonsoft.Json.JsonConvert.SerializeObject(profile));
+            GetProfile();
             return profile;
         }
 
@@ -106,13 +109,23 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 {
                     profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
                     dataUser = _tokenManager.DecodeToken(profile.Token);
+                    dataUser.IsAdmin = profile.IsAdmin;
+                    dataUser.IsUser = profile.IsUser;
                 }
             }
-            if (dataUser == null && profile != null)
-            {
-                dataUser = _tokenManager.DecodeToken(profile.Token);
-            }
             return profile;
+        }
+
+        public void Clear()
+        {
+            profile = null;
+            dataUser = null;
+            httpContextAccessor.HttpContext.Session.Clear();
+            GetProfile();
+            if (profile != null || dataUser != null)
+            {
+                throw new Exception("end session error");
+            }
         }
 
         public BaseViewModel GetModel()

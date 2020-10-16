@@ -44,7 +44,7 @@ namespace Commerce.Amazon.Web.Controllers.Base
 		
 		protected RedirectToActionResult RedirectToDashboardUser()
 		{
-			RedirectToActionResult result = RedirectToAction("BuyProduct", "Post");
+			RedirectToActionResult result = RedirectToAction("Historique", "Post");
 			return result;
 		}
 

@@ -96,11 +96,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return v;
         }
 
-        internal void LogOut()
+        public void LogOut()
         {
-            Session.Clear();
-            profile = null;
-            dataUser = null;
+            base.Clear();
         }
 
         public CheckLinkResetCodeResponse CheckLinkResetCode(CheckLinkResetCodeRequest checkLinkResetCodeRequest)

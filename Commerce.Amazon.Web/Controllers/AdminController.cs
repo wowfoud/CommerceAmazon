@@ -48,12 +48,6 @@ namespace Commerce.Amazon.Web.Controllers
             return Json(posts);
         }
 
-        public IActionResult ViewPost(int idPost)
-        {
-            var postView = _operacionProcess.ViewPost(idPost);
-            return Json(postView);
-        }
-
         public IActionResult NotifyUsers(NotifyRequest notifyRequest)
         {
             TResult<int> result = _operacionProcess.NotifyUsers(notifyRequest);

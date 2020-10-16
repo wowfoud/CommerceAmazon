@@ -44,7 +44,17 @@
                     <!-- menu profile quick info -->
                     @if (Model?.ProfileModel != null)
                     {
-                        <partial name="../Home/ProfileView" model="@Model.ProfileModel" />
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="@Model.ProfileModel.CompanyName" alt="@Model.ProfileModel.CompanyName" class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                @*<span>Bienvenido,</span>*@
+                                <h2>@Model.ProfileModel.FullName</h2>
+                                <br />
+                                <h2>@Model.ProfileModel.IdUser <a href="/Account/Parameters" class=""><i class="fa fa-gear pull-right ajustes"></i></a></h2>
+                            </div>
+                        </div>
                     }
                     else
                     {
@@ -56,14 +66,13 @@
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
                             <h3>Menu generale</h3>
-
                             <ul class="nav side-menu" id="IdmainMenu">
                                 <li>
                                     <a><i class="fa fa-pencil"></i>Posts<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
                                         <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
-                                        <li><a href="@Url.Action("PostsAAcheter", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                        <li><a href="@Url.Action("PostsToBuy", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
                                         <li><a href="/Post/AcheterProduit"><i class="fa fa-trademark"></i> Acheter</a></li>
                                     </ul>
                                 </li>

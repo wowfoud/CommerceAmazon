@@ -6,6 +6,7 @@ using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
+using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
 using Commerce.Amazon.Tools.Contracts;
 using Commerce.Amazon.Tools.Tools;
 using Commerce.Amazon.Web.Managers.Interfaces;
@@ -36,8 +37,12 @@ namespace Commerce.Amazon.Engine.Managers
             TResult<ProfileModel> resultProfile = new TResult<ProfileModel>();
             ProfileModel profile = null;
             //var users = FindUsers();
+            //foreach (var userCache in _context.Users)
+            //{
+            //    _context.Entry(userCache).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+            //}
             User user = _context.Users.SingleOrDefault(u => u.Email == authenticationRequest.Email);
-            if (user != null)
+            if (user != null && user.State == Domain.Models.Response.Auth.Enum.UserState.Active)
             {
                 bool verifyPassword;
                 HashMD5 hashMD5 = new HashMD5();
@@ -47,9 +52,9 @@ namespace Commerce.Amazon.Engine.Managers
                 }
                 if (verifyPassword)
                 {
-                    DataUser dataUser = new DataUser { IdUser = user.Id, UserId = user.UserId };
-                    string token = _tokenManager.GenerateToken(dataUser);
+                    DataUser dataUser = new DataUser { IdUser = user.Id, UserId = user.UserId, IsAdmin = user.Role == EnumRole.Admin, IsUser = user.Role == EnumRole.User };
                     //_tokenManager.ValidateToken(dataUser, token);
+                    string token = _tokenManager.GenerateToken(dataUser);
                     profile = new ProfileModel
                     {
                         IdUser = user.UserId,
@@ -61,8 +66,6 @@ namespace Commerce.Amazon.Engine.Managers
                         IdSociete = user.IdSociete,
                         CompanyName = user.Societe?.Name,
                     };
-                    dataUser.IsAdmin = profile.IsAdmin;
-                    dataUser.IsUser = profile.IsUser;
                     resultProfile.Status = StatusResponse.OK;
                     resultProfile.Result = profile;
                 }
