@@ -3,7 +3,6 @@
     ViewData["Title"] = "Posts a acheter";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Posts a acheter</h2>
 @Html.Partial("Modals/FilterPostsToBuy")
 <div class="nowrap filtrer" id="UsuariossDiv">
@@ -21,3 +20,6 @@
     </table>
 </div>
 <script src="~/js/Internal/operations.js"></script>
+<script>
+    commerce.amazon.web.operation.InitPostsToBuy();
+</script>

@@ -66,10 +66,6 @@ commerce.amazon.web.operation =
 
             //----------------------events------------------------//
 
-            $('#btnFilter').click(function () {
-
-            })
-            
             $('#idBtnComment').click(function () {
                 var idPost = $('#idPost').val();
                 var comment = $('#idComment').val();
@@ -508,7 +504,7 @@ commerce.amazon.web.operation =
 
             }
             this.InitPostsUser = function () {
-
+                $('#btnFilterPostsUser').click();
             }
         };
         return new MyAuxClass();
