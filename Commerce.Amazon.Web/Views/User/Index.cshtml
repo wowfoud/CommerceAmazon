@@ -2,9 +2,7 @@
     ViewData["Title"] = "Liste des utilisateurs";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Liste des utilisateurs</h2>
-
 <div class="row">
     <button class="btn btn-purple col-md-2 pull-right" id="idOpenModalUser" data-toggle='modal' data-target='#myModalUsuario'>Ajouter Utilisateur</button>
 </div>
@@ -23,7 +21,6 @@
         <tbody></tbody>
     </table>
 </div>
-<partial name="Modals/_UserModal" />
 @Html.Partial("Modals/_UserModal")
 @section Scripts {
     <script src="~/js/Internal/users.js"></script>

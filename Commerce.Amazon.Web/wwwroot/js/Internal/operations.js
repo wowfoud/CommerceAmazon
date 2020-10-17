@@ -498,10 +498,10 @@ commerce.amazon.web.operation =
             //----------------------End AJAX------------------------//
 
             this.InitBuyProduct = function () {
-
+                that.DetailPost();
             }
             this.InitPostsToBuy = function () {
-
+                $('#btnFilterPostsToBuy').click();
             }
             this.InitPostsUser = function () {
                 $('#btnFilterPostsUser').click();

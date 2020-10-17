@@ -1,6 +1,8 @@
-﻿using Commerce.Amazon.Domain.Models.Request;
+﻿using Commerce.Amazon.Domain.Models;
+using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Web.Controllers.Base;
+using Commerce.Amazon.Web.Models;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,7 +50,9 @@ namespace Commerce.Amazon.Web.Controllers
         {
             var result = _accountProcess.SaveUser(user);
             return Json(result);
-        } public IActionResult Envoie()
+        } 
+        
+        public IActionResult Envoie()
         {
             var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
             //model = _accountProcess.GetModel();

@@ -56,7 +56,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             get
             {
-                GetProfile(); 
+                GetProfile();
                 bool b = profile?.IsUser == true;
                 return b;
             }
@@ -91,7 +91,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 throw new Exception("User must be admin");
             }
         }
-        
+
         protected void AssertIsUser()
         {
             if (!profile.IsUser)
@@ -102,7 +102,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
 
         protected ProfileModel GetProfile()
         {
-            if (profile == null)
+            if (true)
             {
                 string profileSerialise = httpContextAccessor.HttpContext.Session.GetString("profile");
                 if (!string.IsNullOrEmpty(profileSerialise))
@@ -111,6 +111,11 @@ namespace Commerce.Amazon.Web.ActionsProcess
                     dataUser = _tokenManager.DecodeToken(profile.Token);
                     dataUser.IsAdmin = profile.IsAdmin;
                     dataUser.IsUser = profile.IsUser;
+                }
+                else
+                {
+                    profile = null;
+                    dataUser = null;
                 }
             }
             return profile;
