@@ -15,10 +15,7 @@ namespace Commerce.Amazon.Web.Controllers.Base
 		public override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			base.OnActionExecuted(filterContext);
-
 			//BaseViewModel model = filterContext.Controller.ViewData.Model as BaseViewModel;
-
-
 		}
 
 		protected ProfileModel GetProfileSession()
@@ -31,19 +28,23 @@ namespace Commerce.Amazon.Web.Controllers.Base
 				profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(profileSerialise);
 			}
 			return profile;
-
 		}
 
 		protected RedirectToActionResult RedirectToLogin()
 		{
-
 			RedirectToActionResult result = RedirectToAction("Login", "Account");
 			return result;
 		}
-		protected RedirectToActionResult RedirectToDashboard()
-		{
 
+		protected RedirectToActionResult RedirectToDashboardAdmin()
+		{
 			RedirectToActionResult result = RedirectToAction("Index", "User");
+			return result;
+		}
+		
+		protected RedirectToActionResult RedirectToDashboardUser()
+		{
+			RedirectToActionResult result = RedirectToAction("Historique", "Post");
 			return result;
 		}
 

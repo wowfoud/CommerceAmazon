@@ -3,19 +3,23 @@
     ViewData["Title"] = "Posts a acheter";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>Posts a acheter</h2>
-
+@Html.Partial("Modals/FilterPostsToBuy")
 <div class="nowrap filtrer" id="UsuariossDiv">
-    <table class="table table-bordered table-responsive table-hover" id="tablePostsAAcheter">
+    <table class="table table-bordered table-responsive table-hover" id="tablePostsToBuy">
         <thead id="theaddashboard">
             <tr class="thdashboard">
                 <th class="alignCenter" data-priority="1">Id</th>
                 <th class="alignCenter" data-priority="1">Url</th>
                 <th class="alignCenter" data-priority="1">Description</th>
                 <th class="alignCenter" data-priority="1">Prix</th>
+                <th class="alignCenter" data-priority="1"></th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
+<script src="~/js/Internal/operations.js"></script>
+<script>
+    commerce.amazon.web.operation.InitPostsToBuy();
+</script>

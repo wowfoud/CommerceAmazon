@@ -14,9 +14,9 @@ namespace Commerce.Amazon.Web.Controllers
     {
         private readonly AccountProcess authenticationProcess;
 
-        public AccountController(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager)
+        public AccountController(AccountProcess accountProcess)
         {
-            authenticationProcess = new AccountProcess(httpContextAccessor, accountManager);
+            authenticationProcess = accountProcess;
         }
 
         // GET: Account
@@ -24,9 +24,13 @@ namespace Commerce.Amazon.Web.Controllers
         public IActionResult Login()
         {
             IActionResult IActionResult;
-            if (authenticationProcess.IsUserConnected())
+            if (authenticationProcess.IsAdmin)
             {
-                IActionResult = RedirectToAction("Index", "Dashboard");
+                IActionResult = RedirectToDashboardAdmin();
+            }
+            else if (authenticationProcess.IsUser)
+            {
+                IActionResult = RedirectToDashboardUser();
             }
             else
             {
@@ -51,7 +55,14 @@ namespace Commerce.Amazon.Web.Controllers
             }
             else
             {
-                return RedirectToDashboard();
+                if (authenticationProcess.IsAdmin)
+                {
+                    return RedirectToDashboardAdmin();
+                }
+                else
+                {
+                    return RedirectToDashboardUser();
+                }
             }
         }
 

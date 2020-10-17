@@ -17,14 +17,17 @@
                 <th class="alignCenter" data-priority="2">Prenom</th>
                 <th class="alignCenter" data-priority="6">Email</th>
                 <th class="alignCenter" data-priority="7">UserId</th>
+                <th class="alignCenter" data-priority="7">Role</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
+<partial name="Modals/_UserModal" />
 @Html.Partial("Modals/_UserModal")
 @section Scripts {
     <script src="~/js/Internal/users.js"></script>
+    <script src="~/js/Internal/operations.js"></script>
     <script src="~/js/jquery.validate-vsdoc.js"></script>
     <script src="~/js/jquery.validate.min.js"></script>
     <script src="~/js/jquery.validate.unobtrusive.min.js"></script>

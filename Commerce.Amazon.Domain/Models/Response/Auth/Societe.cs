@@ -2,14 +2,12 @@
 
 namespace Commerce.Amazon.Domain.Models.Response.Auth
 {
-	//public class Societe
-	//{
-	//	public int Id { get; set; }
-	//	public string Name { get; set; }
-	//	public string Email { get; set; }
-	//	public string Logo { get; set; }
-	//	public StateCompany? State { get; set; }
-
-
-	//}
+    public class Societe
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Logo { get; set; }
+        public StateCompany? State { get; set; }
+    }
 }

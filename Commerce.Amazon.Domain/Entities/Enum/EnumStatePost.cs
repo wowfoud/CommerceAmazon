@@ -2,6 +2,6 @@
 {
     public enum EnumStatePost
     {
-        Active, Desactive
+        Active = 1, Desactive = 2
     }
 }

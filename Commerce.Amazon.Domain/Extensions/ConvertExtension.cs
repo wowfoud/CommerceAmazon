@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace Commerce.Amazon.Domain.Extensions
 {
@@ -97,6 +98,7 @@ namespace Commerce.Amazon.Domain.Extensions
             }
             return output;
         }
+        
         public static DateTime ToDatetime(this string input)
         {
             DateTime output;
@@ -130,23 +132,41 @@ namespace Commerce.Amazon.Domain.Extensions
             return output;
         }
 
-        public static int? ToInteger(this string input, bool nullable = false)
+        public static int ToInteger(this object input, bool nullable = false)
         {
-            int? output;
-            if (int.TryParse(input, out int integer))
+            int output;
+            if (int.TryParse(input?.ToString(), out int integer))
             {
                 output = integer;
             }
             else
             {
-                output = nullable ? (int?)null : 0;
+                output = 0;
             }
             return output;
         }
+        
         public static string ToJson(this object obj)
         {
             string objjson = Newtonsoft.Json.JsonConvert.SerializeObject(obj);
             return objjson;
+        }
+
+        public static string ListToString(this IEnumerable enumerable)
+        {
+            string str = "";
+            foreach (var item in enumerable)
+            {
+                if (str == "")
+                {
+                    str = item.ToString();
+                }
+                else
+                {
+                    str += $", {item}";
+                }
+            }
+            return str;
         }
     }
 }

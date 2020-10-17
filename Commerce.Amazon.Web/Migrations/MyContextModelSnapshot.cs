@@ -19,6 +19,80 @@ namespace Commerce.Amazon.Web.Migrations
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("Commerce.Amazon.Web.Repositories.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("CountNotifyPerDay");
+
+                    b.Property<int>("CountUsersCanNotify");
+
+                    b.Property<int>("MaxDays");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("State");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Commerce.Amazon.Web.Repositories.Post", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime?>("DateCreate")
+                        .IsRequired();
+
+                    b.Property<string>("Description");
+
+                    b.Property<int>("IdUser");
+
+                    b.Property<decimal?>("Prix");
+
+                    b.Property<int>("State");
+
+                    b.Property<string>("Url")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Commerce.Amazon.Web.Repositories.PostPlaning", b =>
+                {
+                    b.Property<int>("IdPost");
+
+                    b.Property<int>("IdUser");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime?>("DateComment");
+
+                    b.Property<DateTime?>("DateLimite");
+
+                    b.Property<DateTime?>("DateNotified");
+
+                    b.Property<DateTime?>("DatePlanifie");
+
+                    b.Property<string>("PathScreenComment");
+
+                    b.Property<int>("State");
+
+                    b.HasKey("IdPost", "IdUser");
+
+                    b.HasIndex("IdUser");
+
+                    b.ToTable("PostPlanings");
+                });
+
             modelBuilder.Entity("Commerce.Amazon.Web.Repositories.Societe", b =>
                 {
                     b.Property<int>("Id")
@@ -34,7 +108,7 @@ namespace Commerce.Amazon.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Societe");
+                    b.ToTable("Societes");
                 });
 
             modelBuilder.Entity("Commerce.Amazon.Web.Repositories.User", b =>
@@ -45,15 +119,17 @@ namespace Commerce.Amazon.Web.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
+                    b.Property<int?>("IdGroup");
+
                     b.Property<int>("IdSociete");
 
-                    b.Property<string>("Nom")
-                        .IsRequired();
+                    b.Property<string>("Nom");
+
+                    b.Property<string>("Password");
 
                     b.Property<string>("Photo");
 
-                    b.Property<string>("Prenom")
-                        .IsRequired();
+                    b.Property<string>("Prenom");
 
                     b.Property<int?>("Role");
 
@@ -68,13 +144,40 @@ namespace Commerce.Amazon.Web.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdGroup");
+
                     b.HasIndex("SocieteId");
 
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Commerce.Amazon.Web.Repositories.Post", b =>
+                {
+                    b.HasOne("Commerce.Amazon.Web.Repositories.User", "User")
+                        .WithMany("Posts")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Commerce.Amazon.Web.Repositories.PostPlaning", b =>
+                {
+                    b.HasOne("Commerce.Amazon.Web.Repositories.Post", "Post")
+                        .WithMany("Planings")
+                        .HasForeignKey("IdPost")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Commerce.Amazon.Web.Repositories.User", "User")
+                        .WithMany("PostsAchat")
+                        .HasForeignKey("IdUser")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Commerce.Amazon.Web.Repositories.User", b =>
                 {
+                    b.HasOne("Commerce.Amazon.Web.Repositories.Group", "Group")
+                        .WithMany("Users")
+                        .HasForeignKey("IdGroup");
+
                     b.HasOne("Commerce.Amazon.Web.Repositories.Societe", "Societe")
                         .WithMany()
                         .HasForeignKey("SocieteId");

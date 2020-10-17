@@ -53,7 +53,7 @@ commerce.amazon.web.users =
                         Role: idRole
                     };
                     if (!user.Role) {
-                        $("#errorMsgDiv").html('SVP, Selectioner le role');
+                        $("#errorMsgDiv").html("SVP, Selectioner le role d'utilisateur");
                         return;
                     }
                     $.ajax({
@@ -71,11 +71,11 @@ commerce.amazon.web.users =
                                     $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
                                 }
                             } else {
-                                console.log("Error al obtener los valores");
+                                that.OnError();
                             }
                         },
                         error: function (err) {
-                            console.log("Error al obtener los valores");
+                            that.OnError();
                         }
                     });
                 }
@@ -90,13 +90,38 @@ commerce.amazon.web.users =
                         if (HandleResponse(data)) {
                             that.LoadUsers(data);
                         } else {
-                            console.log("Error al obtener los valores");
+                            that.OnError();
                         }
                     },
                     error: function (err) {
-                        console.log("Error al obtener los valores");
+                        that.OnError();
                     }
                 })
+            }
+            
+            this.FindGroups = function (stateGroup, handleLoadGroups) {
+                var filter = {
+                    StateGroup: stateGroup
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/User/FindGroups",
+                    data: filter,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handleLoadGroups(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                })
+            }
+
+            this.OnError = function (error) {
+                console.log("Error find data");
             }
 
             this.LoadUser = function (user, disable = true) {
@@ -146,6 +171,9 @@ commerce.amazon.web.users =
                     },
                     {
                         data: 'UserId',
+                    },
+                    {
+                        data: 'RoleName',
                     }
                 ]
                 $('#tableUsers').DataTable({

@@ -42,9 +42,19 @@
                     </div>
                     <div class="clearfix"></div>
                     <!-- menu profile quick info -->
-                    @if (Model.ProfileModel != null)
+                    @if (Model?.ProfileModel != null)
                     {
-                        <partial name="../Home/ProfileView" model="@Model.ProfileModel" />
+                        <div class="profile clearfix">
+                            <div class="profile_pic">
+                                <img src="@Model.ProfileModel.CompanyName" alt="@Model.ProfileModel.CompanyName" class="img-circle profile_img">
+                            </div>
+                            <div class="profile_info">
+                                @*<span>Bienvenido,</span>*@
+                                <h2>@Model.ProfileModel.FullName</h2>
+                                <br />
+                                <h2>@Model.ProfileModel.IdUser <a href="/Account/Parameters" class=""><i class="fa fa-gear pull-right ajustes"></i></a></h2>
+                            </div>
+                        </div>
                     }
                     else
                     {
@@ -55,8 +65,29 @@
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
-                            <h3>Menú general</h3>
+                            <h3>Menu generale</h3>
                             <ul class="nav side-menu" id="IdmainMenu">
+                                @if (Model.ProfileModel.IsUser)
+                                {
+                                    <li>
+                                        <a><i class="fa fa-pencil"></i>Posts<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
+                                            <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
+                                            <li><a href="@Url.Action("PostsToBuy", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                            <li><a href="/Post/AcheterProduit"><i class="fa fa-trademark"></i> Acheter</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                @if (Model.ProfileModel.IsUser)
+                                {
+                                    <li>
+                                        <a><i class="fa fa-bar-chart-o"></i> Utilisateurs<span class="fa fa-chevron-down"></span></a>
+                                        <ul class="nav child_menu">
+                                            <li><a href="@Url.Action("Index", "User")"><i class="fa fa-dashboard"></i> Utilisateurs</a></li>
+                                        </ul>
+                                    </li>
+                                }
                                 <li>
                                     <a><i class="fa fa-pencil"></i>Posts<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
@@ -118,8 +149,8 @@
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
                                         <li>
-                                            <a href="" class="disabled">
-                                                <i class="fa fa-user pull-right"></i>Perfil
+                                            <a href="" class="">
+                                                <i class="fa fa-user pull-right"></i>Profile
                                             </a>
                                         </li>
                                         <li>

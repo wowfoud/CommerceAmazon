@@ -1,69 +1,94 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Commerce.Amazon.Domain.Models;
-using Commerce.Amazon.Web.Models;
+﻿using Commerce.Amazon.Web.ActionsProcess;
+using Commerce.Amazon.Web.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Commerce.Amazon.Web.Controllers
 {
-    public class PostController : Controller
+    public class PostController : BaseController
     {
+        private readonly OperacionProcess _operacionProcess;
+
+        public PostController(OperacionProcess operacionProcess)
+        {
+            _operacionProcess = operacionProcess;
+        }
         public IActionResult NewPost()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
-            if (model.ProfileModel.IsAdmin)
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            if (_operacionProcess.IsUser)
             {
-                return RedirectToAction("Index", "User");
+                var model = _operacionProcess.GetModel();
+                return View(model);
+            }
+            else if (_operacionProcess.IsAdmin)
+            {
+                return RedirectToDashboardAdmin();
             }
             else
             {
-                return View(model);
+                return RedirectToLogin();
             }
         }
 
         public IActionResult Historique()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
-            if (model.ProfileModel.IsAdmin)
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            if (_operacionProcess.IsUser)
             {
-                return RedirectToAction("Index", "User");
+                var model = _operacionProcess.GetModel();
+                return View(model);
+            }
+            else if (_operacionProcess.IsAdmin)
+            {
+                return RedirectToDashboardAdmin();
             }
             else
             {
-                return View(model);
+                return RedirectToLogin();
             }
         }
 
-        public IActionResult PostsAAcheter()
+        public IActionResult PostsToBuy()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
-            if (model.ProfileModel.IsAdmin)
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            if (_operacionProcess.IsUser)
             {
-                return RedirectToAction("Index", "User");
+                var model = _operacionProcess.GetModel();
+                return View(model);
+            }
+            else if (_operacionProcess.IsAdmin)
+            {
+                return RedirectToDashboardAdmin();
             }
             else
             {
-                return View(model);
+                return RedirectToLogin();
             }
         }
 
-        public IActionResult AcheterProduit()
+        public IActionResult BuyProduct()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
-            if (model.ProfileModel.IsAdmin)
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            if (_operacionProcess.IsUser)
             {
-                return RedirectToAction("Index", "User");
+                var model = _operacionProcess.GetModel();
+                return View(model);
+            }
+            else if (_operacionProcess.IsAdmin)
+            {
+                return RedirectToDashboardAdmin();
             }
             else
             {
-                return View(model);
+                return RedirectToLogin();
             }
         }
+
+        public IActionResult ViewPost(int idPost)
+        {
+            var postView = _operacionProcess.ViewPost(idPost);
+            return Json(postView);
+        }
+
     }
 }

@@ -16,6 +16,11 @@ using Microsoft.EntityFrameworkCore;
 using Commerce.Amazon.Engine.Managers;
 using Commerce.Amazon.Web.Repositories;
 using Commerce.Amazon.Web.Managers.Interfaces;
+using Commerce.Amazon.Tools.Tools;
+using Commerce.Amazon.Tools.Contracts;
+using Commerce.Amazon.Domain.Config;
+using Commerce.Amazon.Web.ActionsProcess;
+using Commerce.Amazon.Domain.Helpers;
 
 namespace Commerce.Amazon.Web
 {
@@ -69,36 +74,39 @@ namespace Commerce.Amazon.Web
 
             builder.RegisterType<OperationManager>().As<IOperationManager>();
             builder.RegisterType<AccountManager>().As<IAccountManager>();
+            builder.RegisterType<MailSender>().As<IMailSender>();
             builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
             builder.RegisterType<CustomSiteMapModule>();
 
-            //services.AddSingleton<ILoggerManager, LoggerManager>();
+            services.AddSingleton<OperacionProcess>();
+            services.AddSingleton<AccountProcess>();
+            services.AddSingleton<TokenManager>();
+            services.AddSingleton<TestProcess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             builder.Populate(services);
 
+            GlobalConfiguration.Setting = Configuration.GetSection("Settings").Get<Setting>();
+            GlobalConfiguration.Messages = new Messages();
+
             var container = builder.Build();
 
-            //var operationManager = container.Resolve<IOperationManager>();
+            //var testProcess = container.Resolve<ITestProcess>();
+            //var accountManager = container.Resolve<IAccountManager>();
             //try
             //{
-            //    operationManager.SaveUser(new User
+            //    accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
             //    {
-            //        Id = 1,
-            //        Nom = "DDAD",
-            //        Prenom = "Abdou",
-            //        Email = "abdouhdd@outlook.com",
-            //        UserId = "ABDOU",
-            //        UserGuid = "ABDOU1234",
-            //        State = 1
+            //         Email = "abderrahmanhdd@gmail.com",
+            //         Password = "123456"
             //    });
+            //    testProcess.AddGroups();
+            //    testProcess.AddUsers();
             //}
             //catch (Exception ex)
             //{
-            //    Console.Error.WriteLine(ex);
-            //    throw;
+            //    Console.WriteLine(ex);
             //}
-
             return container.Resolve<IServiceProvider>();
 
         }
