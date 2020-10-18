@@ -5,6 +5,7 @@ using Commerce.Amazon.Web.Controllers.Base;
 using Commerce.Amazon.Web.Models;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Commerce.Amazon.Web.Controllers
 {
@@ -36,55 +37,83 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult FindGroups(FilterGroup filterGroup)
         {
-            var groups = _accountProcess.FindGroups(filterGroup);
-            return Json(groups);
+            try
+            {
+                var groups = _accountProcess.FindGroups(filterGroup);
+                return Json(groups);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
-        
+
         public IActionResult FindUsers(FilterUser filterUser)
         {
-            var users = _accountProcess.FindUsers(filterUser);
-            return Json(users);
+            try
+            {
+                var users = _accountProcess.FindUsers(filterUser);
+                return Json(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult SaveUser(User user)
         {
-            var result = _accountProcess.SaveUser(user);
-            return Json(result);
-        } 
-        
+            try
+            {
+                var result = _accountProcess.SaveUser(user);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         public IActionResult Envoie()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            var model = _accountProcess.GetModel();
             return View(model);
 
         }
-     public IActionResult accueil()
+        public IActionResult Profile()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            var model = _accountProcess.GetModel();
+            return View(model);
+        }
+        public IActionResult PosteProduit()
+        {
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            var model = _accountProcess.GetModel();
             return View(model);
 
-        }public IActionResult PosteProduit()
+        }
+        public IActionResult Valide()
         {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
+            //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
+            var model = _accountProcess.GetModel();
             return View(model);
-
-        }public IActionResult Valide()
-        {
-            var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
-            //model = _accountProcess.GetModel();
-            return View(model);
-
         }
 
         public IActionResult SaveGroup(Group group)
         {
-            var result = _accountProcess.SaveGroup(group);
-            return Json(result);
+            try
+            {
+                var result = _accountProcess.SaveGroup(group);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
-        
+
     }
 
 }

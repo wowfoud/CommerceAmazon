@@ -5,10 +5,9 @@
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 <section class="login_content">
-    <img style="width:60%"  src="/images/LogoApp.png" />
+    <img style="width:60%" src="/images/LogoApp.png" />
     @using (Html.BeginForm())
     {
-        <h1>Iniciar sesión</h1>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">

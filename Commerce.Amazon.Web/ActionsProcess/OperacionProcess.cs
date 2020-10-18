@@ -2,21 +2,23 @@
 using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response;
+using Commerce.Amazon.Tools.Tools;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Commerce.Amazon.Web.ActionsProcess
 {
     public class OperacionProcess : BaseActionProcess
-	{
+    {
         private readonly IAccountManager _accountManager;
         private readonly IOperationManager _operationManager;
 
         public OperacionProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IOperationManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
-		{
+        {
             _accountManager = accountManager;
             _operationManager = operationManager;
         }
@@ -55,6 +57,18 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return postView;
         }
 
+        public PostView ViewDetailsPostUser(int idPost)
+        {
+            PostView postView = _operationManager.ViewDetailsPostUser(idPost, dataUser);
+            return postView;
+        }
+
+        public PostView ViewDetailsPost(int idPost)
+        {
+            PostView postView = _operationManager.ViewDetailsPost(idPost, dataUser);
+            return postView;
+        }
+
         public TResult<int> NotifyUsers(NotifyRequest notifyRequest)
         {
             AssertIsAdmin();
@@ -86,8 +100,48 @@ namespace Commerce.Amazon.Web.ActionsProcess
         public string GetPathUploadScreen(string filename)
         {
             AssertIsUser();
+            HelperFile.CreateDirectoryIfNotExists(dataUser.UserId);
             string uploadTo = HelperFile.GenerateFullPathScreen(filename, dataUser.UserId);
+            if (System.IO.File.Exists(uploadTo))
+            {
+                uploadTo = "";
+            }
             return uploadTo;
+        }
+
+        public GroupView[] FindMyGroups()
+        {
+            AssertIsUser();
+            var groups = _operationManager.FindMyGroupsView(dataUser);
+            return groups;
+        }
+
+        public string FindScreenComment(int idPost, int idUser)
+        {
+            string filename = _operationManager.FindScreenComment(idPost, idUser, dataUser, out string userId);
+            if (!string.IsNullOrEmpty(filename))
+            {
+                filename = HelperFile.GenerateFullPathScreen(filename, userId);
+                if (!File.Exists(filename))
+                {
+                    filename = "";
+                }
+            }
+            return filename;
+        }
+
+        public string FindScreenComment(int idPost)
+        {
+            string filename = _operationManager.FindScreenComment(idPost, dataUser.IdUser, dataUser, out string userId);
+            if (!string.IsNullOrEmpty(filename))
+            {
+                filename = HelperFile.GenerateFullPathScreen(filename, userId);
+                if (!File.Exists(filename))
+                {
+                    filename = "";
+                }
+            }
+            return filename;
         }
     }
 

@@ -10,5 +10,17 @@ namespace Commerce.Amazon.Domain.Helpers
             string uploadTo = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId, filename);
             return uploadTo;
         }
+
+        public static bool CreateDirectoryIfNotExists(string userId)
+        {
+            bool create = false;
+            string directory = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+                create = true;
+            }
+            return create;
+        }
     }
 }

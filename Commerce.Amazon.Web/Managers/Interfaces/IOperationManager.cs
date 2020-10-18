@@ -18,5 +18,10 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         IEnumerable<PostView> ViewPostsUser(FilterPost filterPost, DataUser dataUser);
         IEnumerable<PostView> ViewPostsToBuy(FilterPost filterPost, DataUser dataUser);
         TResult<int> CommentPost(CommentRequest commentRequest, DataUser dataUser);
+        PostView ViewDetailsPost(int idPost, DataUser dataUser);
+        IEnumerable<Group> FindMyGroups(DataUser dataUser);
+        GroupView[] FindMyGroupsView(DataUser dataUser);
+        PostView ViewDetailsPostUser(int idPost, DataUser dataUser);
+        string FindScreenComment(int idPost, int idUser, DataUser dataUser, out string userId);
     }
 }

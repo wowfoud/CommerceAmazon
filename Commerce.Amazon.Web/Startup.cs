@@ -86,9 +86,8 @@ namespace Commerce.Amazon.Web
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             builder.Populate(services);
 
-            GlobalConfiguration.Setting = Configuration.GetSection("Settings").Get<Setting>();
+            GlobalConfiguration.Setting = Configuration.GetSection("Settings").Get<Settings>();
             GlobalConfiguration.Messages = new Messages();
-
             var container = builder.Build();
 
             //var testProcess = container.Resolve<ITestProcess>();

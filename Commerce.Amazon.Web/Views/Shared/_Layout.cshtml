@@ -74,7 +74,9 @@
                                         <ul class="nav child_menu">
                                             <li><a href="@Url.Action("NewPost", "Post")"><i class="fa fa-amazon"></i> Nouveau Post</a></li>
                                             <li><a href="@Url.Action("Historique", "Post")"><i class="fa fa-book"></i> Historique</a></li>
-                                            <li><a href="@Url.Action("PostsToBuy", "Post")"><i class="fa fa-dollar"></i> Posts A Acheter</a></li>
+                                            <li><a href="@Url.Action("PostsToBuy", "Post")"><i class="fa fa-dollar"></i> Posts à acheter</a></li>
+                                            <li><a href="@Url.Action("PostsPurchased", "Post")"><i class="fa fa-dollar"></i> Posts achetés</a></li>
+                                            <li><a href="@Url.Action("PostsExpired", "Post")"><i class="fa fa-dollar"></i> Posts expirés</a></li>
                                         </ul>
                                     </li>
                                 }
@@ -148,6 +150,7 @@
                     </div>
                 </div>
                 <div class="row">
+                    @Html.Partial("Modals/Alert")
                     @RenderBody()
                     <div id="idLoader" class="loader hidden"></div>
                 </div>

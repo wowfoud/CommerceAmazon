@@ -1,20 +1,19 @@
 ﻿
 @{
-    ViewData["Title"] = "Posts a acheter";
+    ViewData["Title"] = "Posts expirés";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Posts a acheter</h2>
-@Html.Partial("Modals/FilterPostsToBuy")
-<div class="nowrap filtrer" id="divPostsToBuy">
-    <table class="table table-bordered table-responsive table-hover" id="tablePostsToBuy">
+
+<h2>Posts expirés</h2>
+@Html.Partial("Modals/FilterPostsExpired")
+<div class="nowrap filtrer" id="divPostsExpired">
+    <table class="table table-bordered table-responsive table-hover" id="tablePostsExpired">
         <thead id="theaddashboard">
             <tr class="thdashboard">
                 <th class="alignCenter" data-priority="1">Id</th>
                 <th class="alignCenter" data-priority="1">Url</th>
                 <th class="alignCenter" data-priority="1">Description</th>
                 <th class="alignCenter" data-priority="1">Prix</th>
-                <th class="alignCenter" data-priority="1">Date envoyé</th>
-                <th class="alignCenter" data-priority="1">Date limite</th>
                 <th class="alignCenter" data-priority="1"></th>
             </tr>
         </thead>
@@ -23,5 +22,5 @@
 </div>
 <script src="~/js/Internal/operations.js"></script>
 <script>
-    commerce.amazon.web.operation.InitPostsToBuy();
+    commerce.amazon.web.operation.InitPostsExpired();
 </script>

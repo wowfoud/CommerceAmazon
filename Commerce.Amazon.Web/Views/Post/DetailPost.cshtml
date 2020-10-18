@@ -1,10 +1,9 @@
 ﻿
 @{
-    ViewData["Title"] = "Acheter Produit";
+    ViewData["Title"] = "Detail Post";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>Acheter Produit</h2>
+<h2>Detail Post</h2>
 <div class="filtrer">
     <form id="formAchat" onsubmit="return false;">
         <div class="row">
@@ -13,8 +12,8 @@
                     <label for="Url">Url : </label><a href="" id="Url" target="_blank"></a>
                     <input id="idPost" type="hidden" />
                     @*<div class="control-label ">
-                        <input id="Url" name="Url" type="text" class="form-control input-sm" disabled />
-                    </div>*@
+                            <input id="Url" name="Url" type="text" class="form-control input-sm" disabled />
+                        </div>*@
                 </div>
                 <div class="form-group">
                     <label for="Description">Description :</label>
@@ -29,36 +28,25 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="DateNotified">Date envoyé :</label>
+                    <label for="DateNotified">Date envoyé:</label>
                     <div class="control-label ">
                         <input id="DateNotified" name="DateNotified" type="text" class="form-control input-sm" disabled />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="DateLimite">Date limite :</label>
+                    <label for="DateComment">Date commentaire:</label>
                     <div class="control-label ">
-                        <input id="DateLimite" name="DateLimite" type="text" class="form-control input-sm" disabled />
+                        <input id="DateComment" name="DateComment" type="text" class="form-control input-sm" disabled />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="screen-comment">Upload Screen Commentaire :</label>
-                    <div class="control-label ">
-                        <input id="screen-comment" name="screen-comment" type="file" accept="image/*" class="form-control input-sm" />
+                @if (!string.IsNullOrEmpty(ViewBag.Image))
+                {
+                    <div class="form-group">
+                        <div class="col-md-6 text-center">
+                            <img src="@Url.Content(ViewBag.Image)" alt="" id="idImgScreen" style="height:400px;" />
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-6 text-center">
-                <div class="form-group">
-                    <img src="#" alt="" id="idImgScreen" style="height:400px;" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+                }
                 <div class="form-group">
                     <label for="idComment">Commentaire :</label>
                     <div class="control-label ">
@@ -67,14 +55,9 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <button class="btn btn-success form-control" id="idBtnComment">Envoyer</button>
-            </div>
-        </div>
     </form>
 </div>
 <script src="~/js/Internal/operations.js"></script>
 <script>
-    commerce.amazon.web.operation.InitBuyProduct();
+    commerce.amazon.web.operation.InitDetailPost();
 </script>

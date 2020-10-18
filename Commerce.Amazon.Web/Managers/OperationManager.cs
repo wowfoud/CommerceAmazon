@@ -110,60 +110,99 @@ namespace Commerce.Amazon.Engine.Managers
 
         public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost, DataUser dataUser)
         {
-            var posts = _context.PostPlanings.Where(pp => pp.IdPost == idPost).Select(pp => new PostPlaningView
-            {
-                IdPost = pp.IdPost,
-                IdUser = pp.IdUser,
-                State = pp.State,
-                DatePlanifie = pp.DatePlanifie,
-                DateNotified = pp.DateNotified,
-                DateComment = pp.DateComment,
-                DateLimite = pp.DateLimite,
-                Nom = pp.User.Nom,
-                Prenom = pp.User.Prenom
-            }).ToArray();
+            var query = from pp in _context.PostPlanings
+                        join u in _context.Users on pp.IdUser equals u.Id
+                        where pp.IdPost == idPost
+                        select new PostPlaningView
+                        {
+                            IdPost = pp.IdPost,
+                            IdUser = pp.IdUser,
+                            State = pp.State,
+                            DatePlanifie = pp.DatePlanifie,
+                            DateNotified = pp.DateNotified,
+                            DateComment = pp.DateComment,
+                            DateLimite = pp.DateLimite,
+                            Nom = pp.User.Nom,
+                            Prenom = pp.User.Prenom
+                        };
+            var posts = query.ToArray();
             return posts;
         }
 
         public PostView ViewPost(int idPost, DataUser dataUser)
         {
             PostView postView = null;
-            Post poste = _context.Posts.Find(idPost);
-            if (poste != null && (dataUser.IsAdmin || dataUser.IdUser == poste.IdUser))
+            Post post = _context.Posts.Find(idPost);
+            if (post != null)
             {
-                postView = _context.Posts.GroupJoin(_context.PostPlanings, (p) => p.Id, (pp) => pp.IdPost, (post, plans) => new PostView
+                postView = new PostView
                 {
                     Id = post.Id,
                     IdUser = post.IdUser,
                     Url = post.Url,
-                    Nom = post.User.Nom,
-                    Prenom = post.User.Prenom,
-                    DateCreate = post.DateCreate,
+                    //Nom = post.User.Nom,
+                    //Prenom = post.User.Prenom,
+                    DateCreated = post.DateCreate,
                     Description = post.Description,
                     Prix = post.Prix,
-                    CountCommented = plans.Count(pp => pp.State == EnumStatePlaning.Commented),
-                    CountPlanifie = plans.Count(pp => pp.State == EnumStatePlaning.Planifie),
-                    CountNotified = plans.Count(pp => pp.State == EnumStatePlaning.Notified),
-                    CountExpired = plans.Count(pp => pp.State == EnumStatePlaning.Expired),
-                }).SingleOrDefault(a => a.Id == idPost);
-
-                //var post = _context.Posts.SingleOrDefault(p => p.Id == idPost);
-                //var postView = new PostView
-                //{
-                //    Id = post.Id,
-                //    IdUser = post.IdUser,
-                //    Url = post.Url,
-                //    CountCommented = post.Planings.Count(pp => pp.State == EnumStatePlaning.Commented),
-                //    CountCreated = post.Planings.Count(pp => pp.State == EnumStatePlaning.Created),
-                //    CountNotified = post.Planings.Count(pp => pp.State == EnumStatePlaning.Notified),
-                //    CountExpired = post.Planings.Count(pp => pp.State == EnumStatePlaning.Expired),
-                //    Nom = post.User.Nom,
-                //    Prenom = post.User.Prenom,
-                //    DateCreate = post.DateCreate,
-                //    Description = post.Description,
-                //    Prix = post.Prix
-                //};
+                };
             }
+            return postView;
+        }
+
+        public PostView ViewDetailsPost(int idPost, DataUser dataUser)
+        {
+            PostView postView = null;
+            var query = from p in _context.Posts
+                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        join u in _context.Users on p.IdUser equals u.Id
+                        where p.Id == idPost
+                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
+                        by new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
+                    into temp
+                        select new PostView
+                        {
+                            Id = temp.Key.Id,
+                            IdUser = temp.Key.IdUser,
+                            Url = temp.Key.Url,
+                            Nom = temp.Key.Nom,
+                            Prenom = temp.Key.Prenom,
+                            DateCreated = temp.Key.DateCreate,
+                            Description = temp.Key.Description,
+                            Prix = temp.Key.Prix,
+                            //State = temp.Key.State,
+                            Total = temp.Count(),
+                            CountPlanifie = temp.Count(pl => pl.State == EnumStatePlaning.Planifie),
+                            CountNotified = temp.Count(pl => pl.State == EnumStatePlaning.Notified),
+                            CountCommented = temp.Count(pl => pl.State == EnumStatePlaning.Commented),
+                            CountExpired = temp.Count(pl => pl.State == EnumStatePlaning.Expired),
+                        };
+            postView = query.SingleOrDefault();
+            return postView;
+        }
+
+        public PostView ViewDetailsPostUser(int idPost, DataUser dataUser)
+        {
+            PostView postView = null;
+            var query = from p in _context.Posts
+                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        where p.Id == idPost && pp.IdUser == dataUser.IdUser
+                        select new PostView
+                        {
+                            Id = p.Id,
+                            IdUser = pp.IdUser,
+                            Url = p.Url,
+                            Prix = p.Prix,
+                            Description = p.Description,
+                            DateCreated = p.DateCreate,
+                            DateNotified = pp.DateNotified,
+                            IsExpired = pp.State == EnumStatePlaning.Expired,
+                            DaysRemaining = (pp.DateLimite.GetValueOrDefault().TrimTime() - DateTime.Now.TrimTime()).Days,
+                            DateLimite = pp.DateLimite,
+                            Comment = pp.Comment,
+                            DateComment = pp.DateComment
+                        };
+            postView = query.SingleOrDefault();
             return postView;
         }
 
@@ -206,7 +245,7 @@ namespace Commerce.Amazon.Engine.Managers
                 }
                 _context.SaveChanges();
                 result.Status = StatusResponse.OK;
-                result.Message = $"Usuarios are notified";
+                result.Message = $"Utilisateur sont notifies";
             }
             catch (Exception ex)
             {
@@ -218,12 +257,11 @@ namespace Commerce.Amazon.Engine.Managers
 
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost, DataUser dataUser)
         {
-            
             var query = from p in _context.Posts
                         join pp in _context.PostPlanings on p.Id equals pp.IdPost
                         join u in _context.Users on p.IdUser equals u.Id
                         where p.IdUser == dataUser.IdUser
-                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State } 
+                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
                         by new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
                         into temp
                         select new PostView
@@ -233,7 +271,7 @@ namespace Commerce.Amazon.Engine.Managers
                             Url = temp.Key.Url,
                             Nom = temp.Key.Nom,
                             Prenom = temp.Key.Prenom,
-                            DateCreate = temp.Key.DateCreate,
+                            DateCreated = temp.Key.DateCreate,
                             Description = temp.Key.Description,
                             Prix = temp.Key.Prix,
                             //State = temp.Key.State,
@@ -249,15 +287,42 @@ namespace Commerce.Amazon.Engine.Managers
 
         public IEnumerable<PostView> ViewPostsToBuy(FilterPost filterPost, DataUser dataUser)
         {
-            var posts = _context.PostPlanings.Where(pp => pp.IdUser == dataUser.IdUser)
-                .Join(_context.Posts, (pp) => pp.IdPost, (p) => p.Id, (plans, post) => new PostView
+            if (filterPost.StatePlan == EnumStatePlaning.Planifie)
+            {
+                filterPost.StatePlan = EnumStatePlaning.Notified;
+            }
+            var posts = _context.PostPlanings.Where(pp => pp.IdUser == dataUser.IdUser && pp.State == filterPost.StatePlan)
+                .Join(_context.Posts, (pp) => pp.IdPost, (p) => p.Id, (plan, post) => new PostView
                 {
                     Id = post.Id,
                     IdUser = post.IdUser,
                     Url = post.Url,
-                    DateCreate = post.DateCreate,
+                    DateCreated = post.DateCreate,
+                    DateNotified = plan.DateNotified,
                     Description = post.Description,
                     Prix = post.Prix,
+                    IsExpired = plan.State == EnumStatePlaning.Expired,
+                    DaysRemaining = (plan.DateLimite.GetValueOrDefault().TrimTime() - DateTime.Now.TrimTime()).Days,
+                    DateLimite = plan.DateLimite
+                }).ToArray();
+            return posts;
+        }
+
+        public IEnumerable<PostView> ViewAllPostsToBuy(FilterPost filterPost, DataUser dataUser)
+        {
+            var posts = _context.PostPlanings.Where(pp => pp.IdUser == dataUser.IdUser && (pp.State == EnumStatePlaning.Commented || pp.State == EnumStatePlaning.Expired))
+                .Join(_context.Posts, (pp) => pp.IdPost, (p) => p.Id, (plan, post) => new PostView
+                {
+                    Id = post.Id,
+                    IdUser = post.IdUser,
+                    Url = post.Url,
+                    DateCreated = post.DateCreate,
+                    DateNotified = plan.DateNotified,
+                    Description = post.Description,
+                    Prix = post.Prix,
+                    IsExpired = plan.DateLimite < DateTime.Now,
+                    DaysRemaining = (plan.DateLimite.GetValueOrDefault() - DateTime.Now).Days,
+                    DateLimite = plan.DateLimite
                 }).ToArray();
             return posts;
         }
@@ -268,12 +333,20 @@ namespace Commerce.Amazon.Engine.Managers
             var post = _context.Posts.SingleOrDefault(p => p.Id == commentRequest.IdPost);
             if (post == null)
             {
-                throw new Exception("post id invalid");
+                throw new Exception($"post id invalid '{commentRequest.IdPost}'");
             }
-            var postPlan = post.Planings.SingleOrDefault(pp => pp.IdUser == dataUser.IdUser);
+            var postPlan = _context.PostPlanings.SingleOrDefault(pp => pp.IdPost == commentRequest.IdPost && pp.IdUser == dataUser.IdUser);
             if (postPlan == null)
             {
                 throw new Exception("post planing id invalid");
+            }
+            if (postPlan.State == EnumStatePlaning.Commented)
+            {
+                throw new Exception("post deja commente");
+            }
+            if (postPlan.State == EnumStatePlaning.Expired)
+            {
+                throw new Exception("post a été expire");
             }
             if (postPlan.DateLimite < DateTime.Now)
             {
@@ -286,6 +359,53 @@ namespace Commerce.Amazon.Engine.Managers
             int n = _context.SaveChanges();
             result.Result = n;
             return result;
+        }
+
+        public IEnumerable<Group> FindMyGroups(DataUser dataUser)
+        {
+            var query = from g in _context.Groups
+                        join u in _context.Users on g.Id equals u.IdGroup
+                        where u.Id == dataUser.IdUser
+                        select g;
+            var groups = query.ToArray();
+            return groups;
+        }
+
+        public GroupView[] FindMyGroupsView(DataUser dataUser)
+        {
+            var query = from g in _context.Groups
+                        join u in _context.Users on g.Id equals u.IdGroup
+                        where u.Id == dataUser.IdUser
+                        select new GroupView
+                        {
+                            Id = g.Id,
+                            Name = g.Name
+                        };
+            var groups = query.ToArray();
+            return groups;
+        }
+
+        public string FindScreenComment(int idPost, int idUser, DataUser dataUser, out string userId)
+        {
+            var query = from p in _context.Posts
+                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        join u in _context.Users on pp.IdUser equals u.Id
+                        where pp.IdPost == idPost && pp.IdUser == idUser
+                        select new
+                        {
+                            PathScreenComment = pp.PathScreenComment,
+                            UserPoster = u.UserId,
+                            IdUserPoster = p.IdUser
+                        };
+            var result = query.SingleOrDefault();
+            string pathScreenComment = "";
+            userId = "";
+            if (result != null && (dataUser.IsAdmin || dataUser.IdUser == idUser || dataUser.IdUser == result.IdUserPoster))
+            {
+                userId = result.UserPoster;
+                pathScreenComment = result.PathScreenComment;
+            }
+            return pathScreenComment;
         }
     }
 }

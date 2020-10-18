@@ -21,37 +21,79 @@ namespace Commerce.Amazon.Web.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult PostProduit(Post post)
         {
-            TResult<int> result = _operacionProcess.PostProduit(post);
-            return Json(result);
+            try
+            {
+                TResult<int> result = _operacionProcess.PostProduit(post);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult CanEditPost(int idPost)
         {
-            bool isCan = _operacionProcess.CanEditPost(idPost);
-            return Json(isCan);
+            try
+            {
+                bool isCan = _operacionProcess.CanEditPost(idPost);
+                return Json(isCan);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult PlanifierNotificationPost(int idPost)
         {
-            int n = _operacionProcess.PlanifierNotificationPost(idPost);
-            return Json(n);
+            try
+            {
+                int n = _operacionProcess.PlanifierNotificationPost(idPost);
+                return Json(n);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult ViewPlaningPost(int idPost)
         {
-            var posts = _operacionProcess.ViewPlaningPost(idPost);
-            return Json(posts);
+            try
+            {
+                var posts = _operacionProcess.ViewPlaningPost(idPost);
+                return Json(posts);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult NotifyUsers(NotifyRequest notifyRequest)
         {
-            TResult<int> result = _operacionProcess.NotifyUsers(notifyRequest);
-            return Json(result);
+            try
+            {
+                TResult<int> result = _operacionProcess.NotifyUsers(notifyRequest);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult ViewPostsUser(FilterPost filterPost)
@@ -63,7 +105,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
         }
 
@@ -76,31 +118,21 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
         }
 
         public IActionResult CommentPost(CommentRequest commentRequest)
         {
-            TResult<int> result = _operacionProcess.CommentPost(commentRequest);
-            return Json(result);
-        }
-
-        [HttpPost]
-        public IActionResult UploadScreen(List<IFormFile> listFiles)
-        {
-            IFormFile formFile = listFiles[0];
-            string filename = ContentDispositionHeaderValue.Parse(formFile.ContentDisposition).FileName.Trim('"');
-            string uploadTo = _operacionProcess.GetPathUploadScreen(filename);
-            if (!string.IsNullOrEmpty(uploadTo))
+            try
             {
-                using (System.IO.FileStream output = System.IO.File.Create(uploadTo))
-                {
-                    formFile.CopyTo(output);
-                    uploadTo = System.IO.Path.GetFileName(uploadTo);
-                }
+                TResult<int> result = _operacionProcess.CommentPost(commentRequest);
+                return Json(result);
             }
-            return Json(uploadTo);
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
     }

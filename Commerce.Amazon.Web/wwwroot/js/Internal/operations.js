@@ -72,23 +72,38 @@ commerce.amazon.web.operation =
                 if (!!that.SelectedScreen && !!idPost) {
                     that.UploadScreen(that.SelectedScreen, function (filename) {
                         that.CommentPost(filename, comment, idPost, function (result) {
-                            alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                            if (!!result && result.Status === 0) {
+                                Swal.fire({ title: 'Votre commentaire enregistré avec succes', html: '', type: "success", confirmButtonColor: '#492c8f' });
+                            } else {
+
+                            }
                         });
                     });
                 }
             })
-            
+
             $('#idBtnSavePost').click(function () {
                 $('#errorMsgDiv').text('');
                 var url = $('#Url').val();
                 var description = $('#Description').val();
                 var prix = $('#Prix').val();
+                if (!url) {
+                    return;
+                }
+                Swal.showLoading();
                 that.PostProduit(url, description, prix, function (result) {
-                    $('#errorMsgDiv').text(result.Message);
-                    alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                    if (!!result && result.Status === 0) {
+                        //alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                        Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#492c8f' });
+                        $('#Url').val('');
+                        $('#Description').val('');
+                        $('#Prix').val('');
+                    } else {
+                        //$('#errorMsgDiv').text(result.Message);
+                    }
                 });
             })
-            
+
             $('#btnFilterPostsUser').click(function () {
                 var dateMin = $('#dateMin').val();
                 var dateMax = $('#dateMax').val();
@@ -98,35 +113,64 @@ commerce.amazon.web.operation =
                     that.LoadPostsUser(data);
                 });
             })
-            
+
             $('#btnFilterPostsToBuy').click(function () {
                 var dateMin = $('#dateMin').val();
                 var dateMax = $('#dateMax').val();
                 var idGroup = $('#sltGroup').val();
-                var state = 1;
+                var state = 2;
                 that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
                     that.LoadPostsToBuy(data);
                 });
             })
+
+            $('#btnFilterPostsPurchased').click(function () {
+                var dateMin = $('#dateMin').val();
+                var dateMax = $('#dateMax').val();
+                var idGroup = $('#sltGroup').val();
+                var state = 3;
+                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                    that.LoadPostsPurchased(data);
+                });
+            })
+
+            $('#btnFilterPostsExpired').click(function () {
+                var dateMin = $('#dateMin').val();
+                var dateMax = $('#dateMax').val();
+                var idGroup = $('#sltGroup').val();
+                var state = 4;
+                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                    that.LoadPostsExpired(data);
+                });
+            })
+
             $('#screen-comment').change(function () {
 
                 that.SelectedScreen = this.files[0];
 
                 var fr = new FileReader();
                 fr.onload = function () {
-                    console.log(fr.result);
+                    //console.log(fr.result);
                     $('#idImgScreen').attr('src', fr.result);
                 }
                 fr.readAsDataURL(that.SelectedScreen);
 
             });
+
             this.LoadPostsUser = function (posts) {
                 var columns = [
                     {
                         data: 'Id'
                     },
                     {
-                        data: 'Url'
+                        data: 'Url',
+                        render: function (data, type, row) {
+                            var url = data;
+                            if (!!data && data.length > 70) {
+                                url = data.substring(0, 67) + "...";
+                            }
+                            return `<a href="${data}" target="_blank">${url}</a>`;
+                        }
                     },
                     {
                         data: 'Description'
@@ -135,7 +179,7 @@ commerce.amazon.web.operation =
                         data: 'Prix'
                     },
                     {
-                        data: 'DateCreate',
+                        data: 'DateCreated',
                     },
                     {
                         data: 'CountNotified',
@@ -181,26 +225,39 @@ commerce.amazon.web.operation =
                         }
                     },
                     drawCallback: function (settings) {
-                        
+
                     }
                 });
 
                 $($.fn.dataTable.tables()).DataTable().columns.adjust();
             }
-            
+
             this.LoadPostsToBuy = function (posts) {
                 var columns = [
                     {
                         data: 'Id'
                     },
                     {
-                        data: 'Url'
+                        data: 'Url',
+                        render: function (data, type, row) {
+                            var url = data;
+                            if (!!data && data.length > 70) {
+                                url = data.substring(0, 67) + "...";
+                            }
+                            return `<a href="${data}" target="_blank">${url}</a>`;
+                        }
                     },
                     {
                         data: 'Description'
                     },
                     {
                         data: 'Prix'
+                    },
+                    {
+                        data: 'DateNotified'
+                    },
+                    {
+                        data: 'DateLimite'
                     },
                     {
                         data: '',
@@ -240,27 +297,205 @@ commerce.amazon.web.operation =
                         }
                     },
                     drawCallback: function (settings) {
-                        
+
+                    },
+                    createdRow: function (row, data, index) {
+                        var title = '';
+                        if (data.DaysRemaining === 1) {
+                            $(row).addClass('danger');
+                            title = `un jour restante pour acheter ce produit`;
+                        }
+                        if (data.DaysRemaining > 1) {
+                            title = `${data.DaysRemaining} jours restantes pour acheter ce produit`;
+                        }
+                        $(row).find('td:eq(5)')
+                            .attr('title', title);
+                    }
+                });
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+
+            this.LoadPostsPurchased = function (posts) {
+                var columns = [
+                    {
+                        data: 'Id'
+                    },
+                    {
+                        data: 'Url',
+                        render: function (data, type, row) {
+                            var url = data;
+                            if (!!data && data.length > 70) {
+                                url = data.substring(0, 67) + "...";
+                            }
+                            return `<a href="${data}" target="_blank">${url}</a>`;
+                        }
+                    },
+                    {
+                        data: 'Description'
+                    },
+                    {
+                        data: 'Prix'
+                    },
+                    {
+                        data: '',
+                        render: function (data, type, row) {
+                            return `<a href='/Post/DetailPost?idPost=${row.Id}' style='cursor: pointer; text-decoration: underline' class='cursorPointer' data-id='${row.Id}'>Detail</a>`;
+                        }
+                    }
+                ]
+                $('#tablePostsPurchased').DataTable({
+                    responsive: true,
+                    data: posts,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+
                     }
                 });
 
                 $($.fn.dataTable.tables()).DataTable().columns.adjust();
             }
 
-            this.DetailPost = function () {
-                var params = new URLSearchParams(document.location.search);
-                var idPost = params.get('idPost');
-                that.ViewPost(idPost, function (post) {
-                    that.LoadPost(post);
+            this.LoadPostsExpired = function (posts) {
+                var columns = [
+                    {
+                        data: 'Id'
+                    },
+                    {
+                        data: 'Url',
+                        render: function (data, type, row) {
+                            var url = data;
+                            if (!!data && data.length > 70) {
+                                url = data.substring(0, 67) + "...";
+                            }
+                            return `<a href="${data}" target="_blank">${url}</a>`;
+                        }
+                    },
+                    {
+                        data: 'Description'
+                    },
+                    {
+                        data: 'Prix'
+                    },
+                    {
+                        data: '',
+                        render: function (data, type, row) {
+                            return `<a href='/Post/BuyProduct?idPost=${row.Id}' style='cursor: pointer; text-decoration: underline' class='cursorPointer' data-id='${row.Id}'>Detail</a>`;
+                        }
+                    }
+                ]
+                $('#tablePostsExpired').DataTable({
+                    responsive: true,
+                    data: posts,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+
+                    }
                 });
+
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+
+            this.RunViewPost = function () {
+                var idPost = that.GetParameter('idPost');
+                if (!!idPost) {
+                    that.ViewPost(idPost, function (post) {
+                        that.LoadPost(post);
+                    });
+                }
+            }
+
+            this.RunViewDetailsPostUser = function () {
+                var idPost = that.GetParameter('idPost');
+                if (!!idPost) {
+                    that.ViewDetailsPostUser(idPost, function (post) {
+                        that.LoadDetailsPostUser(post);
+                        //var url = `/Post/DownloadScreenComment?idPost=${idPost}&idUser=${post.IdUser}`;
+                        //$('#idImgScreen').attr('src', url);
+                        that.DownloadImage(`/Post/DownloadScreenComment?idPost=${idPost}&idUser=${post.IdUser}`);
+                    });
+                }
+            }
+
+            this.GetParameter = function (name) {
+                var params = new URLSearchParams(document.location.search);
+                return params.get(name);
             }
 
             this.LoadPost = function (post) {
                 $('#idPost').val(post.Id);
                 $('#Url').val(post.Url);
+                $('#Url').text(post.Url);
+                $('#Url').attr('href', post.Url);
                 $('#Description').val(post.Description);
                 $('#Prix').val(post.Prix);
-                $('#Date').val(post.Date);
+                $('#DateCreated').val(post.DateCreated);
+                $('#DateNotified').val(post.DateNotified);
+                $('#DateLimite').val(post.DateLimite);
+            }
+            
+            this.LoadDetailsPostUser = function (post) {
+                $('#idPost').val(post.Id);
+                $('#Url').val(post.Url);
+                $('#Url').text(post.Url);
+                $('#Url').attr('href', post.Url);
+                $('#Description').val(post.Description);
+                $('#Prix').val(post.Prix);
+                $('#DateCreated').val(post.DateCreated);
+                $('#DateNotified').val(post.DateNotified);
+                $('#idComment').val(post.Comment);
+                $('#DateComment').val(post.DateComment);
             }
 
             //----------------------End event------------------------//
@@ -286,6 +521,35 @@ commerce.amazon.web.operation =
                     error: function (err) {
                         that.OnError();
                     }
+                });
+            }
+            this.FindMyGroups = function (handler) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Post/FindMyGroups",
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+            this.LoadMyGroups = function (groups) {
+                $('#sltGroup').empty();
+                if (groups.length > 1) {
+                    $('#sltGroup').append(
+                        $('<option></option>').val("").text("Sélectionner")
+                    );
+                }
+                $.each(groups, function (i, group) {
+                    $('#sltGroup').append(
+                        $('<option></option>').val(group.Id).text(group.Name)
+                    )
                 });
             }
             this.CanEditPost = function (idPost, handler) {
@@ -358,6 +622,27 @@ commerce.amazon.web.operation =
                 $.ajax({
                     type: "POST",
                     url: "/Post/ViewPost",
+                    data: data,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            console.log(data);
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+            this.ViewDetailsPostUser = function (idPost, handler) {
+                var data = {
+                    IdPost: idPost,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Post/ViewDetailsPostUser",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -469,7 +754,7 @@ commerce.amazon.web.operation =
                         var fileData = new FormData();
                         fileData.append('listFiles', selectedFile, selectedFile.name);
                         $.ajax({
-                            url: '/Admin/UploadScreen',
+                            url: '/Post/UploadScreen',
                             type: "POST",
                             dataType: 'json',
                             contentType: false,
@@ -491,6 +776,26 @@ commerce.amazon.web.operation =
                     }
                 }
             }
+            this.DownloadImage = function (url, filename, error) {
+                let xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("POST", url, true);
+                xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+                xmlhttp.setRequestHeader('Cache-Control', 'no-cache');
+                xmlhttp.responseType = "blob";
+                xmlhttp.onload = function (e) {
+                    if (this.status == 200) {
+                        if (this.response.size === 8) {
+                            AlertError(error);
+                        } else {
+                            const blob = this.response;
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            console.log(blobUrl);
+                            $('#idImgScreen').attr('src', blobUrl);
+                        }
+                    }
+                };
+                xmlhttp.send();
+            }
             this.OnError = function () {
                 console.log("Error find data");
             }
@@ -498,13 +803,34 @@ commerce.amazon.web.operation =
             //----------------------End AJAX------------------------//
 
             this.InitBuyProduct = function () {
-                that.DetailPost();
+                that.RunViewPost();
             }
             this.InitPostsToBuy = function () {
-                $('#btnFilterPostsToBuy').click();
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsToBuy').click();
+                });
+            }
+            this.InitPostsPurchased = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsPurchased').click();
+                });
+            }
+            this.InitPostsExpired = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsExpired').click();
+                });
             }
             this.InitPostsUser = function () {
-                $('#btnFilterPostsUser').click();
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsUser').click();
+                });
+            }
+            this.InitDetailPost = function () {
+                that.RunViewDetailsPostUser();
             }
         };
         return new MyAuxClass();
