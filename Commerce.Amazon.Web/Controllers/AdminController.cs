@@ -31,32 +31,6 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult PostProduit(Post post)
-        {
-            try
-            {
-                TResult<int> result = _operacionProcess.PostProduit(post);
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        public IActionResult CanEditPost(int idPost)
-        {
-            try
-            {
-                bool isCan = _operacionProcess.CanEditPost(idPost);
-                return Json(isCan);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
         public IActionResult PlanifierNotificationPost(int idPost)
         {
             try
@@ -88,45 +62,6 @@ namespace Commerce.Amazon.Web.Controllers
             try
             {
                 TResult<int> result = _operacionProcess.NotifyUsers(notifyRequest);
-                return Json(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        public IActionResult ViewPostsUser(FilterPost filterPost)
-        {
-            try
-            {
-                var posts = _operacionProcess.ViewPostsUser(filterPost);
-                return Json(posts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        public IActionResult ViewPostsToBuy(FilterPost filterPost)
-        {
-            try
-            {
-                var posts = _operacionProcess.ViewPostsToBuy(filterPost);
-                return Json(posts);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-
-        public IActionResult CommentPost(CommentRequest commentRequest)
-        {
-            try
-            {
-                TResult<int> result = _operacionProcess.CommentPost(commentRequest);
                 return Json(result);
             }
             catch (Exception ex)

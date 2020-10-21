@@ -508,7 +508,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/PostProduit",
+                    url: "/Post/PostProduit",
                     data: post,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -558,7 +558,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/CanEditPost",
+                    url: "/Post/CanEditPost",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -687,7 +687,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/ViewPostsUser",
+                    url: "/Post/ViewPostsUser",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -710,7 +710,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/ViewPostsToBuy",
+                    url: "/Post/ViewPostsToBuy",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {
@@ -733,7 +733,7 @@ commerce.amazon.web.operation =
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/CommentPost",
+                    url: "/Post/CommentPost",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {

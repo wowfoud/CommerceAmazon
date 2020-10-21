@@ -34,6 +34,23 @@ namespace Commerce.Amazon.Web.Controllers
                 return RedirectToLogin();
             }
         }
+        
+        public IActionResult Groupes()
+        {
+            if (_accountProcess.IsAdmin)
+            {
+                var model = _accountProcess.GetModel();
+                return View(model);
+            }
+            else if (_accountProcess.IsUser)
+            {
+                return RedirectToDashboardUser();
+            }
+            else
+            {
+                return RedirectToLogin();
+            }
+        }
 
         public IActionResult FindGroups(FilterGroup filterGroup)
         {

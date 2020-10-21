@@ -2,6 +2,7 @@
 using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
+using System;
 using System.Collections.Generic;
 
 namespace Commerce.Amazon.Web.ActionsProcess
@@ -83,21 +84,33 @@ namespace Commerce.Amazon.Web.ActionsProcess
             }
         }
 
-        public void AddGroups()
+        public void AddGroups(List<Group> groups)
         {
-            foreach (var group in Groups)
+            foreach (var group in groups)
             {
                 _accountManager.SaveGroup(group, dataUser);
             }
         }
 
-        public void AddUsers()
+        public void AddUsers(List<User> users)
         {
-            foreach (var user in Users)
+            foreach (var user in users)
             {
                 _accountManager.SaveUser(user, dataUser);
             }
         }
 
+        public void InitDatabase()
+        {
+            bool created = _accountManager.InitDatabase();
+            if (created)
+            {
+                var groups = Groups;
+                var users = Users;
+                AddGroups(groups);
+                users.ForEach(u => u.IdGroup = groups[0].Id);
+                AddUsers(users);
+            }
+        }
     }
 }

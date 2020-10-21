@@ -14,5 +14,6 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         List<User> FindUsers(FilterUser filterUser, DataUser dataUser);
         List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser);
         TResult<int> SaveGroup(Group group, DataUser dataUser);
+        bool InitDatabase();
     }
 }

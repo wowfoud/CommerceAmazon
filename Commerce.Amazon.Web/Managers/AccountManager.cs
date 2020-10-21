@@ -180,7 +180,7 @@ namespace Commerce.Amazon.Engine.Managers
 
         public TResult<int> SaveGroup(Group group, DataUser dataUser)
         {
-            
+
             //_context.Groups.RemoveRange(_context.Groups.Where(g=>g.Id != 1).ToList());
             //_context.SaveChanges();
             TResult<int> result = new TResult<int>();
@@ -249,6 +249,12 @@ namespace Commerce.Amazon.Engine.Managers
                 result.Message = ex.Message;
             }
             return result;
+        }
+
+        public bool InitDatabase()
+        {
+            bool created = _context.Database.EnsureCreated();
+            return created;
         }
     }
 }

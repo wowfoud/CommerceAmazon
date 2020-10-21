@@ -68,8 +68,10 @@ namespace Commerce.Amazon.Web
 
             var builder = new Autofac.ContainerBuilder();
 
-
-            services.AddEntityFrameworkNpgsql().AddDbContext<MyContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("DataCommerceConnection")));
+            GlobalConfiguration.Setting = Configuration.GetSection("Settings").Get<Settings>();
+            GlobalConfiguration.Setting.DataCommerceConnectionLocal = Configuration.GetConnectionString(nameof(GlobalConfiguration.Setting.DataCommerceConnectionLocal));
+            GlobalConfiguration.Setting.DataCommerceConnectionServer = Configuration.GetConnectionString(nameof(GlobalConfiguration.Setting.DataCommerceConnectionServer));
+            services.AddEntityFrameworkNpgsql().AddDbContext<MyContext>(opt => opt.UseNpgsql(GlobalConfiguration.Setting.DataCommerceConnectionLocal));
 
 
             builder.RegisterType<OperationManager>().As<IOperationManager>();
@@ -86,26 +88,26 @@ namespace Commerce.Amazon.Web
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             builder.Populate(services);
 
-            GlobalConfiguration.Setting = Configuration.GetSection("Settings").Get<Settings>();
             GlobalConfiguration.Messages = new Messages();
             var container = builder.Build();
 
-            //var testProcess = container.Resolve<ITestProcess>();
-            //var accountManager = container.Resolve<IAccountManager>();
-            //try
-            //{
-            //    accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
-            //    {
-            //         Email = "abderrahmanhdd@gmail.com",
-            //         Password = "123456"
-            //    });
-            //    testProcess.AddGroups();
-            //    testProcess.AddUsers();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine(ex);
-            //}
+            var testProcess = container.Resolve<TestProcess>();
+            var accountManager = container.Resolve<IAccountManager>();
+            try
+            {
+                testProcess.InitDatabase();
+                //accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
+                //{
+                //    Email = "abderrahmanhdd@gmail.com",
+                //    Password = "123456"
+                //});
+                //testProcess.AddGroups();
+                //testProcess.AddUsers();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
             return container.Resolve<IServiceProvider>();
 
         }
