@@ -169,7 +169,7 @@ namespace Commerce.Amazon.Web.Controllers
                 return BadRequest(ex);
             }
         }
-        
+
         public IActionResult DetailPost(int idPost)
         {
             //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
@@ -209,7 +209,7 @@ namespace Commerce.Amazon.Web.Controllers
                 return BadRequest(ex);
             }
         }
-        
+
         public IActionResult ViewDetailsPostUser(int idPost)
         {
             try
@@ -263,8 +263,7 @@ namespace Commerce.Amazon.Web.Controllers
                 return BadRequest(ex);
             }
         }
-        
-        [HttpPost]
+
         public IActionResult DownloadScreenComment(int idPost, int idUser)
         {
             try
@@ -272,19 +271,32 @@ namespace Commerce.Amazon.Web.Controllers
                 string path = _operacionProcess.FindScreenComment(idPost, idUser);
                 if (!string.IsNullOrEmpty(path))
                 {
-                    //MemoryStream memory = new MemoryStream();
-                    //using (FileStream stream = new FileStream(path, FileMode.Open))
-                    //{
-                    //    stream.CopyToAsync(memory);
-                    //}
-                    //memory.Position = 0;
-                    //return File(memory, "image/*", "commentaire");
-                    return Content(path, "image/unknown");
+                    MemoryStream memory = new MemoryStream();
+                    using (FileStream stream = new FileStream(path, FileMode.Open))
+                    {
+                        stream.CopyToAsync(memory);
+                    }
+                    memory.Position = 0;
+                    return File(memory, "image/jpg", "commentaire");
+                    //return Content(path, "image/png");
                 }
                 else
                 {
                     return Json("NotFound");
                 }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        public IActionResult GetPathComment(int idPost, int idUser)
+        {
+            try
+            {
+                string comment = _operacionProcess.FindScreenComment(idPost, idUser);
+                return Json(new { comment });
             }
             catch (Exception ex)
             {

@@ -10,7 +10,7 @@
     @Html.AntiForgeryToken()
 
     <div style="max-width:280px !important; margin:auto" class="form-horizontal">
-        <h2>Nueva cuenta</h2>
+        <h2>Nouveau compte</h2>
         <hr />
         <div class="text-danger center">
             @ViewBag.Message
@@ -34,20 +34,20 @@
         </div>
 
         <div class="form-group">
-            <label>Tel Usuario <span class="text-danger">*</span></label>
-            @Html.EditorFor(model => model.TelUsuario, new { htmlAttributes = new { @class = "form-control", placeholder = "Tel Usuario", required = "" } })
+            <label>Telephone <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.TelUsuario, new { htmlAttributes = new { @class = "form-control", placeholder = "Telephone", required = "" } })
             @Html.ValidationMessageFor(model => model.TelUsuario, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label>Contraseña <span class="text-danger">*</span></label>
-            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Contraseña", required = "" } })
+            <label> mot de passe <span class="text-danger">*</span></label>
+            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "mot de passe", required = "" } })
             @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <label>Confirmar contraseña <span class="text-danger">*</span></label>
-            <input type="password" name="ConfirmPassword" id="idConfirmPassword" class="form-control" placeholder="Confirm Password" required />
+            <label>Confirmer le mot de passe <span class="text-danger">*</span></label>
+            <input type="password" name="ConfirmPassword" id="idConfirmPassword" class="form-control" placeholder="Confirmer le mot de passe" required />
             @Html.ValidationMessage("ConfirmPassword", "", new { @class = "text-danger" })
         </div>
 

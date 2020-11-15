@@ -462,8 +462,15 @@ commerce.amazon.web.operation =
                     that.ViewDetailsPostUser(idPost, function (post) {
                         that.LoadDetailsPostUser(post);
                         //var url = `/Post/DownloadScreenComment?idPost=${idPost}&idUser=${post.IdUser}`;
-                        //$('#idImgScreen').attr('src', url);
-                        that.DownloadImage(`/Post/DownloadScreenComment?idPost=${idPost}&idUser=${post.IdUser}`);
+                        var url = `/Post/GetPathComment?idPost=${idPost}&idUser=${post.IdUser}`;
+                        $('#idImgScreen').attr('src', url);
+                        //that.DownloadImage(url);
+                        //var link = document.createElement('a');
+                        //link.addEventListener('click', function (ev) {
+                        //    link.href = url;
+                        //    link.download = "image.jpg";
+                        //}, false);
+                        //link.click();
                     });
                 }
             }
@@ -779,8 +786,8 @@ commerce.amazon.web.operation =
             this.DownloadImage = function (url, filename, error) {
                 let xmlhttp = new XMLHttpRequest();
                 xmlhttp.open("POST", url, true);
-                xmlhttp.setRequestHeader('Content-Type', 'text/xml');
-                xmlhttp.setRequestHeader('Cache-Control', 'no-cache');
+                xmlhttp.setRequestHeader('Content-Type', 'image/jpg');
+                //xmlhttp.setRequestHeader('Cache-Control', 'no-cache');
                 xmlhttp.responseType = "blob";
                 xmlhttp.onload = function (e) {
                     if (this.status == 200) {
@@ -790,7 +797,7 @@ commerce.amazon.web.operation =
                             const blob = this.response;
                             const blobUrl = window.URL.createObjectURL(blob);
                             console.log(blobUrl);
-                            $('#idImgScreen').attr('src', blobUrl);
+                            $('#idImgScreen').attr('src', blob);
                         }
                     }
                 };
@@ -803,7 +810,7 @@ commerce.amazon.web.operation =
             //----------------------End AJAX------------------------//
 
             this.InitBuyProduct = function () {
-                that.RunViewPost();
+                that.RunViewDetailsPostUser();
             }
             this.InitPostsToBuy = function () {
                 that.FindMyGroups(function (groups) {
