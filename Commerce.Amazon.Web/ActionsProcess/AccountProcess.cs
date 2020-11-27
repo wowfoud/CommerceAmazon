@@ -4,6 +4,7 @@ using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
+using Commerce.Amazon.Domain.Models.Response;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Models;
@@ -50,11 +51,26 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return authenticationResponse;
         }
 
-        public List<Group> FindGroups(FilterGroup filterGroup)
+        public List<GroupView> FindGroups(FilterGroup filterGroup)
         {
             AssertIsAdmin();
             List<Group> groups = _accountManager.FindGroups(filterGroup, dataUser);
-            return groups;
+            List<GroupView> groupsViews = groups.Select(g => new GroupView
+            {
+                Id = g.Id,
+                Name = g.Name,
+                CountNotifyPerDay = g.CountNotifyPerDay,
+                CountUsersCanNotify = g.CountUsersCanNotify,
+                MaxDays = g.MaxDays,
+                State = g.State,
+                CoutUsers = g.CoutUsers
+            }).ToList();
+            return groupsViews;
+        }
+
+        public void Reset()
+        {
+            _accountManager.Reset();
         }
 
         public TResult<int> SaveGroup(Group group)
@@ -76,7 +92,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 Prenom = u.Prenom,
                 Role = u.Role,
                 Photo = u.Photo,
-                IdSociete = u.IdSociete,
+                SocieteId = u.SocieteId,
                 State = u.State,
                 Telephon = u.Telephon
             }).ToList();

@@ -10,16 +10,23 @@ commerce.amazon.web.users =
             var that = this;
 
 
-            this.Init = function () {
+            this.InitUsers = function () {
+
+                $('#idOpenModalUser').click(function () {
+                    that.LoadUser({}, false)
+                    //$('#myModalUsuario').modal('show');
+                });
+
                 that.FindUsers();
+
             };
 
             this.InitGroups = function () {
-                
+
                 $('#idBtnSaveGroup').click(function () {
                     that.SaveGroup();
                 });
-                that.FindGroups(1, function (groups) {
+                that.FindGroups(undefined, function (groups) {
                     that.LoadGroups(groups);
                 });
             }
@@ -27,21 +34,24 @@ commerce.amazon.web.users =
 
             $('#idBtnSaveUser').click(function () {
 
-                that.SaveUser();
+                var user = that.ValidUser();
+                if (!!user) {
+
+                    that.SaveUser(user);
+                }
 
             });
 
-            //$('#idOpenModalUser').click(function () {
-            //    that.LoadUser({}, false)
-            //});
+
 
             //----------------------End event------------------------//
 
             //----------------------AJAX------------------------//
 
-            this.SaveUser = function () {
+            this.ValidUser = function () {
                 $("#errorMsgDiv").html('');
                 var form = document.getElementById("formUsuario");
+                var user = undefined;
                 $.validator.unobtrusive.parse(form)
                 if ($(form).valid()) {
                     var radios = document.getElementsByName('roleUser');
@@ -53,43 +63,55 @@ commerce.amazon.web.users =
                         }
                     }
                     var idUser = !!that.User ? that.User.Id : 0;
-                    var user = {
+
+                    user = {
                         Id: idUser,
                         Nom: $('#Nom').val(),
                         Prenom: $('#Prenom').val(),
                         Email: $('#Email').val(),
                         UserId: $('#UserId').val(),
-                        Role: idRole
+                        Role: idRole,
+                        GroupId: $('#GroupId').val()
                     };
-                    if (!user.Role) {
+                    if (!idRole) {
                         $("#errorMsgDiv").html("SVP, Selectioner le role d'utilisateur");
-                        return;
+                        user = undefined;
+                    } else if (!user.UserId) {
+                        $("#errorMsgDiv").html("");
+                        user = undefined;
+                    } else if (!user.Email) {
+                        $("#errorMsgDiv").html("");
+                        user = undefined;
                     }
-                    $.ajax({
-                        type: "POST",
-                        url: "/User/SaveUser",
-                        data: user,
-                        success: function (data) {
-                            //console.log(data);
-                            if (HandleResponse(data)) {
+                }
+                return user;
+            }
 
-                                if (data && data.Status === 0) {
-                                    $('.modal button.myclose').click();
-                                    that.FindUsers();
-                                } else {
-                                    $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
-                                }
+            this.SaveUser = function (user) {
+                $.ajax({
+                    type: "POST",
+                    url: "/User/SaveUser",
+                    data: user,
+                    success: function (data) {
+                        //console.log(data);
+                        if (HandleResponse(data)) {
+
+                            if (data && data.Status === 0) {
+                                $('.modal button.myclose').click();
+                                that.FindUsers();
                             } else {
-                                that.OnError();
+                                $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
                             }
-                        },
-                        error: function (err) {
+                        } else {
                             that.OnError();
                         }
-                    });
-                }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
             }
-            
+
             this.SaveGroup = function () {
                 $("#errorMsgDiv").html('');
                 var form = document.getElementById("formGroup");
@@ -101,7 +123,7 @@ commerce.amazon.web.users =
                         MaxDays: $('#MaxDays').val(),
                         CountNotifyPerDay: $('#CountNotifyPerDay').val(),
                         CountUsersCanNotify: $('#CountUsersCanNotify').val(),
-                        State: document.getElementById('State').checked
+                        State: document.getElementById('State').checked ? 1 : 2
                     };
                     $.ajax({
                         type: "POST",
@@ -112,7 +134,7 @@ commerce.amazon.web.users =
                             if (HandleResponse(data)) {
                                 if (data && data.Status === 0) {
                                     AlertSuccess('le groupe enregistré avec succès');
-                                    that.FindGroups(1, function (groups) {
+                                    that.FindGroups(undefined, function (groups) {
                                         that.LoadGroups(groups);
                                     });
                                 } else {
@@ -147,7 +169,7 @@ commerce.amazon.web.users =
                     }
                 })
             }
-            
+
             this.FindGroups = function (stateGroup, handleLoadGroups) {
                 var filter = {
                     StateGroup: stateGroup
@@ -196,7 +218,6 @@ commerce.amazon.web.users =
                         radios[i].checked = false;
                     }
                 }
-                //$('#myModalUsuario').modal('show');
             }
 
             this.LoadUsers = function (users) {
@@ -295,16 +316,21 @@ commerce.amazon.web.users =
                     {
                         data: 'State',
                         render: function (data, type, row) {
-                            return `<input type="checkbox" class="form-control input-sm" checked disabled />`;
+                            if (data === 1) {
+                                return `<input type="checkbox" class="form-control input-sm" checked disabled />`;
+                            } else {
+                                return `<input type="checkbox" class="form-control input-sm" disabled />`;
+                            }
                         }
                     }
                 ]
-                $('#tableUsers').DataTable({
+                that.tableGroups = $('#tableGroupes').DataTable({
                     responsive: true,
                     data: groups,
                     pageLength: 15,
                     destroy: true,
                     //scrollX: true,
+                    select: true,
                     dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
                     columns: columns,
                     language: {
@@ -330,15 +356,46 @@ commerce.amazon.web.users =
                         }
                     },
                     drawCallback: function (settings) {
-                        $(".loadUser").on("click", function () {
-                            var id = $(this).data("id");
-                            var user = users.find(u => u.Id === id);
-                            that.LoadUser(user);
-                        });
+
                     }
                 });
 
                 $($.fn.dataTable.tables()).DataTable().columns.adjust();
+                that.tableGroups.off('select').on('select', function (e, dt, type, indexes) {
+                    if (indexes.length > 0) {
+                        var group = groups[indexes[0]];
+                        if (!!group) {
+                            if (type === 'row') {
+                                that.SelectGroup(group);
+                            }
+                        }
+                    }
+                });
+                that.tableGroups.off('deselect').on('deselect', function (e, dt, type, indexes) {
+                    if (indexes.length > 0) {
+                        that.ClearGroup();
+                    }
+                });
+            }
+            this.SelectGroup = function (group) {
+                if (!!group) {
+                    $('#Id').val(group.Id);
+                    $('#Name').val(group.Name);
+                    $('#MaxDays').val(group.MaxDays);
+                    $('#CountNotifyPerDay').val(group.CountNotifyPerDay);
+                    $('#CountUsersCanNotify').val(group.CountUsersCanNotify);
+                    document.getElementById('State').checked = group.State === 1;
+                } else {
+                    $('#Id').val('');
+                    $('#Name').val('');
+                    $('#MaxDays').val('');
+                    $('#CountNotifyPerDay').val('');
+                    $('#CountUsersCanNotify').val('');
+                }
+
+            }
+            this.ClearGroup = function () {
+                that.SelectGroup(undefined);
             }
             //----------------------end function------------------------//
 
@@ -355,7 +412,7 @@ commerce.amazon.web.users =
     // Listen for the jQuery ready event on the document
     $(function () {
         //Document Ready Actions
-        commerce.amazon.web.users.Init();
+        //commerce.amazon.web.users.InitUsers();
     });
     // The rest of the code goes here!
 }(window.jQuery, window, document));

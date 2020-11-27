@@ -10,6 +10,7 @@ namespace Commerce.Amazon.Web.Repositories
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 		public string UserId { get; set; }
+		public int GroupId { get; set; }
 		public string Email { get; set; }
 		public string Nom { get; set; }
 		public string Prenom { get; set; }
@@ -17,13 +18,12 @@ namespace Commerce.Amazon.Web.Repositories
 		public string Photo { get; set; }
 		public UserState State { get; set; }
 		public EnumRole? Role { get; set; }
-		public int IdSociete { get; set; }
+		public int SocieteId { get; set; }
 		public string RoleName { get { return Role.ToString(); } }
         public string Password { get; set; }
-        public int? IdGroup { get; set; }
 		public virtual Societe Societe { get; set; }
-		public virtual Group Group { get; set; }
-        public virtual IEnumerable<Post> Posts { get; internal set; }
-        public virtual IEnumerable<PostPlaning> PostsAchat { get; internal set; }
+        public virtual IEnumerable<Post> Posts { get; set; }
+        public virtual IEnumerable<PostPlaning> PostsAchat { get; set; }
+        public virtual IEnumerable<GroupUser> Groups { get; set; }
     }
 }

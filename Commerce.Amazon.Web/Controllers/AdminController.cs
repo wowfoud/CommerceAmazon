@@ -31,11 +31,11 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult PlanifierNotificationPost(int idPost)
+        public IActionResult PlanifierNotificationPost(int[] p)
         {
             try
             {
-                int n = _operacionProcess.PlanifierNotificationPost(idPost);
+                int n = _operacionProcess.PlanifierNotificationPost(p[0], p[1]);
                 return Json(n);
             }
             catch (Exception ex)

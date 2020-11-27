@@ -10,7 +10,8 @@ namespace Commerce.Amazon.Web.Repositories
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int IdUser { get; set; }
+        public int UserId { get; set; }
+        public int GroupId { get; set; }
         public string Url { get; set; }
         public string Description { get; set; }
         public decimal? Prix { get; set; }

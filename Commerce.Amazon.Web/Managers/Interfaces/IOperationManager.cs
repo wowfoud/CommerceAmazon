@@ -10,7 +10,7 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
     public interface IOperationManager
     {
         bool CanEditPost(int idPost, DataUser dataUser);
-        int PlanifierNotificationPost(int idPost, DataUser dataUser);
+        int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser);
         IEnumerable<PostPlaningView> ViewPlaningPost(int idPost, DataUser dataUser);
         PostView ViewPost(int idPost, DataUser dataUser);
         TResult<int> NotifyUsers(NotifyRequest notifyRequest, DataUser dataUser);
@@ -23,5 +23,6 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         GroupView[] FindMyGroupsView(DataUser dataUser);
         PostView ViewDetailsPostUser(int idPost, DataUser dataUser);
         string FindScreenComment(int idPost, int idUser, DataUser dataUser, out string userId);
+        void Reset();
     }
 }

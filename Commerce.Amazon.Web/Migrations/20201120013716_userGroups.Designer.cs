@@ -3,15 +3,17 @@ using System;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Commerce.Amazon.Web.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20201120013716_userGroups")]
+    partial class userGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +138,9 @@ namespace Commerce.Amazon.Web.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
-                    b.Property<int>("GroupId");
+                    b.Property<int?>("IdGroup");
+
+                    b.Property<int>("IdSociete");
 
                     b.Property<string>("Nom");
 
@@ -148,7 +152,7 @@ namespace Commerce.Amazon.Web.Migrations
 
                     b.Property<int?>("Role");
 
-                    b.Property<int>("SocieteId");
+                    b.Property<int?>("SocieteId");
 
                     b.Property<int>("State");
 
@@ -202,8 +206,7 @@ namespace Commerce.Amazon.Web.Migrations
                 {
                     b.HasOne("Commerce.Amazon.Web.Repositories.Societe", "Societe")
                         .WithMany()
-                        .HasForeignKey("SocieteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SocieteId");
                 });
 #pragma warning restore 612, 618
         }

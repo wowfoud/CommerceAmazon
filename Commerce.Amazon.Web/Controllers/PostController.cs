@@ -41,6 +41,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -66,6 +67,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -91,6 +93,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -116,6 +119,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -141,6 +145,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -166,6 +171,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -193,6 +199,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -206,6 +213,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -219,6 +227,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -232,6 +241,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -260,6 +270,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -287,6 +298,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -300,6 +312,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -313,6 +326,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -326,6 +340,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -339,6 +354,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -352,6 +368,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }
@@ -365,6 +382,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
+                _operacionProcess.Reset();
                 return BadRequest(ex);
             }
         }

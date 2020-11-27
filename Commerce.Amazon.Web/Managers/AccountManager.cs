@@ -63,7 +63,7 @@ namespace Commerce.Amazon.Engine.Managers
                         ImagePath = user.Photo,
                         Token = token,
                         CompanyLogo = user.Societe?.Logo,
-                        IdSociete = user.IdSociete,
+                        IdSociete = user.SocieteId,
                         CompanyName = user.Societe?.Name,
                     };
                     resultProfile.Status = StatusResponse.OK;
@@ -86,73 +86,93 @@ namespace Commerce.Amazon.Engine.Managers
         public TResult<int> SaveUser(User user, DataUser dataUser)
         {
             TResult<int> result = new TResult<int>();
-            var users = _context.Users.Where(u => (u.Email == user.Email || u.UserId == user.UserId) && u.Id != user.Id);
-            if (users.Count() > 0)
+            if (string.IsNullOrEmpty(user?.Email))
             {
-                if (users.Count(u => u.Email == user.Email && u.UserId == user.UserId) > 0)
-                {
-                    result.Status = StatusResponse.KO;
-                    result.Message = "Email et UserId deja existe";
-                }
-                else if (users.Count(u => u.Email == user.Email) > 0)
-                {
-                    result.Status = StatusResponse.KO;
-                    result.Message = "Email deja existe";
-                }
-                else
-                {
-                    result.Status = StatusResponse.KO;
-                    result.Message = "UserId deja existe";
-                }
+                result.Message = "Email est obligatoire";
+                result.Status = StatusResponse.KO;
             }
-            else
+            else 
             {
-                //bool isFirst = false;
-                if (user.Id == 0)
+                var users = _context.Users.Where(u => (u.Email == user.Email || u.UserId == user.UserId) && u.Id != user.Id);
+                if (users.Count() > 0)
                 {
-                    //isFirst = true;
-                    //int max = 0;
-                    //if (_context.Users.Count() > 0)
-                    //{
-                    //    max = _context.Users.Max(u => u.Id);
-                    //}
-                    //user.Id = max + 1;
-                    //user.Password = "123456";
-                    HashMD5 hashMD5 = new HashMD5();
-                    using (MD5 md5Hash = MD5.Create())
+                    if (users.Count(u => u.Email == user.Email && u.UserId == user.UserId) > 0)
                     {
-                        string hash = hashMD5.GetMd5Hash(md5Hash, user.Password);
-                        user.Password = hash;
+                        result.Status = StatusResponse.KO;
+                        result.Message = "Email et UserId deja existe";
                     }
-                    _context.Users.Add(user);
-                    int n = _context.SaveChanges();
-
-                    result.Result = n;
-                    result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
-                    //if (n > 0 && isFirst)
-                    //{
-                    //    _mailSender.SendMail(new IdentityMessage
-                    //    {
-                    //        Subject = "New User",
-                    //        Body = $"Hi, {user.Nom} {user.Prenom} <br> Bienvenue a votre application",
-                    //        Destination = new string[] { user.Email }
-                    //    });
-                    //}
+                    else if (users.Count(u => u.Email == user.Email) > 0)
+                    {
+                        result.Status = StatusResponse.KO;
+                        result.Message = "Email deja existe";
+                    }
+                    else
+                    {
+                        result.Status = StatusResponse.KO;
+                        result.Message = "UserId deja existe";
+                    }
                 }
                 else
                 {
-                    var userStored = _context.Users.SingleOrDefault(u => u.Id == user.Id);
-                    userStored.UserId = user.UserId;
-                    userStored.Email = user.Email;
-                    userStored.Nom = user.Nom;
-                    userStored.Prenom = user.Prenom;
-                    userStored.Role = user.Role;
-                    userStored.IdGroup = user.IdGroup;
-                    userStored.Telephon = user.Telephon;
-                    //userStored.State = user.State;
-                    int n = _context.SaveChanges();
-                    result.Result = n;
-                    result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                    //bool isFirst = false;
+                    if (user.Id == 0)
+                    {
+                        //isFirst = true;
+                        //int max = 0;
+                        //if (_context.Users.Count() > 0)
+                        //{
+                        //    max = _context.Users.Max(u => u.Id);
+                        //}
+                        //user.Id = max + 1;
+                        //user.Password = "123456";
+                        if (!string.IsNullOrEmpty(user.Password))
+                        {
+                            HashMD5 hashMD5 = new HashMD5();
+                            using (MD5 md5Hash = MD5.Create())
+                            {
+                                string hash = hashMD5.GetMd5Hash(md5Hash, user.Password);
+                                user.Password = hash;
+                            }
+                        }
+                        var societe = _context.Societes.Find(user.SocieteId);
+                        if (societe == null)
+                        {
+                            var l = _context.Societes.ToList();
+                            societe = l.First();
+                            user.SocieteId = societe.Id;
+                        }
+                        _context.Users.Add(user);
+                        int n = _context.SaveChanges();
+
+                        _context.GroupUsers.Add(new GroupUser { UserId = n, GroupId = user.GroupId });
+
+                        result.Result = n;
+                        result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                        //if (n > 0 && isFirst)
+                        //{
+                        //    _mailSender.SendMail(new IdentityMessage
+                        //    {
+                        //        Subject = "New User",
+                        //        Body = $"Hi, {user.Nom} {user.Prenom} <br> Bienvenue a votre application",
+                        //        Destination = new string[] { user.Email }
+                        //    });
+                        //}
+                    }
+                    else
+                    {
+                        var userStored = _context.Users.SingleOrDefault(u => u.Id == user.Id);
+                        userStored.UserId = user.UserId;
+                        userStored.GroupId = user.GroupId;
+                        userStored.Email = user.Email;
+                        userStored.Nom = user.Nom;
+                        userStored.Prenom = user.Prenom;
+                        userStored.Role = user.Role;
+                        userStored.Telephon = user.Telephon;
+                        //userStored.State = user.State;
+                        int n = _context.SaveChanges();
+                        result.Result = n;
+                        result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                    }
                 }
             }
             return result;
@@ -166,16 +186,16 @@ namespace Commerce.Amazon.Engine.Managers
 
         public List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser)
         {
-            List<Group> users = null;
+            List<Group> groups = null;
             if (filterGroup.StateGroup.HasValue)
             {
-                users = _context.Groups.Where(g => g.State == filterGroup.StateGroup).ToList();
+                groups = _context.Groups.Where(g => g.State == filterGroup.StateGroup).ToList();
             }
             else
             {
-                users = _context.Groups.ToList();
+                groups = _context.Groups.ToList();
             }
-            return users;
+            return groups;
         }
 
         public TResult<int> SaveGroup(Group group, DataUser dataUser)
@@ -186,6 +206,10 @@ namespace Commerce.Amazon.Engine.Managers
             TResult<int> result = new TResult<int>();
             try
             {
+                if (string.IsNullOrEmpty(group?.Name))
+                {
+                    throw new Exception("SVP, Entre nom de groupe");
+                }
                 Group groupStored = null;
                 if (group.Id > 0)
                 {
@@ -210,23 +234,18 @@ namespace Commerce.Amazon.Engine.Managers
                             groupStored.MaxDays = group.MaxDays;
                             groupStored.CountNotifyPerDay = group.CountNotifyPerDay;
                             groupStored.CountUsersCanNotify = group.CountUsersCanNotify;
-                            //groupStored.State = group.State;
-                            _context.SaveChanges();
+                            groupStored.State = group.State == EnumStateGroup.Active ? EnumStateGroup.Active : EnumStateGroup.Desactive;
+                            result.Result = _context.SaveChanges();
                         }
                     }
                 }
                 else
                 {
-                    var groups = _context.Groups.Where(g => g.Name.Trim() == group.Name.Trim());
+                    var groups = _context.Groups.Where(g => g.Name == group.Name);
                     if (groups.Count() > 0)
                     {
-                        groupStored = groups.Single();
-                        groupStored.Name = group.Name;
-                        groupStored.MaxDays = group.MaxDays;
-                        groupStored.CountNotifyPerDay = group.CountNotifyPerDay;
-                        groupStored.CountUsersCanNotify = group.CountUsersCanNotify;
-                        //groupStored.State = group.State;
-                        _context.SaveChanges();
+                        result.Status = StatusResponse.KO;
+                        result.Message = GlobalConfiguration.Messages.GroupNameRepeted;
                     }
                     else
                     {
@@ -239,7 +258,7 @@ namespace Commerce.Amazon.Engine.Managers
                             State = EnumStateGroup.Active
                         };
                         _context.Groups.Add(groupStored);
-                        _context.SaveChanges();
+                        result.Result = _context.SaveChanges();
                     }
                 }
             }
@@ -255,6 +274,11 @@ namespace Commerce.Amazon.Engine.Managers
         {
             bool created = _context.Database.EnsureCreated();
             return created;
+        }
+
+        public void Reset()
+        {
+            _context.Reset();
         }
     }
 }

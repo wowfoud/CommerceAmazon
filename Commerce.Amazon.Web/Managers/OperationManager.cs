@@ -34,7 +34,7 @@ namespace Commerce.Amazon.Engine.Managers
 
             post.DateCreate = DateTime.Now;
             post.State = EnumStatePost.Active;
-            post.IdUser = dataUser.IdUser;
+            post.UserId = dataUser.IdUser;
             if (post.Id > 0)
             {
                 oldPost = _context.Posts.SingleOrDefault(p => p.Id == post.Id);
@@ -75,15 +75,41 @@ namespace Commerce.Amazon.Engine.Managers
             return isCan;
         }
 
-        public int PlanifierNotificationPost(int idPost, DataUser dataUser)
+        public int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser)
         {
+            var query = from p in _context.Posts
+                        join u in _context.Users on p.UserId equals u.Id
+                        join ug in _context.GroupUsers on u.Id equals ug.UserId
+                        join g in _context.Groups on ug.GroupId equals idGroup
+                        where p.Id == idPost
+                        select new
+                        {
+                            Post = p,
+                            User = u,
+                            Group = g
+                        };
+            var data = query.FirstOrDefault();
+
             Post post = _context.Posts.Single(p => p.Id == idPost);
             User userPost = post.User;
-            Group group = userPost.Group != null ? userPost.Group : _context.Groups.Find(userPost.IdGroup);
+            Group group = userPost.Groups?.First()?.Group;
+
+            post = data.Post;
+            userPost = data.User;
+            group = data.Group;
+
+
+
             int maxDays = group.MaxDays;
             int countNotifyPerDay = group.CountNotifyPerDay;
             var postsPlaning = _context.PostPlanings.Where(pp => pp.IdPost == post.Id).ToList();
-            var users = _context.Users.Where(u => u.IdGroup == userPost.IdGroup && u.Id != userPost.Id && u.Role == EnumRole.User).ToArray();
+
+            var queryUsers = from u in _context.Users join ug in _context.GroupUsers
+                             on u.Id equals ug.UserId
+                             where ug.GroupId == idGroup && u.Id != userPost.Id && u.Role == EnumRole.User
+                             select u;
+
+            var users = queryUsers.ToArray();
 
             int i = 0;
             foreach (var user in users)
@@ -138,7 +164,7 @@ namespace Commerce.Amazon.Engine.Managers
                 postView = new PostView
                 {
                     Id = post.Id,
-                    IdUser = post.IdUser,
+                    IdUser = post.UserId,
                     Url = post.Url,
                     //Nom = post.User.Nom,
                     //Prenom = post.User.Prenom,
@@ -155,15 +181,15 @@ namespace Commerce.Amazon.Engine.Managers
             PostView postView = null;
             var query = from p in _context.Posts
                         join pp in _context.PostPlanings on p.Id equals pp.IdPost
-                        join u in _context.Users on p.IdUser equals u.Id
+                        join u in _context.Users on p.UserId equals u.Id
                         where p.Id == idPost
-                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
-                        by new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
+                        group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
+                        by new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
                     into temp
                         select new PostView
                         {
                             Id = temp.Key.Id,
-                            IdUser = temp.Key.IdUser,
+                            IdUser = temp.Key.UserId,
                             Url = temp.Key.Url,
                             Nom = temp.Key.Nom,
                             Prenom = temp.Key.Prenom,
@@ -259,15 +285,15 @@ namespace Commerce.Amazon.Engine.Managers
         {
             var query = from p in _context.Posts
                         join pp in _context.PostPlanings on p.Id equals pp.IdPost
-                        join u in _context.Users on p.IdUser equals u.Id
-                        where p.IdUser == dataUser.IdUser
-                        group new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
-                        by new { p.Id, p.IdUser, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
+                        join u in _context.Users on p.UserId equals u.Id
+                        where p.UserId == dataUser.IdUser
+                        group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
+                        by new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
                         into temp
                         select new PostView
                         {
                             Id = temp.Key.Id,
-                            IdUser = temp.Key.IdUser,
+                            IdUser = temp.Key.UserId,
                             Url = temp.Key.Url,
                             Nom = temp.Key.Nom,
                             Prenom = temp.Key.Prenom,
@@ -295,7 +321,7 @@ namespace Commerce.Amazon.Engine.Managers
                 .Join(_context.Posts, (pp) => pp.IdPost, (p) => p.Id, (plan, post) => new PostView
                 {
                     Id = post.Id,
-                    IdUser = post.IdUser,
+                    IdUser = post.UserId,
                     Url = post.Url,
                     DateCreated = post.DateCreate,
                     DateNotified = plan.DateNotified,
@@ -314,7 +340,7 @@ namespace Commerce.Amazon.Engine.Managers
                 .Join(_context.Posts, (pp) => pp.IdPost, (p) => p.Id, (plan, post) => new PostView
                 {
                     Id = post.Id,
-                    IdUser = post.IdUser,
+                    IdUser = post.UserId,
                     Url = post.Url,
                     DateCreated = post.DateCreate,
                     DateNotified = plan.DateNotified,
@@ -364,8 +390,8 @@ namespace Commerce.Amazon.Engine.Managers
         public IEnumerable<Group> FindMyGroups(DataUser dataUser)
         {
             var query = from g in _context.Groups
-                        join u in _context.Users on g.Id equals u.IdGroup
-                        where u.Id == dataUser.IdUser
+                        join u in _context.GroupUsers on g.Id equals u.GroupId
+                        where u.UserId == dataUser.IdUser
                         select g;
             var groups = query.ToArray();
             return groups;
@@ -374,8 +400,8 @@ namespace Commerce.Amazon.Engine.Managers
         public GroupView[] FindMyGroupsView(DataUser dataUser)
         {
             var query = from g in _context.Groups
-                        join u in _context.Users on g.Id equals u.IdGroup
-                        where u.Id == dataUser.IdUser
+                        join u in _context.GroupUsers on g.Id equals u.GroupId
+                        where u.UserId == dataUser.IdUser
                         select new GroupView
                         {
                             Id = g.Id,
@@ -395,7 +421,7 @@ namespace Commerce.Amazon.Engine.Managers
                         {
                             PathScreenComment = pp.PathScreenComment,
                             UserPoster = u.UserId,
-                            IdUserPoster = p.IdUser
+                            IdUserPoster = p.UserId
                         };
             var result = query.SingleOrDefault();
             string pathScreenComment = "";
@@ -406,6 +432,11 @@ namespace Commerce.Amazon.Engine.Managers
                 pathScreenComment = result.PathScreenComment;
             }
             return pathScreenComment;
+        }
+
+        public void Reset()
+        {
+            _context.Reset();
         }
     }
 }

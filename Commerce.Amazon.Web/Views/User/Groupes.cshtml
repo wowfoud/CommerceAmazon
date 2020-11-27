@@ -12,6 +12,7 @@
                     <label for="Name">Groupe :</label>
                     <div class="control-label ">
                         <input id="Name" name="Name" type="text" class="form-control input-sm" />
+                        <input id="Id" name="Id" type="hidden" />
                     </div>
                 </div>
                 <div class="form-group">
@@ -33,10 +34,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    
-                    <div class="control-label ">
-                        <label></label>
-                        <input id="State" name="State" type="checkbox" class="form-control input-sm" /><label for="State">Status :</label>
+                    <div class="control-label">
+                        <label><input id="State" name="State" type="checkbox"> Status : </label>
                     </div>
                 </div>
             </div>
@@ -59,6 +58,7 @@
                 <th class="alignCenter" data-priority="6">Duree de poste</th>
                 <th class="alignCenter" data-priority="6">Envoi par jour</th>
                 <th class="alignCenter" data-priority="7">Nombre envoi</th>
+                <th class="alignCenter" data-priority="7">Active</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -67,8 +67,10 @@
 @Html.Partial("Modals/Alert")
 @section Scripts {
     <script src="~/js/Internal/users.js"></script>
-    <script src="~/js/Internal/operations.js"></script>
     <script src="~/js/jquery.validate-vsdoc.js"></script>
     <script src="~/js/jquery.validate.min.js"></script>
     <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        commerce.amazon.web.users.InitGroups();
+    </script>
 }

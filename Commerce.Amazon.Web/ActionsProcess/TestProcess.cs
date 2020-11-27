@@ -52,7 +52,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
                             Role = EnumRole.Admin,
                             State = UserState.Active,
                             Telephon = "0615546536",
-                            IdGroup = 1,
                         },
                         new User
                         {
@@ -64,7 +63,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
                             Role = EnumRole.Admin,
                             State = UserState.Active,
                             Telephon = "",
-                            IdGroup = 1,
                         },
                         new User
                         {
@@ -76,7 +74,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
                             Role = EnumRole.User,
                             State = UserState.Active,
                             Telephon = "",
-                            IdGroup = 1,
                         }
                     };
                     return users;
@@ -108,7 +105,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 var groups = Groups;
                 var users = Users;
                 AddGroups(groups);
-                users.ForEach(u => u.IdGroup = groups[0].Id);
                 AddUsers(users);
             }
         }

@@ -27,7 +27,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             AssertIsUser();
             TResult<int> result = _operationManager.PostProduit(post, dataUser);
-            _operationManager.PlanifierNotificationPost(post.Id, dataUser);
+            _operationManager.PlanifierNotificationPost(post.Id, post.GroupId, dataUser);
             return result;
         }
 
@@ -38,9 +38,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return isCan;
         }
 
-        public int PlanifierNotificationPost(int idPost)
+        public int PlanifierNotificationPost(int idPost, int idGroup)
         {
-            int n = _operationManager.PlanifierNotificationPost(idPost, dataUser);
+            int n = _operationManager.PlanifierNotificationPost(idPost, idGroup, dataUser);
             return n;
         }
 
@@ -142,6 +142,11 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 }
             }
             return filename;
+        }
+
+        public void Reset()
+        {
+            _operationManager.Reset();
         }
     }
 

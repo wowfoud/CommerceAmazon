@@ -35,7 +35,7 @@ namespace Commerce.Amazon.Web
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
 
@@ -73,17 +73,23 @@ namespace Commerce.Amazon.Web
             GlobalConfiguration.Setting.DataCommerceConnectionServer = Configuration.GetConnectionString(nameof(GlobalConfiguration.Setting.DataCommerceConnectionServer));
             services.AddEntityFrameworkNpgsql().AddDbContext<MyContext>(opt => opt.UseNpgsql(GlobalConfiguration.Setting.DataCommerceConnectionLocal));
 
+            services.AddScoped<IOperationManager, OperationManager>();
+            services.AddScoped<IAccountManager, AccountManager>();
+            services.AddScoped<IMailSender, MailSender>();
+            services.AddSingleton<IHostingEnvironment, HostingEnvironment>();
+            services.AddScoped<CustomSiteMapModule>();
 
-            builder.RegisterType<OperationManager>().As<IOperationManager>();
-            builder.RegisterType<AccountManager>().As<IAccountManager>();
-            builder.RegisterType<MailSender>().As<IMailSender>();
-            builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
-            builder.RegisterType<CustomSiteMapModule>();
+            //builder.RegisterType<OperationManager>().As<IOperationManager>();
+            //builder.RegisterType<AccountManager>().As<IAccountManager>();
+            //builder.RegisterType<MailSender>().As<IMailSender>();
+            //builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
+            //builder.RegisterType<CustomSiteMapModule>();
 
-            services.AddSingleton<OperacionProcess>();
-            services.AddSingleton<AccountProcess>();
-            services.AddSingleton<TokenManager>();
-            services.AddSingleton<TestProcess>();
+            services.AddScoped<OperacionProcess>();
+            services.AddScoped<OperacionProcess>();
+            services.AddScoped<AccountProcess>();
+            services.AddScoped<TokenManager>();
+            services.AddScoped<TestProcess>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             builder.Populate(services);
@@ -95,7 +101,7 @@ namespace Commerce.Amazon.Web
             var accountManager = container.Resolve<IAccountManager>();
             try
             {
-                testProcess.InitDatabase();
+                //testProcess.InitDatabase();
                 //accountManager.Authenticate(new Domain.Models.Request.Auth.AuthenticationRequest
                 //{
                 //    Email = "abderrahmanhdd@gmail.com",
@@ -108,7 +114,7 @@ namespace Commerce.Amazon.Web
             {
                 Console.WriteLine(ex);
             }
-            return container.Resolve<IServiceProvider>();
+            //return container.Resolve<IServiceProvider>();
 
         }
 

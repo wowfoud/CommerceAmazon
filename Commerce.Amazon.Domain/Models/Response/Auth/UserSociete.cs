@@ -13,7 +13,7 @@ namespace Commerce.Amazon.Domain.Models.Response.Auth
         public string Photo { get; set; }
         public UserState State { get; set; }
         public EnumRole? Role { get; set; }
-        public int IdSociete { get; set; }
+        public int SocieteId { get; set; }
         public Societe Societe { get; set; }
         public string RoleName { get { return Role.ToString(); } }
     }

@@ -164,7 +164,7 @@
 }
 
 .left_col {
-	background: #492c8f;
+	background: #DB9D0A;
 }
 
 .nav-sm .container.body .col-md-3.left_col {
@@ -417,7 +417,7 @@ body .container.body .right_col {
 .nav_title {
 	width: 230px;
 	float: left;
-	background: #492c8f;
+	background: #DB9D0A;
 	border-radius: 0;
 	height: 57px
 }
@@ -519,7 +519,7 @@ body .container.body .right_col {
 .bg-white {
 	background: #fff !important;
 	border: 1px solid #fff !important;
-	color: #492c8f
+	color: #DB9D0A
 }
 
 .bg-green {
@@ -568,7 +568,7 @@ body .container.body .right_col {
 }
 
 body {
-	color: #492c8f;
+	color: #DB9D0A;
 	background: whitesmoke;
 	font-family: "Helvetica Neue",Roboto,Arial,"Droid Sans",sans-serif;
 	font-size: 13px;
@@ -697,7 +697,7 @@ table.no-margin .progress {
 }
 
 a {
-	color: #492c8f;
+	color: #DB9D0A;
 }
 
 	.btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus, :active, :focus, :visited, a, a:active, a:focus, a:visited {
@@ -774,7 +774,7 @@ a {
 
 		.nav.side-menu > li > a:hover {
 			color: white !important;
-			background: linear-gradient(#490f92,#490f92),#492c8f !important;
+			background: linear-gradient(#DB9D0A,#DB9D0A),#DB9D0A !important;
 		}
 
 		.nav.side-menu > li > a:hover, .nav > li > a:focus {
@@ -858,7 +858,7 @@ a {
 
 .nav.side-menu > li.active > a {
 	text-shadow: rgba(0,0,0,.25) 0 -1px 0;
-	background: linear-gradient(#490f92,#490f92),#492c8f;
+	background: linear-gradient(#DB9D0A,#DB9D0A),#DB9D0A;
 	box-shadow: rgba(0,0,0,.25) 0 1px 0,inset rgba(255,255,255,.16) 0 1px 0
 }
 
@@ -879,7 +879,7 @@ a {
 }
 
 .nav.navbar-nav > li > a {
-	color: #492c8f !important
+	color: #DB9D0A !important
 }
 
 .nav.top_menu > li > a {

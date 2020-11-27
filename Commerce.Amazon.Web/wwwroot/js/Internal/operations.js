@@ -73,7 +73,7 @@ commerce.amazon.web.operation =
                     that.UploadScreen(that.SelectedScreen, function (filename) {
                         that.CommentPost(filename, comment, idPost, function (result) {
                             if (!!result && result.Status === 0) {
-                                Swal.fire({ title: 'Votre commentaire enregistré avec succes', html: '', type: "success", confirmButtonColor: '#492c8f' });
+                                Swal.fire({ title: 'Votre commentaire enregistré avec succes', html: '', type: "success", confirmButtonColor: '#DB9D0A' });
                             } else {
 
                             }
@@ -94,7 +94,7 @@ commerce.amazon.web.operation =
                 that.PostProduit(url, description, prix, function (result) {
                     if (!!result && result.Status === 0) {
                         //alert(`Status: ${result.Status}, Message: ${result.Message}`);
-                        Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#492c8f' });
+                        Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#DB9D0A' });
                         $('#Url').val('');
                         $('#Description').val('');
                         $('#Prix').val('');
@@ -145,16 +145,13 @@ commerce.amazon.web.operation =
             })
 
             $('#screen-comment').change(function () {
-
                 that.SelectedScreen = this.files[0];
-
                 var fr = new FileReader();
                 fr.onload = function () {
                     //console.log(fr.result);
                     $('#idImgScreen').attr('src', fr.result);
                 }
                 fr.readAsDataURL(that.SelectedScreen);
-
             });
 
             this.LoadPostsUser = function (posts) {
@@ -535,7 +532,7 @@ commerce.amazon.web.operation =
                     type: "POST",
                     url: "/Post/FindMyGroups",
                     success: function (data) {
-                        if (HandleResponse(data)) {
+                        if (!!data) {
                             handler(data);
                         } else {
                             that.OnError();
@@ -842,7 +839,6 @@ commerce.amazon.web.operation =
         };
         return new MyAuxClass();
     })();
-
 
 // IIFE - Immediately Invoked Function Expression
 (function ($, window, document) {
