@@ -78,7 +78,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
-        public IActionResult SaveUser(User user)
+        public IActionResult SaveUser(RegisterUserRequest user)
         {
             try
             {

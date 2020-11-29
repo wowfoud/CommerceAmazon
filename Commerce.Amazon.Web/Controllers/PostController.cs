@@ -14,9 +14,9 @@ namespace Commerce.Amazon.Web.Controllers
 {
     public class PostController : BaseController
     {
-        private readonly OperacionProcess _operacionProcess;
+        private readonly UserProcess _operacionProcess;
 
-        public PostController(OperacionProcess operacionProcess)
+        public PostController(UserProcess operacionProcess)
         {
             _operacionProcess = operacionProcess;
         }

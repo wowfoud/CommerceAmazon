@@ -4,7 +4,15 @@
 }
 <h2>Liste des utilisateurs</h2>
 <div class="row">
+    <div class="col-xs-6 col-md-2">
+        <div class="form-group">
+            <label for="sltGroup" class="control-label" style="">Groupe :</label>
+            <select id="sltGroup" class="form-control input-sm">
+            </select>
+        </div>
+    </div>
     <button class="btn btn-purple col-md-2 pull-right" id="idOpenModalUser" data-toggle='modal' data-target='#myModalUsuario'>Ajouter Utilisateur</button>
+    <button class="btn btn-purple col-md-2 pull-right" id="idBtnFilter">Filtrer</button>
 </div>
 <div class="nowrap filtrer" id="UsuariossDiv">
     <table class="table table-bordered table-responsive table-hover" id="tableUsers">
@@ -16,6 +24,7 @@
                 <th class="alignCenter" data-priority="6">Email</th>
                 <th class="alignCenter" data-priority="7">UserId</th>
                 <th class="alignCenter" data-priority="7">Role</th>
+                <th class="alignCenter" data-priority="7">Groupes</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -24,11 +33,11 @@
 <partial name="Modals/_UserModal" />
 @Html.Partial("Modals/_UserModal")
 @section Scripts {
-    <script src="~/js/Internal/users.js"></script>
+    <script src="~/js/Internal/admin.js"></script>
     <script src="~/js/jquery.validate-vsdoc.js"></script>
     <script src="~/js/jquery.validate.min.js"></script>
     <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
     <script>
-        commerce.amazon.web.users.InitUsers();
+        commerce.amazon.web.admin.InitUsers();
     </script>
 }

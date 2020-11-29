@@ -3,7 +3,7 @@ commerce.amazon = commerce.amazon || {};
 commerce.amazon.web = commerce.amazon.web || {};
 
 //Declare a class, with parameteres
-commerce.amazon.web.operation =
+commerce.amazon.web.user =
     (function () {
         var MyAuxClass = function () {
 
@@ -12,6 +12,69 @@ commerce.amazon.web.operation =
             this.Init = function () {
                 that.InitDatePicker();
             };
+
+            //----------------------Init------------------------//
+
+
+            this.InitBuyProduct = function () {
+                that.RunViewDetailsPostUser();
+            }
+            this.InitPostsToBuy = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsToBuy').click();
+                });
+            }
+            this.InitPostsPurchased = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsPurchased').click();
+                });
+            }
+            this.InitPostsExpired = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsExpired').click();
+                });
+            }
+            this.InitPostsUser = function () {
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#btnFilterPostsUser').click();
+                });
+            }
+            this.InitNewPost = function () {
+
+                $('#idBtnSavePost').click(function () {
+                    $('#errorMsgDiv').text('');
+                    var url = $('#Url').val();
+                    var description = $('#Description').val();
+                    var prix = $('#Prix').val();
+                    if (!url) {
+                        return;
+                    }
+                    Swal.showLoading();
+                    that.PostProduit(url, description, prix, function (result) {
+                        if (!!result && result.Status === 0) {
+                            //alert(`Status: ${result.Status}, Message: ${result.Message}`);
+                            Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#DB9D0A' });
+                            $('#Url').val('');
+                            $('#Description').val('');
+                            $('#Prix').val('');
+                        } else {
+                            //$('#errorMsgDiv').text(result.Message);
+                        }
+                    });
+                })
+
+            }
+            this.InitDetailPost = function () {
+                that.RunViewDetailsPostUser();
+            }
+
+            //----------------------end Init------------------------//
+
+
 
             //----------------------Function------------------------//
 
@@ -80,28 +143,6 @@ commerce.amazon.web.operation =
                         });
                     });
                 }
-            })
-
-            $('#idBtnSavePost').click(function () {
-                $('#errorMsgDiv').text('');
-                var url = $('#Url').val();
-                var description = $('#Description').val();
-                var prix = $('#Prix').val();
-                if (!url) {
-                    return;
-                }
-                Swal.showLoading();
-                that.PostProduit(url, description, prix, function (result) {
-                    if (!!result && result.Status === 0) {
-                        //alert(`Status: ${result.Status}, Message: ${result.Message}`);
-                        Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#DB9D0A' });
-                        $('#Url').val('');
-                        $('#Description').val('');
-                        $('#Prix').val('');
-                    } else {
-                        //$('#errorMsgDiv').text(result.Message);
-                    }
-                });
             })
 
             $('#btnFilterPostsUser').click(function () {
@@ -806,36 +847,6 @@ commerce.amazon.web.operation =
 
             //----------------------End AJAX------------------------//
 
-            this.InitBuyProduct = function () {
-                that.RunViewDetailsPostUser();
-            }
-            this.InitPostsToBuy = function () {
-                that.FindMyGroups(function (groups) {
-                    that.LoadMyGroups(groups);
-                    $('#btnFilterPostsToBuy').click();
-                });
-            }
-            this.InitPostsPurchased = function () {
-                that.FindMyGroups(function (groups) {
-                    that.LoadMyGroups(groups);
-                    $('#btnFilterPostsPurchased').click();
-                });
-            }
-            this.InitPostsExpired = function () {
-                that.FindMyGroups(function (groups) {
-                    that.LoadMyGroups(groups);
-                    $('#btnFilterPostsExpired').click();
-                });
-            }
-            this.InitPostsUser = function () {
-                that.FindMyGroups(function (groups) {
-                    that.LoadMyGroups(groups);
-                    $('#btnFilterPostsUser').click();
-                });
-            }
-            this.InitDetailPost = function () {
-                that.RunViewDetailsPostUser();
-            }
         };
         return new MyAuxClass();
     })();
@@ -847,7 +858,7 @@ commerce.amazon.web.operation =
     // Listen for the jQuery ready event on the document
     $(function () {
         //Document Ready Actions
-        commerce.amazon.web.operation.Init();
+        commerce.amazon.web.user.Init();
     });
     // The rest of the code goes here!
 }(window.jQuery, window, document));

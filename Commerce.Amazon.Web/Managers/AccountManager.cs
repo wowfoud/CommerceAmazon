@@ -6,6 +6,7 @@ using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
+using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
 using Commerce.Amazon.Tools.Contracts;
 using Commerce.Amazon.Tools.Tools;
@@ -83,25 +84,25 @@ namespace Commerce.Amazon.Engine.Managers
             return resultProfile;
         }
 
-        public TResult<int> SaveUser(User user, DataUser dataUser)
+        public TResult<int> SaveUser(RegisterUserRequest registerRequest, DataUser dataUser)
         {
             TResult<int> result = new TResult<int>();
-            if (string.IsNullOrEmpty(user?.Email))
+            if (string.IsNullOrEmpty(registerRequest?.Email))
             {
                 result.Message = "Email est obligatoire";
                 result.Status = StatusResponse.KO;
             }
-            else 
+            else
             {
-                var users = _context.Users.Where(u => (u.Email == user.Email || u.UserId == user.UserId) && u.Id != user.Id);
+                var users = _context.Users.Where(u => (u.Email == registerRequest.Email || u.UserId == registerRequest.UserId) && u.Id != registerRequest.Id);
                 if (users.Count() > 0)
                 {
-                    if (users.Count(u => u.Email == user.Email && u.UserId == user.UserId) > 0)
+                    if (users.Count(u => u.Email == registerRequest.Email && u.UserId == registerRequest.UserId) > 0)
                     {
                         result.Status = StatusResponse.KO;
                         result.Message = "Email et UserId deja existe";
                     }
-                    else if (users.Count(u => u.Email == user.Email) > 0)
+                    else if (users.Count(u => u.Email == registerRequest.Email) > 0)
                     {
                         result.Status = StatusResponse.KO;
                         result.Message = "Email deja existe";
@@ -114,8 +115,17 @@ namespace Commerce.Amazon.Engine.Managers
                 }
                 else
                 {
+                    if (!string.IsNullOrEmpty(registerRequest.Password))
+                    {
+                        HashMD5 hashMD5 = new HashMD5();
+                        using (MD5 md5Hash = MD5.Create())
+                        {
+                            string hash = hashMD5.GetMd5Hash(md5Hash, registerRequest.Password);
+                            registerRequest.Password = hash;
+                        }
+                    }
                     //bool isFirst = false;
-                    if (user.Id == 0)
+                    if (registerRequest.Id == 0)
                     {
                         //isFirst = true;
                         //int max = 0;
@@ -125,26 +135,32 @@ namespace Commerce.Amazon.Engine.Managers
                         //}
                         //user.Id = max + 1;
                         //user.Password = "123456";
-                        if (!string.IsNullOrEmpty(user.Password))
-                        {
-                            HashMD5 hashMD5 = new HashMD5();
-                            using (MD5 md5Hash = MD5.Create())
-                            {
-                                string hash = hashMD5.GetMd5Hash(md5Hash, user.Password);
-                                user.Password = hash;
-                            }
-                        }
-                        var societe = _context.Societes.Find(user.SocieteId);
+                        
+                        var societe = _context.Societes.Find(registerRequest.SocieteId);
                         if (societe == null)
                         {
                             var l = _context.Societes.ToList();
                             societe = l.First();
-                            user.SocieteId = societe.Id;
+                            registerRequest.SocieteId = societe.Id;
                         }
+                        User user = new User
+                        {
+                            Email = registerRequest.Email,
+                            UserId = registerRequest.UserId,
+                            GroupId = registerRequest.GroupId,
+                            Nom = registerRequest.Nom,
+                            Prenom = registerRequest.Prenom,
+                            Password = registerRequest.Password,
+                            Role = registerRequest.Role,
+                            SocieteId = registerRequest.SocieteId,
+                            State = registerRequest.State,
+                            Telephon = registerRequest.Telephon,
+                            Photo = registerRequest.Photo,
+                        };
                         _context.Users.Add(user);
                         int n = _context.SaveChanges();
-
-                        _context.GroupUsers.Add(new GroupUser { UserId = n, GroupId = user.GroupId });
+                        registerRequest.Id = user.Id;
+                        _context.GroupUsers.Add(new GroupUser { UserId = n, GroupId = registerRequest.GroupId });
 
                         result.Result = n;
                         result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
@@ -160,18 +176,49 @@ namespace Commerce.Amazon.Engine.Managers
                     }
                     else
                     {
-                        var userStored = _context.Users.SingleOrDefault(u => u.Id == user.Id);
-                        userStored.UserId = user.UserId;
-                        userStored.GroupId = user.GroupId;
-                        userStored.Email = user.Email;
-                        userStored.Nom = user.Nom;
-                        userStored.Prenom = user.Prenom;
-                        userStored.Role = user.Role;
-                        userStored.Telephon = user.Telephon;
+                        var userStored = _context.Users.SingleOrDefault(u => u.Id == registerRequest.Id);
+                        userStored.UserId = registerRequest.UserId;
+                        userStored.GroupId = registerRequest.GroupId;
+                        userStored.Email = registerRequest.Email;
+                        userStored.Nom = registerRequest.Nom;
+                        userStored.Prenom = registerRequest.Prenom;
+                        userStored.Role = registerRequest.Role;
+                        userStored.Telephon = registerRequest.Telephon;
+                        userStored.Photo = registerRequest.Photo;
+                        if (!string.IsNullOrEmpty(registerRequest.Password))
+                        {
+                            userStored.Password = registerRequest.Password;
+                        }
                         //userStored.State = user.State;
                         int n = _context.SaveChanges();
                         result.Result = n;
-                        result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                        result.Status = StatusResponse.OK;
+                    }
+                    if (registerRequest.Id > 0 && registerRequest?.Groupes.Length > 0)
+                    {
+                        List<GroupUser> userGroups = _context.GroupUsers.Where(g => g.UserId == registerRequest.Id).ToList();
+                        GroupUser[] groupesToExit = userGroups.Where(u => !registerRequest.Groupes.Contains(u.GroupId)).ToArray();
+                        int[] groupesToAdd = registerRequest.Groupes.Where(g => !userGroups.Exists(ug => ug.GroupId == g)).ToArray();
+                        if (groupesToExit.Length > 0)
+                        {
+                            foreach (GroupUser g in groupesToExit)
+                            {
+                                _context.GroupUsers.Remove(g);
+                            }
+                            int n = _context.SaveChanges();
+                        }
+                        if (groupesToAdd.Length > 0)
+                        {
+                            foreach (int groupId in groupesToAdd)
+                            {
+                                _context.GroupUsers.Add(new GroupUser
+                                {
+                                     GroupId = groupId,
+                                     UserId = registerRequest.Id
+                                });
+                            }
+                            int n = _context.SaveChanges();
+                        }
                     }
                 }
             }
@@ -182,6 +229,42 @@ namespace Commerce.Amazon.Engine.Managers
         {
             List<User> users = _context.Users.ToList();
             return users;
+        }
+
+        public List<UserSociete> FindUsersSociete(FilterUser filterUser, DataUser dataUser)
+        {
+            var users = from u in _context.Users
+                        join g in _context.GroupUsers
+                        on u.Id equals g.UserId into ss
+                        from subGroups in ss.DefaultIfEmpty()
+                        group new { u.Id, u.Email, u.UserId, u.Nom, u.Prenom, u.Role, u.Photo, u.SocieteId, u.State, u.Telephon, GroupId = subGroups != null ? subGroups.GroupId : 0 } 
+                        by new { u.Id, u.Email, u.UserId, u.Nom, u.Prenom, u.Role, u.Photo, u.SocieteId, u.State, u.Telephon }
+                        into tmp
+                        select new UserSociete
+                        {
+                            Id = tmp.Key.Id,
+                            Email = tmp.Key.Email,
+                            UserId = tmp.Key.UserId,
+                            Nom = tmp.Key.Nom,
+                            Prenom = tmp.Key.Prenom,
+                            Role = tmp.Key.Role,
+                            Photo = tmp.Key.Photo,
+                            SocieteId = tmp.Key.SocieteId,
+                            State = tmp.Key.State,
+                            Telephon = tmp.Key.Telephon,
+                            CountGroupes = tmp.Count(t => t.GroupId > 0),
+                            Groupes = tmp.Where(t => t.GroupId > 0).Select(t => t.GroupId).ToArray()
+                        };
+            List<UserSociete> usersSocietes;
+            if (filterUser.GroupId > 0)
+            {
+                usersSocietes = users.Where(u => u.Groupes.Contains(filterUser.GroupId.Value)).ToList();
+            }
+            else
+            {
+                usersSocietes = users.ToList();
+            }
+            return usersSocietes;
         }
 
         public List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser)

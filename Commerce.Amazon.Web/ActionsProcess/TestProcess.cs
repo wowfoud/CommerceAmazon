@@ -1,4 +1,5 @@
 ﻿using Commerce.Amazon.Domain.Entities.Enum;
+using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
@@ -35,14 +36,14 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 };
             }
         }
-        public List<User> Users
+        public List<RegisterUserRequest> Users
         {
             get
             {
                 {
-                    var users = new List<User>
+                    var users = new List<RegisterUserRequest>
                     {
-                        new User
+                        new RegisterUserRequest
                         {
                             Email = "abderrahmanhdd@gmail.com",
                             UserId = "ABDOU",
@@ -53,7 +54,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
                             State = UserState.Active,
                             Telephon = "0615546536",
                         },
-                        new User
+                        new RegisterUserRequest
                         {
                             Email = "omardrirez@gmail.com",
                             UserId = "OMAR",
@@ -64,7 +65,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
                             State = UserState.Active,
                             Telephon = "",
                         },
-                        new User
+                        new RegisterUserRequest
                         {
                             Email = "abdellatif@gmail.com",
                             UserId = "ABDELLATIF",
@@ -89,7 +90,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
             }
         }
 
-        public void AddUsers(List<User> users)
+        public void AddUsers(List<RegisterUserRequest> users)
         {
             foreach (var user in users)
             {

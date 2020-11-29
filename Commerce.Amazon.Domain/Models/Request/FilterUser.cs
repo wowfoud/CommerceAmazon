@@ -5,6 +5,6 @@ namespace Commerce.Amazon.Domain.Models.Request
     public class FilterUser
     {
         public EnumStateUser? StateUser { get; set; }
-        public int? IdGroup { get; set; }
+        public int? GroupId { get; set; }
     }
 }

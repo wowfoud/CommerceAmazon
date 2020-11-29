@@ -83,23 +83,24 @@ namespace Commerce.Amazon.Web.ActionsProcess
         public List<UserSociete> FindUsers(FilterUser filterUser)
         {
             AssertIsAdmin();
-            List<UserSociete> users = _accountManager.FindUsers(filterUser, dataUser).Select(u => new UserSociete
-            {
-                Id = u.Id,
-                Email = u.Email,
-                UserId = u.UserId,
-                Nom = u.Nom,
-                Prenom = u.Prenom,
-                Role = u.Role,
-                Photo = u.Photo,
-                SocieteId = u.SocieteId,
-                State = u.State,
-                Telephon = u.Telephon
-            }).ToList();
+            List<UserSociete> users = _accountManager.FindUsersSociete(filterUser, dataUser);
+            //List<UserSociete> users = _accountManager.FindUsers(filterUser, dataUser).Select(u => new UserSociete
+            //{
+            //    Id = u.Id,
+            //    Email = u.Email,
+            //    UserId = u.UserId,
+            //    Nom = u.Nom,
+            //    Prenom = u.Prenom,
+            //    Role = u.Role,
+            //    Photo = u.Photo,
+            //    SocieteId = u.SocieteId,
+            //    State = u.State,
+            //    Telephon = u.Telephon
+            //}).ToList();
             return users;
         }
 
-        public TResult<int> SaveUser(User user)
+        public TResult<int> SaveUser(RegisterUserRequest user)
         {
             AssertIsAdmin();
             var result = _accountManager.SaveUser(user, dataUser);

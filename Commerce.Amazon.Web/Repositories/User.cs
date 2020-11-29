@@ -19,7 +19,6 @@ namespace Commerce.Amazon.Web.Repositories
 		public UserState State { get; set; }
 		public EnumRole? Role { get; set; }
 		public int SocieteId { get; set; }
-		public string RoleName { get { return Role.ToString(); } }
         public string Password { get; set; }
 		public virtual Societe Societe { get; set; }
         public virtual IEnumerable<Post> Posts { get; set; }

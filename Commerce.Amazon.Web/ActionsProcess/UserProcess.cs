@@ -2,22 +2,20 @@
 using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response;
-using Commerce.Amazon.Tools.Tools;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace Commerce.Amazon.Web.ActionsProcess
 {
-    public class OperacionProcess : BaseActionProcess
+    public class UserProcess : BaseActionProcess
     {
         private readonly IAccountManager _accountManager;
         private readonly IOperationManager _operationManager;
 
-        public OperacionProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IOperationManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
+        public UserProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IOperationManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
         {
             _accountManager = accountManager;
             _operationManager = operationManager;
@@ -38,19 +36,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return isCan;
         }
 
-        public int PlanifierNotificationPost(int idPost, int idGroup)
-        {
-            int n = _operationManager.PlanifierNotificationPost(idPost, idGroup, dataUser);
-            return n;
-        }
-
-        public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost)
-        {
-            AssertIsAdmin();
-            IEnumerable<PostPlaningView> posts = _operationManager.ViewPlaningPost(idPost, dataUser);
-            return posts;
-        }
-
         public PostView ViewPost(int idPost)
         {
             PostView postView = _operationManager.ViewPost(idPost, dataUser);
@@ -67,13 +52,6 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             PostView postView = _operationManager.ViewDetailsPost(idPost, dataUser);
             return postView;
-        }
-
-        public TResult<int> NotifyUsers(NotifyRequest notifyRequest)
-        {
-            AssertIsAdmin();
-            TResult<int> result = _operationManager.NotifyUsers(notifyRequest, dataUser);
-            return result;
         }
 
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost)

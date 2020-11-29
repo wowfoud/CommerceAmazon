@@ -1,26 +1,27 @@
 ﻿
 @{
-    ViewData["Title"] = "Posts expirés";
+    ViewData["Title"] = "Postes à envoyer";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Posts expirés</h2>
-@Html.Partial("Modals/FilterPostsExpired")
-<div class="nowrap filtrer" id="divPostsExpired">
-    <table class="table table-bordered table-responsive table-hover" id="tablePostsExpired">
+<h2>Postes à envoyer</h2>
+
+<div class="nowrap filtrer" id="PostsToSendDiv">
+    <table class="table table-bordered table-responsive table-hover" id="tablePostsToSend">
         <thead id="theaddashboard">
             <tr class="thdashboard">
                 <th class="alignCenter" data-priority="1">Id</th>
                 <th class="alignCenter" data-priority="1">Url</th>
                 <th class="alignCenter" data-priority="1">Description</th>
                 <th class="alignCenter" data-priority="1">Prix</th>
-                <th class="alignCenter" data-priority="1"></th>
+                <th class="alignCenter" data-priority="1">Date</th>
+                <th class="alignCenter" data-priority="1">Groupe</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
-<script src="~/js/Internal/user.js"></script>
+<script src="~/js/Internal/admin.js"></script>
 <script>
-    commerce.amazon.web.user.InitPostsExpired();
+    commerce.amazon.web.admin.InitPostsToSend();
 </script>

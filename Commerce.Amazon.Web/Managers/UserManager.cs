@@ -15,13 +15,13 @@ using System.Linq;
 
 namespace Commerce.Amazon.Engine.Managers
 {
-    public class OperationManager : IOperationManager
+    public class UserManager : IOperationManager
     {
         private readonly IMailSender _mailSender;
 
         private MyContext _context { get; }
 
-        public OperationManager(MyContext context, IMailSender mailSender)
+        public UserManager(MyContext context, IMailSender mailSender)
         {
             _context = context;
             _mailSender = mailSender;
@@ -73,86 +73,6 @@ namespace Commerce.Amazon.Engine.Managers
             int countNotified = _context.PostPlanings.Count(pp => pp.IdPost == post.Id && pp.State == EnumStatePlaning.Notified);
             isCan = countNotified == 0;
             return isCan;
-        }
-
-        public int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser)
-        {
-            var query = from p in _context.Posts
-                        join u in _context.Users on p.UserId equals u.Id
-                        join ug in _context.GroupUsers on u.Id equals ug.UserId
-                        join g in _context.Groups on ug.GroupId equals idGroup
-                        where p.Id == idPost
-                        select new
-                        {
-                            Post = p,
-                            User = u,
-                            Group = g
-                        };
-            var data = query.FirstOrDefault();
-
-            Post post = _context.Posts.Single(p => p.Id == idPost);
-            User userPost = post.User;
-            Group group = userPost.Groups?.First()?.Group;
-
-            post = data.Post;
-            userPost = data.User;
-            group = data.Group;
-
-
-
-            int maxDays = group.MaxDays;
-            int countNotifyPerDay = group.CountNotifyPerDay;
-            var postsPlaning = _context.PostPlanings.Where(pp => pp.IdPost == post.Id).ToList();
-
-            var queryUsers = from u in _context.Users join ug in _context.GroupUsers
-                             on u.Id equals ug.UserId
-                             where ug.GroupId == idGroup && u.Id != userPost.Id && u.Role == EnumRole.User
-                             select u;
-
-            var users = queryUsers.ToArray();
-
-            int i = 0;
-            foreach (var user in users)
-            {
-                i++;
-                int addDays = (i / countNotifyPerDay) + 1;
-                var postPlan = postsPlaning.Find(p => p.IdUser == user.Id);
-                if (postPlan == null)
-                {
-                    postPlan = new PostPlaning
-                    {
-                        IdPost = post.Id,
-                        IdUser = user.Id,
-                        State = EnumStatePlaning.Planifie,
-                        DatePlanifie = DateTime.Now.AddDays(addDays),
-                        DateLimite = DateTime.Now.AddDays(addDays + maxDays),
-                    };
-                    _context.PostPlanings.Add(postPlan);
-                }
-            }
-            int n = _context.SaveChanges();
-            return n;
-        }
-
-        public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost, DataUser dataUser)
-        {
-            var query = from pp in _context.PostPlanings
-                        join u in _context.Users on pp.IdUser equals u.Id
-                        where pp.IdPost == idPost
-                        select new PostPlaningView
-                        {
-                            IdPost = pp.IdPost,
-                            IdUser = pp.IdUser,
-                            State = pp.State,
-                            DatePlanifie = pp.DatePlanifie,
-                            DateNotified = pp.DateNotified,
-                            DateComment = pp.DateComment,
-                            DateLimite = pp.DateLimite,
-                            Nom = pp.User.Nom,
-                            Prenom = pp.User.Prenom
-                        };
-            var posts = query.ToArray();
-            return posts;
         }
 
         public PostView ViewPost(int idPost, DataUser dataUser)
@@ -232,53 +152,61 @@ namespace Commerce.Amazon.Engine.Managers
             return postView;
         }
 
-        public TResult<int> NotifyUsers(NotifyRequest notifyRequest, DataUser dataUser)
+        public int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser)
         {
-            TResult<int> result = new TResult<int>();
-            try
-            {
-                if (notifyRequest?.IdPost > 0 == false)
-                {
-                    throw new ArgumentNullException("IdPost");
-                }
-                if (notifyRequest?.Users.Count() > 0 == false)
-                {
-                    throw new ArgumentNullException("Users");
-                }
-                var post = _context.Posts.SingleOrDefault(p => p.Id == notifyRequest.IdPost);
-                var planing = post.Planings.Where(pp => notifyRequest.Users.Contains(pp.IdUser)).ToArray();
-                var usersExcep = notifyRequest.Users.Except(planing.Select(p => p.IdUser));
-                if (usersExcep.Count() > 0)
-                {
-                    throw new Exception($"Can't notify user no in planing: '{usersExcep.ListToString()}'");
-                }
-                foreach (int idUser in notifyRequest.Users)
-                {
-                    var plan = planing.Single(pp => pp.IdUser == idUser);
-                    if (plan != null && plan.State == EnumStatePlaning.Planifie)
-                    {
-                        string email = plan.User.Email;
-                        string user = $"{plan.User.Nom} {plan.User.Prenom}";
-                        _mailSender.SendMail(new Tools.Tools.IdentityMessage
+            var query = from p in _context.Posts
+                        join u in _context.Users on p.UserId equals u.Id
+                        join ug in _context.GroupUsers on u.Id equals ug.UserId
+                        join g in _context.Groups on ug.GroupId equals idGroup
+                        where p.Id == idPost
+                        select new
                         {
-                            Body = GlobalConfiguration.Setting.MessageBodyNotify.Replace("{user}", user).Replace("{link}", post.Url),
-                            Subject = GlobalConfiguration.Setting.MessageSubjectNotify,
-                            Destination = new string[] { email }
-                        });
-                        plan.State = EnumStatePlaning.Notified;
-                        plan.DateNotified = DateTime.Now;
-                    }
-                }
-                _context.SaveChanges();
-                result.Status = StatusResponse.OK;
-                result.Message = $"Utilisateur sont notifies";
-            }
-            catch (Exception ex)
+                            Post = p,
+                            User = u,
+                            Group = g
+                        };
+            var data = query.FirstOrDefault();
+
+            Post post = _context.Posts.Single(p => p.Id == idPost);
+            User userPost = post.User;
+            Group group = userPost.Groups?.First()?.Group;
+
+            post = data.Post;
+            userPost = data.User;
+            group = data.Group;
+
+            int maxDays = group.MaxDays;
+            int countNotifyPerDay = group.CountNotifyPerDay;
+            var postsPlaning = _context.PostPlanings.Where(pp => pp.IdPost == post.Id).ToList();
+
+            var queryUsers = from u in _context.Users
+                             join ug in _context.GroupUsers on u.Id equals ug.UserId
+                             where ug.GroupId == idGroup && u.Id != userPost.Id && u.Role == EnumRole.User
+                             select u;
+
+            var users = queryUsers.ToArray();
+
+            int i = 0;
+            foreach (var user in users)
             {
-                result.Status = StatusResponse.KO;
-                result.Message = ex.Message;
+                i++;
+                int addDays = (i / countNotifyPerDay) + 1;
+                var postPlan = postsPlaning.Find(p => p.IdUser == user.Id);
+                if (postPlan == null)
+                {
+                    postPlan = new PostPlaning
+                    {
+                        IdPost = post.Id,
+                        IdUser = user.Id,
+                        State = EnumStatePlaning.Planifie,
+                        DatePlanifie = DateTime.Now.AddDays(addDays),
+                        DateLimite = DateTime.Now.AddDays(addDays + maxDays),
+                    };
+                    _context.PostPlanings.Add(postPlan);
+                }
             }
-            return result;
+            int n = _context.SaveChanges();
+            return n;
         }
 
         public IEnumerable<PostView> ViewPostsUser(FilterPost filterPost, DataUser dataUser)

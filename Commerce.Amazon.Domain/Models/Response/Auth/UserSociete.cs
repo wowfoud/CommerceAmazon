@@ -14,7 +14,10 @@ namespace Commerce.Amazon.Domain.Models.Response.Auth
         public UserState State { get; set; }
         public EnumRole? Role { get; set; }
         public int SocieteId { get; set; }
+        public int CountGroupes { get; set; }
         public Societe Societe { get; set; }
         public string RoleName { get { return Role.ToString(); } }
+
+        public int[] Groupes { get; set; }
     }
 }

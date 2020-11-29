@@ -4,25 +4,67 @@ commerce.amazon = commerce.amazon || {};
 commerce.amazon.web = commerce.amazon.web || {};
 
 //Declare a class, with parameteres
-commerce.amazon.web.users =
+commerce.amazon.web.admin =
     (function () {
         var MyAuxClass = function () {
             var that = this;
 
-
             this.InitUsers = function () {
 
+                $('#idBtnFilter').click(function () {
+                    var filter = {
+                        GroupId: $('#sltGroup').val()
+                    };
+                    that.FindUsers(filter, function (users) {
+                        that.LoadUsers(users);
+                    });
+                });
                 $('#idOpenModalUser').click(function () {
                     that.LoadUser({}, false)
                     //$('#myModalUsuario').modal('show');
                 });
+                $('#idBtnSaveUser').click(function () {
+                    var user = that.ValidUser();
+                    if (!!user) {
+                        that.SaveUser(user, function (data) {
+                            if (data && data.Status === 0) {
+                                $('.modal button.myclose').click();
+                                that.User = user;
+                                var filter = {
+                                    GroupId: $('#sltGroup').val()
+                                };
+                                that.FindUsers(filter, function (users) {
+                                    that.LoadUsers(users);
+                                });
+                            } else {
+                                $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
+                            }
+                        });
+                    }
+                });
 
-                that.FindUsers();
-
+                that.FindGroups(undefined, function (groups) {
+                    $('#groupes').empty();
+                    $('#sltGroup').empty();
+                    if (groups.length > 1) {
+                        $('#sltGroup').append(
+                            $('<option></option>').val("").text("Sélectionner")
+                        );
+                    }
+                    for (var i = 0; i < groups.length; i++) {
+                        var group = groups[i];
+                        $('#groupes').append(
+                            $('<option></option>').val(group.Id).text(group.Name)
+                        )
+                        $('#sltGroup').append(
+                            $('<option></option>').val(group.Id).text(group.Name)
+                        )
+                    }
+                })
+                $('#idBtnFilter').click();
             };
 
             this.InitGroups = function () {
-
                 $('#idBtnSaveGroup').click(function () {
                     that.SaveGroup();
                 });
@@ -30,17 +72,17 @@ commerce.amazon.web.users =
                     that.LoadGroups(groups);
                 });
             }
+
+            this.InitPostsToSend = function () {
+                
+            }
+
+            this.InitHistoriques = function () {
+                
+            }
             //----------------------events------------------------//
 
-            $('#idBtnSaveUser').click(function () {
 
-                var user = that.ValidUser();
-                if (!!user) {
-
-                    that.SaveUser(user);
-                }
-
-            });
 
 
 
@@ -64,6 +106,14 @@ commerce.amazon.web.users =
                     }
                     var idUser = !!that.User ? that.User.Id : 0;
 
+                    var groupesId = [];
+                    var options = document.getElementById('groupes').options;
+                    for (var i = 0; i < options.length; i++) {
+                        var o = options[i];
+                        if (o.selected == true) {
+                            groupesId.push(o.value);
+                        }
+                    }
                     user = {
                         Id: idUser,
                         Nom: $('#Nom').val(),
@@ -71,23 +121,24 @@ commerce.amazon.web.users =
                         Email: $('#Email').val(),
                         UserId: $('#UserId').val(),
                         Role: idRole,
-                        GroupId: $('#GroupId').val()
+                        GroupId: $('#GroupId').val(),
+                        Groupes: groupesId
                     };
                     if (!idRole) {
                         $("#errorMsgDiv").html("SVP, Selectioner le role d'utilisateur");
                         user = undefined;
                     } else if (!user.UserId) {
-                        $("#errorMsgDiv").html("");
+                        $("#errorMsgDiv").html("UserId est obligatoire.");
                         user = undefined;
                     } else if (!user.Email) {
-                        $("#errorMsgDiv").html("");
+                        $("#errorMsgDiv").html("Email est obligatoire.");
                         user = undefined;
                     }
                 }
                 return user;
             }
 
-            this.SaveUser = function (user) {
+            this.SaveUser = function (user, handler) {
                 $.ajax({
                     type: "POST",
                     url: "/User/SaveUser",
@@ -95,13 +146,7 @@ commerce.amazon.web.users =
                     success: function (data) {
                         //console.log(data);
                         if (HandleResponse(data)) {
-
-                            if (data && data.Status === 0) {
-                                $('.modal button.myclose').click();
-                                that.FindUsers();
-                            } else {
-                                $("#errorMsgDiv").html('<span class="error">' + data.Message + '</span>')
-                            }
+                            handler(data);
                         } else {
                             that.OnError();
                         }
@@ -152,14 +197,15 @@ commerce.amazon.web.users =
                 }
             }
 
-            this.FindUsers = function () {
+            this.FindUsers = function (filter, handleUsers) {
                 $.ajax({
                     type: "POST",
                     url: "/User/FindUsers",
-                    data: {},
+                    data: filter,
                     success: function (data) {
                         if (HandleResponse(data)) {
-                            that.LoadUsers(data);
+                            //that.LoadUsers(data);
+                            handleUsers(data);
                         } else {
                             that.OnError();
                         }
@@ -209,7 +255,19 @@ commerce.amazon.web.users =
                 $('#Prenom').val(user.Prenom);
                 $('#Email').val(user.Email);
                 $('#UserId').val(user.UserId);
-
+                var groupesId = !!user.Groupes ? user.Groupes : [];
+                var options = document.getElementById('groupes').options;
+                for (var i = 0; i < options.length; i++) {
+                    var o = options[i];
+                    if (groupesId.findIndex(g => g == o.value) > -1) {
+                        o.selected = true;
+                    } else {
+                        o.selected = false;
+                    }
+                }
+                if (user.Role == undefined) {
+                    user.Role = 2;
+                }
                 var radios = document.getElementsByName('roleUser');
                 for (var i = 0; i < radios.length; i++) {
                     if (radios[i].value == user.Role) {
@@ -244,6 +302,9 @@ commerce.amazon.web.users =
                     },
                     {
                         data: 'RoleName',
+                    },
+                    {
+                        data: 'CountGroupes',
                     }
                 ]
                 $('#tableUsers').DataTable({
@@ -254,6 +315,20 @@ commerce.amazon.web.users =
                     //scrollX: true,
                     dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
                     columns: columns,
+                    buttons: [{
+                        text: 'Exportar excel',
+                        extend: 'excelHtml5',
+                        title: 'Utilisateurs',
+                        className: 'btn btn-exportar'
+                    },
+                    {
+                        text: 'Filtrer',
+                        title: 'Filtrer les utilisateurs',
+                        className: 'btn btn-exportar',
+                        action: function (e, dt, node, config) {
+                            
+                        }
+                    }],
                     language: {
                         processing: "Tratamiento en curso...",
                         search: "Buscar&nbsp;:",

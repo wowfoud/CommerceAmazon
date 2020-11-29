@@ -8,6 +8,5 @@ namespace Commerce.Amazon.Domain.Models
 		public SendLinkEmailRequest SendLinkEmailRequest { get; set; }
 		public CheckLinkResetCodeRequest CheckLinkResetCodeRequest { get; set; }
 		public ResetPasswordRequest ResetPasswordRequest { get; set; }
-		public RegisterRequest RegisterRequest { get; set; }
 	}
 }

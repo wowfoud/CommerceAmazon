@@ -1,22 +1,19 @@
 ﻿using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Web.ActionsProcess;
-using Commerce.Amazon.Web.Repositories;
-using Microsoft.AspNetCore.Http;
+using Commerce.Amazon.Web.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
 
 namespace Commerce.Amazon.Web.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
-        private readonly OperacionProcess _operacionProcess;
+        private readonly AdminProcess _adminProcess;
 
-        public AdminController(OperacionProcess operacionProcess)
+        public AdminController(AdminProcess adminProcess)
         {
-            _operacionProcess = operacionProcess;
+            _adminProcess = adminProcess;
         }
 
         public IActionResult Index()
@@ -30,12 +27,72 @@ namespace Commerce.Amazon.Web.Controllers
                 return BadRequest(ex);
             }
         }
+        
+        public IActionResult PostsToSend()
+        {
+            if (_adminProcess.IsAdmin)
+            {
+                var model = _adminProcess.GetModel();
+                return View(model);
+            }
+            else if (_adminProcess.IsUser)
+            {
+                return RedirectToDashboardUser();
+            }
+            else
+            {
+                return RedirectToLogin();
+            }
+        }
+        
+        public IActionResult Historique()
+        {
+            if (_adminProcess.IsAdmin)
+            {
+                var model = _adminProcess.GetModel();
+                return View(model);
+            }
+            else if (_adminProcess.IsUser)
+            {
+                return RedirectToDashboardUser();
+            }
+            else
+            {
+                return RedirectToLogin();
+            }
+        }
+
+        public IActionResult FindPostsToSend(FilterPost filter)
+        {
+            try
+            {
+                var result = _adminProcess.FindPostsToSend(filter);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        public IActionResult FindHistorique(FilterPost filter)
+        {
+            try
+            {
+                var result = _adminProcess.FindHistorique(filter);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
         public IActionResult PlanifierNotificationPost(int[] p)
         {
             try
             {
-                int n = _operacionProcess.PlanifierNotificationPost(p[0], p[1]);
+                int n = _adminProcess.PlanifierNotificationPost(p[0], p[1]);
                 return Json(n);
             }
             catch (Exception ex)
@@ -48,7 +105,7 @@ namespace Commerce.Amazon.Web.Controllers
         {
             try
             {
-                var posts = _operacionProcess.ViewPlaningPost(idPost);
+                var posts = _adminProcess.ViewPlaningPost(idPost);
                 return Json(posts);
             }
             catch (Exception ex)
@@ -61,7 +118,7 @@ namespace Commerce.Amazon.Web.Controllers
         {
             try
             {
-                TResult<int> result = _operacionProcess.NotifyUsers(notifyRequest);
+                TResult<int> result = _adminProcess.NotifyUsers(notifyRequest);
                 return Json(result);
             }
             catch (Exception ex)
