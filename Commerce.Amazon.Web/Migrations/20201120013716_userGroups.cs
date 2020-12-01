@@ -35,7 +35,7 @@ namespace Commerce.Amazon.Web.Migrations
                 defaultValue: 0);
 
             migrationBuilder.AddColumn<int>(
-                name: "CoutUsers",
+                name: "CountUsers",
                 table: "Groups",
                 nullable: false,
                 defaultValue: 0);
@@ -92,7 +92,7 @@ namespace Commerce.Amazon.Web.Migrations
                 table: "Posts");
 
             migrationBuilder.DropColumn(
-                name: "CoutUsers",
+                name: "CountUsers",
                 table: "Groups");
 
             migrationBuilder.RenameColumn(

@@ -30,7 +30,7 @@ namespace Commerce.Amazon.Web.Migrations
 
                     b.Property<int>("CountUsersCanNotify");
 
-                    b.Property<int>("CoutUsers");
+                    b.Property<int>("CountUsers");
 
                     b.Property<int>("MaxDays");
 

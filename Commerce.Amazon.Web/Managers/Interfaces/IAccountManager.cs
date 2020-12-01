@@ -4,6 +4,7 @@ using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Request.Auth;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Web.Repositories;
+using System;
 using System.Collections.Generic;
 
 namespace Commerce.Amazon.Web.Managers.Interfaces
@@ -16,7 +17,7 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         List<Group> FindGroups(FilterGroup filterGroup, DataUser dataUser);
         TResult<int> SaveGroup(Group group, DataUser dataUser);
         bool InitDatabase();
-        void Reset();
+        void Reset(Exception ex);
         List<UserSociete> FindUsersSociete(FilterUser filterUser, DataUser dataUser);
     }
 }

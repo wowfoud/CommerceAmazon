@@ -3,11 +3,12 @@ using Commerce.Amazon.Domain.Models;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response;
 using Commerce.Amazon.Web.Repositories;
+using System;
 using System.Collections.Generic;
 
 namespace Commerce.Amazon.Web.Managers.Interfaces
 {
-    public interface IOperationManager
+    public interface IUserManager
     {
         bool CanEditPost(int idPost, DataUser dataUser);
         PostView ViewPost(int idPost, DataUser dataUser);
@@ -20,7 +21,7 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         GroupView[] FindMyGroupsView(DataUser dataUser);
         PostView ViewDetailsPostUser(int idPost, DataUser dataUser);
         string FindScreenComment(int idPost, int idUser, DataUser dataUser, out string userId);
-        void Reset();
+        void Reset(Exception ex);
         int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser);
     }
 }

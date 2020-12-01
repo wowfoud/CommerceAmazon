@@ -24,7 +24,9 @@
         <tbody></tbody>
     </table>
 </div>
-<script src="~/js/Internal/user.js"></script>
-<script>
-    commerce.amazon.web.user.InitPostsUser();
-</script>
+@section Scripts {
+    <script src="~/js/Internal/user.js"></script>
+    <script>
+        commerce.amazon.web.user.InitPostsUser();
+    </script>
+}

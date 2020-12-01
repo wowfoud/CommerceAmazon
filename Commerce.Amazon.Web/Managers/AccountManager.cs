@@ -9,7 +9,6 @@ using Commerce.Amazon.Domain.Models.Request.Auth;
 using Commerce.Amazon.Domain.Models.Response.Auth;
 using Commerce.Amazon.Domain.Models.Response.Auth.Enum;
 using Commerce.Amazon.Tools.Contracts;
-using Commerce.Amazon.Tools.Tools;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using System;
@@ -17,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Commerce.Amazon.Engine.Managers
+namespace Commerce.Amazon.Web.Managers
 {
     public class AccountManager : IAccountManager
     {
@@ -43,7 +42,7 @@ namespace Commerce.Amazon.Engine.Managers
             //    _context.Entry(userCache).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
             //}
             User user = _context.Users.SingleOrDefault(u => u.Email == authenticationRequest.Email);
-            if (user != null && user.State == Domain.Models.Response.Auth.Enum.UserState.Active)
+            if (user != null && user.State == UserState.Active)
             {
                 bool verifyPassword;
                 HashMD5 hashMD5 = new HashMD5();
@@ -135,7 +134,7 @@ namespace Commerce.Amazon.Engine.Managers
                         //}
                         //user.Id = max + 1;
                         //user.Password = "123456";
-                        
+
                         var societe = _context.Societes.Find(registerRequest.SocieteId);
                         if (societe == null)
                         {
@@ -194,28 +193,45 @@ namespace Commerce.Amazon.Engine.Managers
                         result.Result = n;
                         result.Status = StatusResponse.OK;
                     }
-                    if (registerRequest.Id > 0 && registerRequest?.Groupes.Length > 0)
+                    if (registerRequest.Groupes == null)
+                    {
+                        registerRequest.Groupes = new int[0];
+                    }
+                    if (registerRequest.Id > 0)
                     {
                         List<GroupUser> userGroups = _context.GroupUsers.Where(g => g.UserId == registerRequest.Id).ToList();
-                        GroupUser[] groupesToExit = userGroups.Where(u => !registerRequest.Groupes.Contains(u.GroupId)).ToArray();
-                        int[] groupesToAdd = registerRequest.Groupes.Where(g => !userGroups.Exists(ug => ug.GroupId == g)).ToArray();
-                        if (groupesToExit.Length > 0)
+                        List<GroupUser> groupesToExit = userGroups.Where(u => !registerRequest.Groupes.Contains(u.GroupId)).ToList();
+                        List<int> groupesToAdd = registerRequest.Groupes.Where(g => !userGroups.Exists(ug => ug.GroupId == g)).ToList();
+                        if (groupesToExit.Count > 0)
                         {
                             foreach (GroupUser g in groupesToExit)
                             {
-                                _context.GroupUsers.Remove(g);
+                                int countPosts = _context.Posts.Count(p => p.GroupId == g.GroupId && g.UserId == p.UserId);
+                                if (countPosts == 0)
+                                {
+                                    _context.GroupUsers.Remove(g);
+                                }
                             }
                             int n = _context.SaveChanges();
                         }
-                        if (groupesToAdd.Length > 0)
+                        if (groupesToAdd.Count > 0)
                         {
                             foreach (int groupId in groupesToAdd)
                             {
                                 _context.GroupUsers.Add(new GroupUser
                                 {
-                                     GroupId = groupId,
-                                     UserId = registerRequest.Id
+                                    GroupId = groupId,
+                                    UserId = registerRequest.Id
                                 });
+                            }
+                            int n = _context.SaveChanges();
+                        }
+                        if (groupesToExit.Count > 0 || groupesToAdd.Count > 0)
+                        {
+                            var groupes = _context.Groups.Where(g => groupesToExit.Exists(ug => ug.GroupId == g.Id) || groupesToAdd.Contains(g.Id));
+                            foreach (Group group in groupes)
+                            {
+                                group.CountUsers = _context.GroupUsers.Count(ug => ug.GroupId == group.Id);
                             }
                             int n = _context.SaveChanges();
                         }
@@ -237,7 +253,7 @@ namespace Commerce.Amazon.Engine.Managers
                         join g in _context.GroupUsers
                         on u.Id equals g.UserId into ss
                         from subGroups in ss.DefaultIfEmpty()
-                        group new { u.Id, u.Email, u.UserId, u.Nom, u.Prenom, u.Role, u.Photo, u.SocieteId, u.State, u.Telephon, GroupId = subGroups != null ? subGroups.GroupId : 0 } 
+                        group new { u.Id, u.Email, u.UserId, u.Nom, u.Prenom, u.Role, u.Photo, u.SocieteId, u.State, u.Telephon, GroupId = subGroups != null ? subGroups.GroupId : 0 }
                         by new { u.Id, u.Email, u.UserId, u.Nom, u.Prenom, u.Role, u.Photo, u.SocieteId, u.State, u.Telephon }
                         into tmp
                         select new UserSociete
@@ -359,7 +375,7 @@ namespace Commerce.Amazon.Engine.Managers
             return created;
         }
 
-        public void Reset()
+        public void Reset(Exception ex)
         {
             _context.Reset();
         }

@@ -63,14 +63,14 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 CountUsersCanNotify = g.CountUsersCanNotify,
                 MaxDays = g.MaxDays,
                 State = g.State,
-                CoutUsers = g.CoutUsers
+                CountUsers = g.CountUsers
             }).ToList();
             return groupsViews;
         }
 
-        public void Reset()
+        public void Reset(Exception ex)
         {
-            _accountManager.Reset();
+            _accountManager.Reset(ex);
         }
 
         public TResult<int> SaveGroup(Group group)

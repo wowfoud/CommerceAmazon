@@ -20,41 +20,107 @@ commerce.amazon.web.user =
                 that.RunViewDetailsPostUser();
             }
             this.InitPostsToBuy = function () {
+
+                $('#btnFilterPostsToBuy').click(function () {
+                    var dateMin = $('#dateMin').val();
+                    var dateMax = $('#dateMax').val();
+                    var idGroup = $('#sltGroup').val();
+                    var state = 2;
+                    that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                        that.LoadPostsToBuy(data);
+                    });
+                })
+
                 that.FindMyGroups(function (groups) {
                     that.LoadMyGroups(groups);
                     $('#btnFilterPostsToBuy').click();
                 });
             }
             this.InitPostsPurchased = function () {
+
+                $('#btnFilterPostsPurchased').click(function () {
+                    var dateMin = $('#dateMin').val();
+                    var dateMax = $('#dateMax').val();
+                    var idGroup = $('#sltGroup').val();
+                    var state = 3;
+                    that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                        that.LoadPostsPurchased(data);
+                    });
+                })
+
                 that.FindMyGroups(function (groups) {
                     that.LoadMyGroups(groups);
                     $('#btnFilterPostsPurchased').click();
                 });
             }
             this.InitPostsExpired = function () {
+
+                $('#btnFilterPostsExpired').click(function () {
+                    var dateMin = $('#dateMin').val();
+                    var dateMax = $('#dateMax').val();
+                    var idGroup = $('#sltGroup').val();
+                    var state = 4;
+                    that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
+                        that.LoadPostsExpired(data);
+                    });
+                })
+
                 that.FindMyGroups(function (groups) {
                     that.LoadMyGroups(groups);
                     $('#btnFilterPostsExpired').click();
                 });
             }
             this.InitPostsUser = function () {
+
+                $('#btnFilterPostsUser').click(function () {
+                    var filter = {
+                        DateDebut: $('#dateMin').val(),
+                        DateFin: $('#dateMax').val(),
+                        IdGroup: $('#sltGroup').val(),
+                        StatePlan: 1
+                    };
+                    that.ViewPostsUser(filter, function (data) {
+                        that.LoadPostsUser(data);
+                    });
+                })
+
                 that.FindMyGroups(function (groups) {
                     that.LoadMyGroups(groups);
                     $('#btnFilterPostsUser').click();
                 });
             }
             this.InitNewPost = function () {
-
+                that.FindMyGroups(function (groups) {
+                    that.LoadMyGroups(groups);
+                    $('#sltGroup').change(function () {
+                        var id = $(this).val();
+                        var g = groups.find(e => e.Id == id);
+                        $('#CountUsers').val(g.CountUsers);
+                    });
+                    $('#sltGroup').change();
+                });
                 $('#idBtnSavePost').click(function () {
                     $('#errorMsgDiv').text('');
-                    var url = $('#Url').val();
-                    var description = $('#Description').val();
-                    var prix = $('#Prix').val();
-                    if (!url) {
+                    var post = {
+                        GroupId: $('#sltGroup').val(),
+                        Url: $('#Url').val(),
+                        Description: $('#Description').val(),
+                        Prix: $('#Prix').val()
+                    };
+                    if (!post.GroupId) {
+                        $('#errorMsgDiv').text('SVP, Selectioner un groupe.');
+                        return;
+                    }
+                    if (!post.Url) {
+                        $('#errorMsgDiv').text('url est obligatoire.');
+                        return;
+                    }
+                    if (!post.Prix) {
+                        $('#errorMsgDiv').text('Prix est obligatoire.');
                         return;
                     }
                     Swal.showLoading();
-                    that.PostProduit(url, description, prix, function (result) {
+                    that.PostProduit(post, function (result) {
                         if (!!result && result.Status === 0) {
                             //alert(`Status: ${result.Status}, Message: ${result.Message}`);
                             Swal.fire({ title: 'Post enregistré avec succes', html: '', type: "success", confirmButtonColor: '#DB9D0A' });
@@ -62,7 +128,13 @@ commerce.amazon.web.user =
                             $('#Description').val('');
                             $('#Prix').val('');
                         } else {
-                            //$('#errorMsgDiv').text(result.Message);
+                            var msg = '';
+                            if (!result || !result.Message) {
+                                msg = 'un erreur non controllé s\'est produit.';
+                            } else {
+                                msg = result.Message;
+                            }
+                            $('#errorMsgDiv').text(msg);
                         }
                     });
                 })
@@ -143,46 +215,6 @@ commerce.amazon.web.user =
                         });
                     });
                 }
-            })
-
-            $('#btnFilterPostsUser').click(function () {
-                var dateMin = $('#dateMin').val();
-                var dateMax = $('#dateMax').val();
-                var idGroup = $('#sltGroup').val();
-                var state = 1;
-                that.ViewPostsUser(dateMin, idGroup, state, function (data) {
-                    that.LoadPostsUser(data);
-                });
-            })
-
-            $('#btnFilterPostsToBuy').click(function () {
-                var dateMin = $('#dateMin').val();
-                var dateMax = $('#dateMax').val();
-                var idGroup = $('#sltGroup').val();
-                var state = 2;
-                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
-                    that.LoadPostsToBuy(data);
-                });
-            })
-
-            $('#btnFilterPostsPurchased').click(function () {
-                var dateMin = $('#dateMin').val();
-                var dateMax = $('#dateMax').val();
-                var idGroup = $('#sltGroup').val();
-                var state = 3;
-                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
-                    that.LoadPostsPurchased(data);
-                });
-            })
-
-            $('#btnFilterPostsExpired').click(function () {
-                var dateMin = $('#dateMin').val();
-                var dateMax = $('#dateMax').val();
-                var idGroup = $('#sltGroup').val();
-                var state = 4;
-                that.ViewPostsToBuy(dateMin, idGroup, state, function (data) {
-                    that.LoadPostsExpired(data);
-                });
             })
 
             $('#screen-comment').change(function () {
@@ -545,12 +577,7 @@ commerce.amazon.web.user =
 
             //----------------------End event------------------------//
             //----------------------AJAX------------------------//
-            this.PostProduit = function (url, description, prix, handler) {
-                var post = {
-                    Url: url,
-                    Description: description,
-                    Prix: prix
-                };
+            this.PostProduit = function (post, handler) {
                 $.ajax({
                     type: "POST",
                     url: "/Post/PostProduit",
@@ -724,19 +751,14 @@ commerce.amazon.web.user =
                     }
                 });
             }
-            this.ViewPostsUser = function (date = undefined, idGroup = 1, state = undefined, handler) {
-                var data = {
-                    Date: date,
-                    IdGroup: idGroup,
-                    StatePlan: state
-                };
+            this.ViewPostsUser = function (filter, handler) {
+                
                 $.ajax({
                     type: "POST",
                     url: "/Post/ViewPostsUser",
-                    data: data,
+                    data: filter,
                     success: function (data) {
                         if (HandleResponse(data)) {
-                            console.log(data);
                             handler(data);
                         } else {
                             that.OnError();

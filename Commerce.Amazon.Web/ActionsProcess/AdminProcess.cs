@@ -11,9 +11,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
     public class AdminProcess : BaseActionProcess
     {
         private readonly IAdminManager _adminManager;
-        private readonly IOperationManager _operationManager;
+        private readonly IUserManager _operationManager;
 
-        public AdminProcess(IHttpContextAccessor httpContextAccessor, IAdminManager adminManager, IOperationManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
+        public AdminProcess(IHttpContextAccessor httpContextAccessor, IAdminManager adminManager, IUserManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
         {
             _adminManager = adminManager;
             _operationManager = operationManager;

@@ -87,7 +87,7 @@ namespace Commerce.Amazon.Web.Controllers
             }
             catch (Exception ex)
             {
-                _accountProcess.Reset();
+                _accountProcess.Reset(ex);
                 return BadRequest(ex);
             }
         }

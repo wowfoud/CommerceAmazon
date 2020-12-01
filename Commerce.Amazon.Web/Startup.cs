@@ -11,9 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Commerce.Amazon.Engine.Managers;
 using Commerce.Amazon.Web.Repositories;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Tools.Tools;
@@ -21,6 +19,7 @@ using Commerce.Amazon.Tools.Contracts;
 using Commerce.Amazon.Domain.Config;
 using Commerce.Amazon.Web.ActionsProcess;
 using Commerce.Amazon.Domain.Helpers;
+using Commerce.Amazon.Web.Managers;
 
 namespace Commerce.Amazon.Web
 {
@@ -79,14 +78,19 @@ namespace Commerce.Amazon.Web
             //services.AddScoped<IHostingEnvironment, HostingEnvironment>();
             //services.AddScoped<CustomSiteMapModule>();
 
-            builder.RegisterType<UserManager>().As<IOperationManager>();
-            builder.RegisterType<AccountManager>().As<IAccountManager>();
-            builder.RegisterType<MailSender>().As<IMailSender>();
+            //builder.RegisterType<UserManager>().As<IUserManager>();
+            //builder.RegisterType<AccountManager>().As<IAccountManager>();
+            //builder.RegisterType<MailSender>().As<IMailSender>();
             builder.RegisterType<HostingEnvironment>().As<IHostingEnvironment>();
             builder.RegisterType<CustomSiteMapModule>();
 
-            services.AddScoped<UserProcess>();
+            services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IAccountManager, AccountManager>();
+            services.AddScoped<IAdminManager, AdminManager>();
+            services.AddScoped<IMailSender, MailSender>();
             services.AddScoped<AccountProcess>();
+            services.AddScoped<UserProcess>();
+            services.AddScoped<AdminProcess>();
             services.AddScoped<TokenManager>();
             services.AddScoped<TestProcess>();
 

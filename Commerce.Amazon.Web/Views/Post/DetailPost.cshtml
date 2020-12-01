@@ -57,7 +57,9 @@
         </div>
     </form>
 </div>
-<script src="~/js/Internal/user.js"></script>
-<script>
-    commerce.amazon.web.user.InitDetailPost();
-</script>
+@section Scripts {
+    <script src="~/js/Internal/user.js"></script>
+    <script>
+        commerce.amazon.web.user.InitDetailPost();
+    </script>
+}

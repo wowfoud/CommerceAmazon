@@ -5,23 +5,56 @@
 }
 
 <h2>Postes à envoyer</h2>
-
+<div class="filtrer">
+    <div class="row">
+        <div class="col-xs-6 col-md-2">
+            <div class="form-group">
+                <label for="sltGroup" class="control-label" style="">Groupe :</label>
+                <select id="sltGroup" class="form-control input-sm">
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-6 col-md-3">
+            <div class="form-group">
+                <label for="dateMin" class="control-label">Date de :</label>
+                <input type="text" id="dateMin" placeholder="dd/mm/yyyy" value="" class="form-control input-sm dateFrom" autocomplete="off" />
+            </div>
+        </div>
+        <div class="col-xs-6 col-md-3">
+            <div class="form-group">
+                <label for="dateMax" class="control-label">Date à :</label>
+                <input type="text" id="dateMax" placeholder="dd/mm/yyyy" value="" class="form-control input-sm dateTo" autocomplete="off" />
+            </div>
+        </div>
+        <div class="col-xs-6 col-md-2 pull-right">
+            <div class="form-group">
+                <br />
+                <button type="button" id="btnFilterPostsToSend" class="btn btn-purple pull-right form-control">Filtrer</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="nowrap filtrer" id="PostsToSendDiv">
     <table class="table table-bordered table-responsive table-hover" id="tablePostsToSend">
         <thead id="theaddashboard">
             <tr class="thdashboard">
                 <th class="alignCenter" data-priority="1">Id</th>
+                <th class="alignCenter" data-priority="1">Utilisateur</th>
                 <th class="alignCenter" data-priority="1">Url</th>
                 <th class="alignCenter" data-priority="1">Description</th>
                 <th class="alignCenter" data-priority="1">Prix</th>
-                <th class="alignCenter" data-priority="1">Date</th>
+                <th class="alignCenter" data-priority="1">Date Création</th>
+                <th class="alignCenter" data-priority="1">Date Planifié</th>
                 <th class="alignCenter" data-priority="1">Groupe</th>
+                <th class="alignCenter" data-priority="1">Total</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
-<script src="~/js/Internal/admin.js"></script>
-<script>
-    commerce.amazon.web.admin.InitPostsToSend();
-</script>
+@section Scripts {
+    <script src="~/js/Internal/admin.js"></script>
+    <script>
+        commerce.amazon.web.admin.InitPostsToSend();
+    </script>
+}

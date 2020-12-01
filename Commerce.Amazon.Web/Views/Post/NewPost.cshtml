@@ -5,11 +5,19 @@
 }
 
 <h2>New Post</h2>
-
 <div class="filtrer">
     <form id="formPost" onsubmit="return false;">
         <div class="row">
             <div class="col-md-12">
+                <div class="form-group col-md-6">
+                    <label for="sltGroup" class="control-label" style="">Groupe :</label>
+                    <select id="sltGroup" class="form-control input-sm">
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="CountUsers" class="control-label" style="">Nombre des membres :</label>
+                    <input type="text" disabled id="CountUsers" class="form-control input-sm" />
+                </div>
                 <div class="form-group">
                     <label for="Url">Url :</label>
                     <div class="control-label ">
@@ -30,13 +38,15 @@
                 </div>
             </div>
         </div>
-        <div class="text-danger" id="errorMsgDiv"></div>                
+        <div class="text-danger" id="errorMsgDiv"></div>
         <div class="form-group">
             <button class="btn btn-success form-control" id="idBtnSavePost">Ajouter Produit</button>
         </div>
     </form>
 </div>
-<script src="~/js/Internal/user.js"></script>
-<script>
-    commerce.amazon.web.user.InitNewPost();
-</script>
+@section Scripts {
+    <script src="~/js/Internal/user.js"></script>
+    <script>
+        commerce.amazon.web.user.InitNewPost();
+    </script>
+}

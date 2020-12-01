@@ -1,5 +1,4 @@
-﻿using Commerce.Amazon.Domain.Config;
-using Commerce.Amazon.Domain.Entities.CoreBase;
+﻿using Commerce.Amazon.Domain.Entities.CoreBase;
 using Commerce.Amazon.Domain.Entities.Enum;
 using Commerce.Amazon.Domain.Extensions;
 using Commerce.Amazon.Domain.Models;
@@ -13,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Commerce.Amazon.Engine.Managers
+namespace Commerce.Amazon.Web.Managers
 {
-    public class UserManager : IOperationManager
+    public class UserManager : IUserManager
     {
         private readonly IMailSender _mailSender;
 
@@ -31,38 +30,48 @@ namespace Commerce.Amazon.Engine.Managers
         {
             TResult<int> result = new TResult<int>();
             Post oldPost = null;
-
-            post.DateCreate = DateTime.Now;
-            post.State = EnumStatePost.Active;
-            post.UserId = dataUser.IdUser;
-            if (post.Id > 0)
+            var myGroupes = FindMyGroups(dataUser);
+            var group = myGroupes.FirstOrDefault(g => g.Id == post.GroupId);
+            if (group == null)
             {
-                oldPost = _context.Posts.SingleOrDefault(p => p.Id == post.Id);
-            }
-            if (oldPost != null)
-            {
-                if (CanEditPost(oldPost.Id, dataUser))
-                {
-                    oldPost.Description = post.Description;
-                    oldPost.Url = post.Url;
-                    oldPost.Prix = post.Prix;
-                    oldPost.DateCreate = post.DateCreate;
-
-                    int n = _context.SaveChanges();
-                    result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
-                }
-                else
-                {
-                    result.Status = StatusResponse.KO;
-                }
+                result.Message = "Groupe est obligatoire.";
+                result.Status = StatusResponse.KO;
             }
             else
             {
-                _context.Posts.Add(post);
-                int n = _context.SaveChanges();
-                result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
-                result.Result = n;
+                post.DateCreate = DateTime.Now;
+                post.State = EnumStatePost.Active;
+                post.UserId = dataUser.IdUser;
+                if (post.Id > 0)
+                {
+                    oldPost = _context.Posts.SingleOrDefault(p => p.Id == post.Id);
+                }
+                if (oldPost != null)
+                {
+                    if (CanEditPost(oldPost.Id, dataUser))
+                    {
+                        oldPost.Description = post.Description;
+                        oldPost.Url = post.Url;
+                        oldPost.Prix = post.Prix;
+                        oldPost.DateCreate = post.DateCreate;
+
+                        int n = _context.SaveChanges();
+                        result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                    }
+                    else
+                    {
+                        result.Status = StatusResponse.KO;
+                    }
+                }
+                else
+                {
+                    _context.Posts.Add(post);
+                    int n = _context.SaveChanges();
+                    result.Status = n > 0 ? StatusResponse.OK : StatusResponse.KO;
+                    result.Result = n;
+                }
             }
+
             return result;
         }
 
@@ -167,13 +176,13 @@ namespace Commerce.Amazon.Engine.Managers
                         };
             var data = query.FirstOrDefault();
 
-            Post post = _context.Posts.Single(p => p.Id == idPost);
-            User userPost = post.User;
-            Group group = userPost.Groups?.First()?.Group;
+            //Post post = _context.Posts.Single(p => p.Id == idPost);
+            //User userPost = post.User;
+            //Group group = userPost.Groups?.First()?.Group;
 
-            post = data.Post;
-            userPost = data.User;
-            group = data.Group;
+            Post post = data.Post;
+            User userPost = data.User;
+            Group group = data.Group;
 
             int maxDays = group.MaxDays;
             int countNotifyPerDay = group.CountNotifyPerDay;
@@ -190,7 +199,7 @@ namespace Commerce.Amazon.Engine.Managers
             foreach (var user in users)
             {
                 i++;
-                int addDays = (i / countNotifyPerDay) + 1;
+                int addDays = i / countNotifyPerDay + 1;
                 var postPlan = postsPlaning.Find(p => p.IdUser == user.Id);
                 if (postPlan == null)
                 {
@@ -214,7 +223,7 @@ namespace Commerce.Amazon.Engine.Managers
             var query = from p in _context.Posts
                         join pp in _context.PostPlanings on p.Id equals pp.IdPost
                         join u in _context.Users on p.UserId equals u.Id
-                        where p.UserId == dataUser.IdUser
+                        where p.UserId == dataUser.IdUser && (!filterPost.IdGroup.HasValue || p.GroupId == filterPost.IdGroup) && (!filterPost.DateDebut.HasValue || pp.DatePlanifie >= filterPost.DateDebut) && (!filterPost.DateFin.HasValue || pp.DatePlanifie <= filterPost.DateFin)
                         group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
                         by new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom }
                         into temp
@@ -330,10 +339,14 @@ namespace Commerce.Amazon.Engine.Managers
             var query = from g in _context.Groups
                         join u in _context.GroupUsers on g.Id equals u.GroupId
                         where u.UserId == dataUser.IdUser
+                        //group new { g.Id, g.Name, g.CountUsers }
+                        //by new { g.Id, g.Name }
+                        //into data
                         select new GroupView
                         {
                             Id = g.Id,
-                            Name = g.Name
+                            Name = g.Name,
+                            CountUsers = g.CountUsers
                         };
             var groups = query.ToArray();
             return groups;
@@ -347,7 +360,7 @@ namespace Commerce.Amazon.Engine.Managers
                         where pp.IdPost == idPost && pp.IdUser == idUser
                         select new
                         {
-                            PathScreenComment = pp.PathScreenComment,
+                            pp.PathScreenComment,
                             UserPoster = u.UserId,
                             IdUserPoster = p.UserId
                         };
@@ -362,7 +375,7 @@ namespace Commerce.Amazon.Engine.Managers
             return pathScreenComment;
         }
 
-        public void Reset()
+        public void Reset(Exception ex)
         {
             _context.Reset();
         }

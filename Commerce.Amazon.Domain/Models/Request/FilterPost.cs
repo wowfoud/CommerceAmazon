@@ -7,7 +7,7 @@ namespace Commerce.Amazon.Domain.Models.Request
     {
         public DateTime? DateDebut { get; set; }
         public DateTime? DateFin { get; set; }
-        public int? GroupId { get; set; }
+        public int? IdGroup { get; set; }
         public EnumStatePlaning? StatePlan { get; set; }
     }
 }

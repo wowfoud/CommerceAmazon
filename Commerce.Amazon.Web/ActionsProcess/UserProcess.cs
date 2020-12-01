@@ -5,6 +5,7 @@ using Commerce.Amazon.Domain.Models.Response;
 using Commerce.Amazon.Web.Managers.Interfaces;
 using Commerce.Amazon.Web.Repositories;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,9 +14,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
     public class UserProcess : BaseActionProcess
     {
         private readonly IAccountManager _accountManager;
-        private readonly IOperationManager _operationManager;
+        private readonly IUserManager _operationManager;
 
-        public UserProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IOperationManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
+        public UserProcess(IHttpContextAccessor httpContextAccessor, IAccountManager accountManager, IUserManager operationManager, TokenManager tokenManager) : base(httpContextAccessor, tokenManager)
         {
             _accountManager = accountManager;
             _operationManager = operationManager;
@@ -25,7 +26,10 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             AssertIsUser();
             TResult<int> result = _operationManager.PostProduit(post, dataUser);
-            _operationManager.PlanifierNotificationPost(post.Id, post.GroupId, dataUser);
+            if (result.Status == StatusResponse.OK)
+            {
+                _operationManager.PlanifierNotificationPost(post.Id, post.GroupId, dataUser);
+            }
             return result;
         }
 
@@ -122,9 +126,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return filename;
         }
 
-        public void Reset()
+        public void Reset(Exception ex)
         {
-            _operationManager.Reset();
+            _operationManager.Reset(ex);
         }
     }
 

@@ -11,9 +11,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
     public class TestProcess : BaseActionProcess
     {
         private readonly IAccountManager _accountManager;
-        private readonly IOperationManager _operationManager;
+        private readonly IUserManager _operationManager;
 
-        public TestProcess(IAccountManager accountManager, IOperationManager operationManager)
+        public TestProcess(IAccountManager accountManager, IUserManager operationManager)
         {
             _accountManager = accountManager;
             _operationManager = operationManager;

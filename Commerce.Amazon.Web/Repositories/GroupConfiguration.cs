@@ -13,6 +13,7 @@ namespace Commerce.Amazon.Web.Repositories
             builder.Property(prop => prop.MaxDays).IsRequired();
             builder.Property(prop => prop.CountNotifyPerDay).IsRequired();
             builder.Property(prop => prop.CountUsersCanNotify).IsRequired();
+            builder.Property(prop => prop.CountUsers).IsRequired().HasDefaultValue(0);
 
         }
     }

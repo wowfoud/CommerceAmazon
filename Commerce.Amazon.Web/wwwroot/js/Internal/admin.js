@@ -9,6 +9,11 @@ commerce.amazon.web.admin =
         var MyAuxClass = function () {
             var that = this;
 
+
+            this.Init = function () {
+                that.InitDatePicker();
+            };
+
             this.InitUsers = function () {
 
                 $('#idBtnFilter').click(function () {
@@ -74,20 +79,38 @@ commerce.amazon.web.admin =
             }
 
             this.InitPostsToSend = function () {
-                
+                that.FindGroups(undefined, function (groups) {
+                    $('#sltGroup').empty();
+                    if (groups.length > 1) {
+                        $('#sltGroup').append(
+                            $('<option></option>').val("").text("Sélectionner")
+                        );
+                    }
+                    for (var i = 0; i < groups.length; i++) {
+                        var group = groups[i];
+                        $('#sltGroup').append(
+                            $('<option></option>').val(group.Id).text(group.Name)
+                        )
+                    }
+                })
+                $('#btnFilterPostsToSend').click(function () {
+                    var filter = {
+                        DateDebut: $('#dateMin').val(),
+                        DateFin: $('#dateMax').val(),
+                        IdGroup: $('#sltGroup').val(),
+                        StatePlan: 1
+                    };
+                    that.FindPostsToSend(filter, function (data) {
+                        that.LoadPostsToSend(data);
+                    });
+                });
+                $('#btnFilterPostsToSend').click();
             }
 
             this.InitHistoriques = function () {
                 
             }
-            //----------------------events------------------------//
-
-
-
-
-
-            //----------------------End event------------------------//
-
+            
             //----------------------AJAX------------------------//
 
             this.ValidUser = function () {
@@ -237,6 +260,46 @@ commerce.amazon.web.admin =
                 })
             }
 
+            this.FindPostsToSend = function (filter, handler) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/FindPostsToSend",
+                    data: filter,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+
+            this.FindHistorique = function (filter, handler) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/FindHistorique",
+                    data: filter,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+
+            //----------------------end AJAX------------------------//
+            //----------------------Function------------------------//
+
+
             this.OnError = function (error) {
                 console.log("Error find data");
             }
@@ -377,7 +440,7 @@ commerce.amazon.web.admin =
 
                     },
                     {
-                        data: 'CoutUsers'
+                        data: 'CountUsers'
                     },
                     {
                         data: 'MaxDays'
@@ -452,6 +515,7 @@ commerce.amazon.web.admin =
                     }
                 });
             }
+
             this.SelectGroup = function (group) {
                 if (!!group) {
                     $('#Id').val(group.Id);
@@ -469,9 +533,152 @@ commerce.amazon.web.admin =
                 }
 
             }
+
+            this.LoadPostsToSend = function (posts) {
+                var columns = [
+                    {
+                        data: 'Id'
+                    },
+                    {
+                        data: 'Nom',
+                        render: function (data, type, row) {
+                            var user = '';
+                            if (!!row.Nom) {
+                                user += `${row.Nom} `;
+                            }
+                            if (!!row.Prenom) {
+                                user += `${row.Prenom}`;
+                            }
+                            return user;
+                        }
+                    },
+                    {
+                        data: 'Url',
+                        render: function (data, type, row) {
+                            var url = data;
+                            if (!!data && data.length > 70) {
+                                url = data.substring(0, 67) + "...";
+                            }
+                            return `<a href="${data}" target="_blank">${url}</a>`;
+                        }
+                    },
+                    {
+                        data: 'Description'
+                    },
+                    {
+                        data: 'Prix'
+                    },
+                    {
+                        data: 'DateCreated',
+                    },
+                    {
+                        data: 'DatePlanifie',
+                    },
+                    {
+                        data: 'Groupe',
+                    },
+                    {
+                        data: 'Total',
+                        visible: false
+                    },
+                    {
+                        data: '',
+                        render: function (data, type, row) {
+                            return `<a href="${data}">${url}</a>`;
+                        }
+                    }
+                ]
+                $('#tablePostsToSend').DataTable({
+                    responsive: true,
+                    data: posts,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "<'col-sm-12 col-md-6 pull-left'l><'col-sm-12 col-md-6 pull-right'f>rt<'col-sm-12 col-md-6 pull-left'i><'col-sm-12 col-md-6 pull-right'p>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+
+                    }
+                });
+
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+
             this.ClearGroup = function () {
                 that.SelectGroup(undefined);
             }
+            
+            this.InitDatePicker = function () {
+                $('.date, .dateTo, .dateFrom, .maxToday').datetimepicker({
+                    format: "DD/MM/YYYY",
+                    showTodayButton: true,
+                    showClear: true,
+                    showClose: true,
+                    locale: "es",
+                    viewMode: 'days',
+                    widgetParent: 'body'
+                });
+                //$('.maxToday').data("DateTimePicker").maxDate(moment(Date.now()));
+                $('.maxToday').each(function (i, ele) {
+                    //console.log('maxToday');
+                    $(ele).data("DateTimePicker").maxDate(moment(Date.now()));
+                })
+                $('.date, .dateTo, .dateFrom, .maxToday').each(function (i, ele) {
+                    $(ele).data("DateTimePicker").minDate(moment('01/01/1753'));
+                })
+                //$(".dateTo").on("dp.change", function (e) {
+                //    console.log('dateTo');
+                //    if (!!$('.dateTo').val() && !!e.date) {
+                //        $('.dateFrom').data("DateTimePicker").maxDate(e.date);
+                //    }
+                //});
+                $(".dateFrom").on("dp.change", function (e) {
+                    //console.log('dateFrom');
+                    if (!!$('.dateFrom').val() && !!e.date) {
+                        $('.dateTo').data("DateTimePicker").minDate(e.date);
+                    }
+                });
+                $('.date, .dateTo, .dateFrom, .maxToday').on('dp.show', function () {
+                    var datepicker = $('body').find('.bootstrap-datetimepicker-widget:last');
+                    datepicker.switchClass('top', 'bottom');
+                    if (datepicker.hasClass('bottom')) {
+                        var top = $(this).offset().top + this.offsetHeight;
+                        var left = $(this).offset().left;
+                        datepicker.css({
+                            'top': top + 'px',
+                            'bottom': 'auto',
+                            'left': left + 'px'
+                        });
+                    }
+                    $('#ui-datepicker-div').addClass('hidden');
+                });
+                $('#ui-datepicker-div').on('dp.show', function () {
+                    $('#ui-datepicker-div').addClass('hidden');
+                });
+            }
+
             //----------------------end function------------------------//
 
         }
@@ -487,7 +694,7 @@ commerce.amazon.web.admin =
     // Listen for the jQuery ready event on the document
     $(function () {
         //Document Ready Actions
-        //commerce.amazon.web.users.InitUsers();
+        commerce.amazon.web.admin.Init();
     });
     // The rest of the code goes here!
 }(window.jQuery, window, document));

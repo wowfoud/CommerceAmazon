@@ -17,9 +17,11 @@ namespace Commerce.Amazon.Domain.Models.Response
         public int CountNotified { get; set; }
         public int CountCommented { get; set; }
         public int CountExpired { get; set; }
+        public string Groupe { get; set; }
         public int Total { get; set; }
         public bool IsExpired { get; set; }
         public DateTime? DateCreated { get; set; }
+        public DateTime? DatePlanifie { get; set; }
         public DateTime? DateNotified { get; set; }
         public DateTime? DateLimite { get; set; }
         public int DaysRemaining { get; set; }

@@ -13,7 +13,7 @@ namespace Commerce.Amazon.Web.Repositories
         public int MaxDays { get; set; }
         public int CountNotifyPerDay { get; set; }
         public int CountUsersCanNotify { get; set; }
-        public int CoutUsers { get; set; }
+        public int CountUsers { get; set; }
         public virtual IEnumerable<GroupUser> Users { get; set; }
     }
 }
