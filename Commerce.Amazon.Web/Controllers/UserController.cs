@@ -103,6 +103,7 @@ namespace Commerce.Amazon.Web.Controllers
         {
             //var model = new BaseViewModel { ProfileModel = new ProfileModel { FullName = "omar dr", CompanyName = "HDD ABDOU", IdUser = "OMAR" } };
             var model = _accountProcess.GetModel();
+            ViewBag.Profile = _accountProcess.GetProfile();
             return View(model);
         }
         public IActionResult PosteProduit()

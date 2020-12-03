@@ -82,8 +82,9 @@ namespace Commerce.Amazon.Web.ActionsProcess
         public string GetPathUploadScreen(string filename)
         {
             AssertIsUser();
-            HelperFile.CreateDirectoryIfNotExists(dataUser.UserId);
-            string uploadTo = HelperFile.GenerateFullPathScreen(filename, dataUser.UserId);
+            HelperFile.CreateDirectoryIfNotExists(dataUser.UserId, out string directory);
+            //string uploadTo = HelperFile.GenerateFullPathScreen(filename, dataUser.UserId);
+            string uploadTo = Path.Combine(directory, filename);
             if (System.IO.File.Exists(uploadTo))
             {
                 uploadTo = "";
@@ -120,7 +121,7 @@ namespace Commerce.Amazon.Web.ActionsProcess
                 filename = HelperFile.GenerateFullPathScreen(filename, userId);
                 if (!File.Exists(filename))
                 {
-                    filename = "";
+                    //filename = "";
                 }
             }
             return filename;

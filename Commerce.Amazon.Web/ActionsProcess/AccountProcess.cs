@@ -100,6 +100,11 @@ namespace Commerce.Amazon.Web.ActionsProcess
             return users;
         }
 
+        public ProfileModel GetProfile()
+        {
+            return profile;
+        }
+
         public TResult<int> SaveUser(RegisterUserRequest user)
         {
             AssertIsAdmin();

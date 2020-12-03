@@ -27,5 +27,6 @@ namespace Commerce.Amazon.Domain.Models.Response
         public int DaysRemaining { get; set; }
         public string Comment { get; set; }
         public DateTime? DateComment { get; set; }
+        public int ToUser { get; set; }
     }
 }

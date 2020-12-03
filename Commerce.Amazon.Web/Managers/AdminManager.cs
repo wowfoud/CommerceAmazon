@@ -28,6 +28,50 @@ namespace Commerce.Amazon.Web.Managers
 
         public IEnumerable<PostView> FindPostsToSend(FilterPost filter, DataUser dataUser)
         {
+            
+
+            var query = from p in _context.Posts
+                        join pp in _context.PostPlanings on p.Id equals pp.PostId
+                        join u in _context.Users on p.UserId equals u.Id
+                        join g in _context.Groups on p.GroupId equals g.Id
+                        where (!filter.IdGroup.HasValue || p.GroupId == filter.IdGroup) //&& (!filter.DateDebut.HasValue || pp.DatePlanifie >= filter.DateDebut) && (!filter.DateFin.HasValue || pp.DatePlanifie <= filter.DateFin)
+                        group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, g.Name, pp.DatePlanifie }
+                        by new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, g.Name }
+                        into temp
+                        select temp;
+            //select new PostView
+            //{
+            //    Id = temp.Key.Id,
+            //    IdUser = temp.Key.UserId,
+            //    Url = temp.Key.Url,
+            //    Nom = temp.Key.Nom,
+            //    Prenom = temp.Key.Prenom,
+            //    DateCreated = temp.Key.DateCreate,
+            //    Description = temp.Key.Description,
+            //    Prix = temp.Key.Prix,
+            //    DatePlanifie = temp.Key.DatePlanifie,
+            //    //DateLimite = temp.Key.DateLimite,
+            //    Total = temp.Count(),
+            //    Groupe = temp.Key.Name
+            //};
+            IEnumerable<PostView> postViews = query.Where(p => p.Count(q => q.DatePlanifie.HasValue && (!filter.DateDebut.HasValue || q.DatePlanifie >= filter.DateDebut) && (!filter.DateFin.HasValue || q.DatePlanifie <= filter.DateFin)) > 0).Select(temp => new PostView
+            {
+                Id = temp.Key.Id,
+                IdUser = temp.Key.UserId,
+                Url = temp.Key.Url,
+                Nom = temp.Key.Nom,
+                Prenom = temp.Key.Prenom,
+                DateCreated = temp.Key.DateCreate,
+                Description = temp.Key.Description,
+                Prix = temp.Key.Prix,
+                Total = temp.Count(),
+                Groupe = temp.Key.Name
+            }).ToArray();
+            return postViews;
+        }
+
+        public IEnumerable<PostView> FindPostsDetailsToSend(FilterPost filter, DataUser dataUser)
+        {
             if (filter.DateFin.HasValue)
             {
                 filter.DateFin = filter.DateFin.Value.LastTimeDay();
@@ -38,18 +82,15 @@ namespace Commerce.Amazon.Web.Managers
             }
 
             var query = from p in _context.Posts
-                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        join pp in _context.PostPlanings on p.Id equals pp.PostId
                         join u in _context.Users on p.UserId equals u.Id
                         join g in _context.Groups on p.GroupId equals g.Id
                         where (!filter.IdGroup.HasValue || p.GroupId == filter.IdGroup) && (!filter.DateDebut.HasValue || pp.DatePlanifie >= filter.DateDebut) && (!filter.DateFin.HasValue || pp.DatePlanifie <= filter.DateFin)
-                        //group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, g.Name, pp.DatePlanifie, pp.DateLimite }
-                        //by new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, g.Name, pp.DatePlanifie, pp.DateLimite  }
-                        //into temp
-                        //select new { data = temp };
                         select new PostView
                         {
                             Id = p.Id,
                             IdUser = p.UserId,
+                            ToUser = pp.UserId,
                             Url = p.Url,
                             Nom = u.Nom,
                             Prenom = u.Prenom,
@@ -58,24 +99,8 @@ namespace Commerce.Amazon.Web.Managers
                             DateLimite = pp.DateLimite,
                             Description = p.Description,
                             Prix = p.Prix,
-                            //Total = temp.Count(),
                             Groupe = g.Name
                         };
-                        //select new PostView
-                        //{
-                        //    Id = temp.Key.Id,
-                        //    IdUser = temp.Key.UserId,
-                        //    Url = temp.Key.Url,
-                        //    Nom = temp.Key.Nom,
-                        //    Prenom = temp.Key.Prenom,
-                        //    DateCreated = temp.Key.DateCreate,
-                        //    DatePlanifie = temp.Key.DatePlanifie,
-                        //    DateLimite = temp.Key.DateLimite,
-                        //    Description = temp.Key.Description,
-                        //    Prix = temp.Key.Prix,
-                        //    Total = temp.Count(),
-                        //    Groupe = temp.Key.Name
-                        //};
             IEnumerable<PostView> postViews = query.ToArray();
             return postViews;
         }
@@ -83,7 +108,7 @@ namespace Commerce.Amazon.Web.Managers
         public IEnumerable<PostView> FindHistorique(FilterPost filter, DataUser dataUser)
         {
             var query = from p in _context.Posts
-                        join pp in _context.PostPlanings on p.Id equals pp.IdPost
+                        join pp in _context.PostPlanings on p.Id equals pp.PostId
                         join u in _context.Users on p.UserId equals u.Id
                         where p.GroupId == filter.IdGroup
                         group new { p.Id, p.UserId, p.Url, p.DateCreate, p.Description, p.Prix, u.Nom, u.Prenom, pp.State }
@@ -108,13 +133,13 @@ namespace Commerce.Amazon.Web.Managers
         public IEnumerable<PostPlaningView> ViewPlaningPost(int idPost, DataUser dataUser)
         {
             var query = from pp in _context.PostPlanings
-                        join u in _context.Users on pp.IdUser equals u.Id
-                        where pp.IdPost == idPost
+                        join u in _context.Users on pp.UserId equals u.Id
+                        where pp.PostId == idPost
                         select new PostPlaningView
                         {
-                            IdPost = pp.IdPost,
-                            IdUser = pp.IdUser,
-                            State = pp.State,
+                            IdPost = pp.PostId,
+                            IdUser = pp.UserId,
+                            State = pp.State.ToString(),
                             DatePlanifie = pp.DatePlanifie,
                             DateNotified = pp.DateNotified,
                             DateComment = pp.DateComment,
@@ -128,7 +153,7 @@ namespace Commerce.Amazon.Web.Managers
 
         public TResult<int> NotifyUsers(NotifyRequest notifyRequest, DataUser dataUser)
         {
-            TResult<int> result = new TResult<int>();
+            TResult<int> result = new TResult<int> { Status = StatusResponse.KO };
             try
             {
                 if (notifyRequest?.IdPost > 0 == false)
@@ -139,33 +164,52 @@ namespace Commerce.Amazon.Web.Managers
                 {
                     throw new ArgumentNullException("Users");
                 }
-                var post = _context.Posts.SingleOrDefault(p => p.Id == notifyRequest.IdPost);
-                var planing = post.Planings.Where(pp => notifyRequest.Users.Contains(pp.IdUser)).ToArray();
-                var usersExcep = notifyRequest.Users.Except(planing.Select(p => p.IdUser));
+
+                
+                Post post = _context.Posts.SingleOrDefault(p => p.Id == notifyRequest.IdPost);
+                
+                var planing = _context.PostPlanings.Where(pp => pp.PostId == post.Id && notifyRequest.Users.Contains(pp.UserId)).ToArray();
+                var usersExcep = notifyRequest.Users.Except(planing.Select(p => p.UserId));
+
                 if (usersExcep.Count() > 0)
                 {
                     throw new Exception($"Can't notify user no in planing: '{usersExcep.ListToString()}'");
                 }
+
+                var query = from pp in _context.PostPlanings
+                            join u in _context.Users on pp.UserId equals u.Id
+                            where pp.PostId == notifyRequest.IdPost && notifyRequest.Users.Contains(pp.UserId)
+                            select new { Planing = pp, User = u };
+                planing = query.Select(p => p.Planing).ToArray();
+
                 foreach (int idUser in notifyRequest.Users)
                 {
-                    var plan = planing.Single(pp => pp.IdUser == idUser);
-                    if (plan != null && plan.State == EnumStatePlaning.Planifie)
+                    PostPlaning plan = planing.Single(pp => pp.UserId == idUser);
+                    if (plan != null && plan.State == EnumStatePlaning.Planifié)
                     {
-                        string email = plan.User.Email;
-                        string user = $"{plan.User.Nom} {plan.User.Prenom}";
-                        _mailSender.SendMail(new Tools.Tools.IdentityMessage
+                        if (plan.User == null)
                         {
-                            Body = GlobalConfiguration.Setting.MessageBodyNotify.Replace("{user}", user).Replace("{link}", post.Url),
-                            Subject = GlobalConfiguration.Setting.MessageSubjectNotify,
-                            Destination = new string[] { email }
-                        });
-                        plan.State = EnumStatePlaning.Notified;
-                        plan.DateNotified = DateTime.Now;
+                            plan.User = query.Select(p => p.User).SingleOrDefault(u => u.Id == plan.UserId);
+                        }
+                        if (plan.User != null)
+                        {
+                            string email = plan.User.Email;
+                            string user = $"{plan.User.Nom} {plan.User.Prenom}";
+                            string link = $"<a href='{post.Url}'>{post.Url}</a>";
+                            _mailSender.SendMail(new Tools.Tools.IdentityMessage
+                            {
+                                Body = GlobalConfiguration.Setting.MessageBodyNotify.Replace("{user}", user).Replace("{link}", link),
+                                Subject = GlobalConfiguration.Setting.MessageSubjectNotify,
+                                Destination = new string[] { email }
+                            });
+                            plan.State = EnumStatePlaning.Envoyé;
+                            plan.DateNotified = DateTime.Now; 
+                            _context.SaveChanges();
+                            result.Status = StatusResponse.OK;
+                            result.Message = $"Utilisateur sont notifies";
+                        }
                     }
                 }
-                _context.SaveChanges();
-                result.Status = StatusResponse.OK;
-                result.Message = $"Utilisateur sont notifies";
             }
             catch (Exception ex)
             {

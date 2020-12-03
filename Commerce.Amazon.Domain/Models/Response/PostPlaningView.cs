@@ -11,7 +11,7 @@ namespace Commerce.Amazon.Domain.Models.Response
         public DateTime? DateNotified { get; set; }
         public DateTime? DateLimite { get; set; }
         public DateTime? DateComment { get; set; }
-        public EnumStatePlaning State { get; set; }
+        public string State { get; set; }
         public string Nom { get; set; }
         public string Prenom { get; set; }
     }

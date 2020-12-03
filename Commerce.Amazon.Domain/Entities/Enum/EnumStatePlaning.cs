@@ -2,6 +2,6 @@
 {
     public enum EnumStatePlaning
     {
-        Planifie = 1, Notified = 2, Commented = 3, Expired = 4
+        Planifié = 1, Envoyé = 2, Commenté = 3, Expiré = 4
     }
 }

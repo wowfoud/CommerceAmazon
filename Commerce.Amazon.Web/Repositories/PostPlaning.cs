@@ -5,8 +5,8 @@ namespace Commerce.Amazon.Web.Repositories
 {
     public class PostPlaning
     {
-        public int IdPost { get; set; }
-        public int IdUser { get; set; }
+        public int PostId { get; set; }
+        public int UserId { get; set; }
         public DateTime? DatePlanifie { get; set; }
         public DateTime? DateNotified { get; set; }
         public DateTime? DateLimite { get; set; }

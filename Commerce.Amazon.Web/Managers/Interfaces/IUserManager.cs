@@ -23,5 +23,6 @@ namespace Commerce.Amazon.Web.Managers.Interfaces
         string FindScreenComment(int idPost, int idUser, DataUser dataUser, out string userId);
         void Reset(Exception ex);
         int PlanifierNotificationPost(int idPost, int idGroup, DataUser dataUser);
+        int ClearData();
     }
 }

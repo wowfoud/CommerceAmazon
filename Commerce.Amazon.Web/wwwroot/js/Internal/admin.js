@@ -296,6 +296,70 @@ commerce.amazon.web.admin =
                 });
             }
 
+            this.ViewPlaningPost = function (idPost, handler) {
+                var data = {
+                    IdPost: idPost,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/ViewPlaningPost",
+                    data: data,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+
+            this.NotifyUsers = function (idPost, users, handler) {
+                var data = {
+                    IdPost: idPost,
+                    Users: users
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/NotifyUsers",
+                    data: data,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+
+            this.PlanifierNotificationPost = function (idPost, handler) {
+                var data = {
+                    IdPost: idPost,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Admin/PlanifierNotificationPost",
+                    data: data,
+                    success: function (data) {
+                        if (HandleResponse(data)) {
+                            handler(data);
+                        } else {
+                            that.OnError();
+                        }
+                    },
+                    error: function (err) {
+                        that.OnError();
+                    }
+                });
+            }
+
             //----------------------end AJAX------------------------//
             //----------------------Function------------------------//
 
@@ -517,6 +581,7 @@ commerce.amazon.web.admin =
             }
 
             this.SelectGroup = function (group) {
+                $('.error').text('');
                 if (!!group) {
                     $('#Id').val(group.Id);
                     $('#Name').val(group.Name);
@@ -531,7 +596,6 @@ commerce.amazon.web.admin =
                     $('#CountNotifyPerDay').val('');
                     $('#CountUsersCanNotify').val('');
                 }
-
             }
 
             this.LoadPostsToSend = function (posts) {
@@ -572,19 +636,13 @@ commerce.amazon.web.admin =
                         data: 'DateCreated',
                     },
                     {
-                        data: 'DatePlanifie',
-                    },
-                    {
                         data: 'Groupe',
                     },
                     {
                         data: 'Total',
-                        visible: false
-                    },
-                    {
-                        data: '',
+                        visible: true,
                         render: function (data, type, row) {
-                            return `<a href="${data}">${url}</a>`;
+                            return `<a class='btnSend' data-id='${row.Id}' style='cursor: pointer;text-decoration: underline;' value='${data}'>${data}</a>`;
                         }
                     }
                 ]
@@ -619,11 +677,132 @@ commerce.amazon.web.admin =
                         }
                     },
                     drawCallback: function (settings) {
-
+                        $('.btnSend').click(function () {
+                            var idPost = $(this).data('id');
+                            idPost = parseInt(idPost);
+                            if (idPost > 0) {
+                                $('#txtIdPost').val(idPost);
+                                that.ViewPlaningPost(idPost, function (data) {
+                                    if (!!data) {
+                                        $('#modalPlaning').modal('show');
+                                        that.LoadPlanings(data);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
 
                 $($.fn.dataTable.tables()).DataTable().columns.adjust();
+            }
+            
+            this.LoadPlanings = function (data) {
+                var columns = [
+                    {
+                        data: '',
+                        render: function (data, type, row) {
+                            //return `<a class='btnSend' data-id='${row.Id}' data-iduser='${row.IdUser}'><i class="fa fa-send"></i></a>`;
+                            return `<input type='checkbox' class='checkEnvoi' data-iduser='${row.IdUser}' data-idpost='${row.IdPost}'>`;
+                        }
+                    },
+                    {
+                        data: 'Nom',
+                        render: function (data, type, row) {
+                            var user = '';
+                            if (!!row.Nom) {
+                                user += `${row.Nom} `;
+                            }
+                            if (!!row.Prenom) {
+                                user += `${row.Prenom}`;
+                            }
+                            return user;
+                        }
+                    },
+                    {
+                        data: 'DatePlanifie', 
+                        render: function (data, type, row) {
+                            if (!!data) {
+                                return data;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        data: 'DateLimite',
+                        render: function (data, type, row) {
+                            if (!!data) {
+                                return data;
+                            } else {
+                                return '';
+                            }
+                        }
+                    },
+                    {
+                        data: 'State',
+                    }
+                ]
+                $('#tablePlaning').DataTable({
+                    responsive: true,
+                    data: data,
+                    pageLength: 15,
+                    destroy: true,
+                    //scrollX: true,
+                    dom: "rt<'col-sm-12 col-md-6 pull-left'i>",
+                    columns: columns,
+                    language: {
+                        processing: "Traitement en cours...",
+                        search: "Chercher&nbsp;:",
+                        lengthMenu: "éléments par page _MENU_",
+                        info: "",
+                        infoEmpty: "",
+                        infoFiltered: "(Filtré avec _MAX_ postes au total)",
+                        infoPostFix: "",
+                        loadingRecords: "Chargement...",
+                        zeroRecords: "Il n'y a pas d'éléments à afficher",
+                        emptyTable: "aucune donnée disponible",
+                        paginate: {
+                            first: "Premier",
+                            previous: "Previous",
+                            next: "Suivant",
+                            last: "Dernier"
+                        },
+                        aria: {
+                            sortAscending: ": Activer pour trier la colonne par ordre croissant",
+                            sortDescending: ": Activer pour trier la colonne par ordre décroissant"
+                        }
+                    },
+                    drawCallback: function (settings) {
+                        
+                    }
+                });
+
+                $($.fn.dataTable.tables()).DataTable().columns.adjust();
+
+                $('#idBtnSend').unbind('click');
+                $('#idBtnSend').click(function () {
+                    var idPost = $('#txtIdPost').val();
+                    var users = that.GetCheckedUsers();
+                    if (users.length > 0) {
+                        that.NotifyUsers(idPost, users, function (data) {
+                            if (!!data && data.Status === 0) {
+                                $('#modalPlaning').modal('hide');
+                            }
+                        });
+                    }
+                });
+            }
+
+            this.GetCheckedUsers = function () {
+                var users = [];
+                $('table > tbody  > tr .checkEnvoi').each(function (index, checkbox) {
+
+                    if (checkbox.checked) {
+                        var id = $(checkbox).data('iduser');
+                        users.push(id);
+                    }
+                });
+                return users;
             }
 
             this.ClearGroup = function () {

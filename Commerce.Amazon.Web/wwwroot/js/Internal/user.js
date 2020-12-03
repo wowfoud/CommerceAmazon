@@ -532,8 +532,8 @@ commerce.amazon.web.user =
                     that.ViewDetailsPostUser(idPost, function (post) {
                         that.LoadDetailsPostUser(post);
                         //var url = `/Post/DownloadScreenComment?idPost=${idPost}&idUser=${post.IdUser}`;
-                        var url = `/Post/GetPathComment?idPost=${idPost}&idUser=${post.IdUser}`;
-                        $('#idImgScreen').attr('src', url);
+                        //var url = `/Post/GetPathComment?idPost=${idPost}&idUser=${post.IdUser}`;
+                        //$('#idImgScreen').attr('src', url);
                         //that.DownloadImage(url);
                         //var link = document.createElement('a');
                         //link.addEventListener('click', function (ev) {
@@ -564,13 +564,14 @@ commerce.amazon.web.user =
             
             this.LoadDetailsPostUser = function (post) {
                 $('#idPost').val(post.Id);
-                $('#Url').val(post.Url);
+                //$('#Url').val(post.Url);
                 $('#Url').text(post.Url);
                 $('#Url').attr('href', post.Url);
                 $('#Description').val(post.Description);
                 $('#Prix').val(post.Prix);
                 $('#DateCreated').val(post.DateCreated);
                 $('#DateNotified').val(post.DateNotified);
+                $('#DateLimite').val(post.DateLimite);
                 $('#idComment').val(post.Comment);
                 $('#DateComment').val(post.DateComment);
             }
@@ -666,27 +667,6 @@ commerce.amazon.web.user =
                     }
                 });
             }
-            this.ViewPlaningPost = function (idPost, handler) {
-                var data = {
-                    IdPost: idPost,
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/ViewPlaningPost",
-                    data: data,
-                    success: function (data) {
-                        if (HandleResponse(data)) {
-                            console.log(data);
-                            handler(data);
-                        } else {
-                            that.OnError();
-                        }
-                    },
-                    error: function (err) {
-                        that.OnError();
-                    }
-                });
-            }
             this.ViewPost = function (idPost, handler) {
                 var data = {
                     IdPost: idPost,
@@ -715,28 +695,6 @@ commerce.amazon.web.user =
                 $.ajax({
                     type: "POST",
                     url: "/Post/ViewDetailsPostUser",
-                    data: data,
-                    success: function (data) {
-                        if (HandleResponse(data)) {
-                            console.log(data);
-                            handler(data);
-                        } else {
-                            that.OnError();
-                        }
-                    },
-                    error: function (err) {
-                        that.OnError();
-                    }
-                });
-            }
-            this.NotifyUsers = function (idPost, users, handler) {
-                var data = {
-                    IdPost: idPost,
-                    Users: users
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/Admin/NotifyUsers",
                     data: data,
                     success: function (data) {
                         if (HandleResponse(data)) {

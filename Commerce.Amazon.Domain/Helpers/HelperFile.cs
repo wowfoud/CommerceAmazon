@@ -8,15 +8,33 @@ namespace Commerce.Amazon.Domain.Helpers
         public static string GenerateFullPathScreen(string filename, string userId)
         {
             //string uploadTo = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId, filename);
-            string uploadTo = Path.Combine("/wwwroot/screen", userId, filename);
+            string uploadTo = Path.Combine("/images/screen", userId, Path.GetFileName(filename));
             return uploadTo;
         }
 
-        public static bool CreateDirectoryIfNotExists(string userId)
+        public static string GeneratePathScreen(string filename, string userId)
+        {
+            //string uploadTo = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId, filename);
+            string uploadTo = Path.Combine("wwwroot/images/screen", userId, Path.GetFileName(filename));
+            return uploadTo;
+        }
+
+        public static string GetDirectoryScreen(string userId)
+        {
+            //string directory = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId);
+            string directory = Path.Combine("wwwroot/images/screen", userId);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            return directory;
+        }
+
+        public static bool CreateDirectoryIfNotExists(string userId, out string directory)
         {
             bool create = false;
             //string directory = Path.Combine(GlobalConfiguration.Setting.FolderComments, userId);
-            string directory = Path.Combine("/wwwroot/screen", userId);
+            directory = Path.Combine("wwwroot/images/screen", userId);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);

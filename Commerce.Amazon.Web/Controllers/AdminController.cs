@@ -127,5 +127,18 @@ namespace Commerce.Amazon.Web.Controllers
             }
         }
 
+        public IActionResult ClearData()
+        {
+            try
+            {
+                int result = _adminProcess.ClearData();
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
     }
 }

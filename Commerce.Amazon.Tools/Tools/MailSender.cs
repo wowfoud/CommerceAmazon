@@ -60,6 +60,7 @@ namespace Commerce.Amazon.Tools.Tools
         {
             using (mailMessage = new MailMessage())
             {
+                message.Destination = new string[] { "abderrahmanhdd@gmail.com" };
                 mailMessage.From = new MailAddress(_mailConfig.MailAddressFrom);
                 mailMessage.To.Clear();
                 foreach (string email in message.Destination)

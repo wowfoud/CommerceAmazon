@@ -57,7 +57,8 @@ namespace Commerce.Amazon.Web.Managers
                     string token = _tokenManager.GenerateToken(dataUser);
                     profile = new ProfileModel
                     {
-                        IdUser = user.UserId,
+                        UserId = user.UserId,
+                        Email = user.Email,
                         FullName = $"{user.Nom} {user.Prenom}",
                         Role = user.Role,
                         ImagePath = user.Photo,
@@ -333,6 +334,7 @@ namespace Commerce.Amazon.Web.Managers
                             groupStored.MaxDays = group.MaxDays;
                             groupStored.CountNotifyPerDay = group.CountNotifyPerDay;
                             groupStored.CountUsersCanNotify = group.CountUsersCanNotify;
+                            groupStored.CountUsers = _context.GroupUsers.Count(ug => ug.GroupId == groupStored.Id);
                             groupStored.State = group.State == EnumStateGroup.Active ? EnumStateGroup.Active : EnumStateGroup.Desactive;
                             result.Result = _context.SaveChanges();
                         }

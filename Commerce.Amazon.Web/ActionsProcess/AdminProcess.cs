@@ -1,4 +1,5 @@
 ﻿using Commerce.Amazon.Domain.Entities.CoreBase;
+using Commerce.Amazon.Domain.Extensions;
 using Commerce.Amazon.Domain.Helpers;
 using Commerce.Amazon.Domain.Models.Request;
 using Commerce.Amazon.Domain.Models.Response;
@@ -22,6 +23,16 @@ namespace Commerce.Amazon.Web.ActionsProcess
         public IEnumerable<PostView> FindPostsToSend(FilterPost filter)
         {
             AssertIsAdmin();
+
+            if (filter.DateFin.HasValue)
+            {
+                filter.DateFin = filter.DateFin.Value.LastTimeDay();
+            }
+            if (filter.DateDebut.HasValue)
+            {
+                filter.DateDebut = filter.DateDebut.Value.TrimTime();
+            }
+            
             IEnumerable<PostView> result = _adminManager.FindPostsToSend(filter, dataUser);
             return result;
         }
@@ -51,6 +62,13 @@ namespace Commerce.Amazon.Web.ActionsProcess
         {
             AssertIsAdmin();
             int n = _operationManager.PlanifierNotificationPost(idPost, idGroup, dataUser);
+            return n;
+        }
+
+        public int ClearData()
+        {
+            AssertIsAdmin();
+            int n = _operationManager.ClearData();
             return n;
         }
     }
